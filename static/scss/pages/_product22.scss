@@ -1,0 +1,48 @@
+.block-grouped {
+    position: relative;
+    margin: 0px 0px 24px 0px;
+}
+.list-grouped {
+    position: relative;
+}
+.item-grouped {
+    display: flex;
+    align-items: center;
+    padding: 24px 0px;
+    border-bottom: 1px solid $color-shape-border;
+    .item-grouped-image {
+        min-width: 70px;
+        margin-right: 15px;
+        max-width: 70px;
+    }
+    .item-grouped-info {
+        width: 100%;
+        .text-16-medium {
+            display: block;
+            margin-bottom: 8px;
+        }
+        .text-16 {
+            margin-bottom: 8px;
+        }
+    }
+    .item-grouped-quanlity {
+        min-width: 136px;
+        max-width: 136px;
+        width: 100%;
+    }
+    .item-grouped-price {
+        min-width: 60px;
+        max-width: 60px;
+        width: 100%;
+        text-align: right;
+    }
+} 
+.block-button-cart {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .btn-black {
+        max-width: 320px;
+        width: 100%;
+    }
+}

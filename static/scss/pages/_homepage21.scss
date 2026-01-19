@@ -1,0 +1,118 @@
+.box-banner-home21 {
+    border-radius: 16px;
+    background-color: $background-bg-34;
+    padding: 0px 68px 0px 68px;
+    .box-pagination-button {
+        max-width: 100%;
+        bottom: 30px;
+    }
+    .button-slide-square-2 .swiper-pagination {
+        text-align: left;
+    }
+    .banner-info {
+        padding-bottom: 100px;
+    }
+}
+.block-categories-home21  {
+    padding: 40px 0px 40px 0px;
+}
+.block-banner-2-home21 {
+    padding: 40px 0px;
+}
+.box-banner-video-2 {
+    background: url(../imgs/page/homepage21/banner-video.png) no-repeat top center;
+    background-size: cover;
+    padding: 153px 15px;
+    text-align: center;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+    color: $color-white;
+    h1 {
+        margin-bottom: 12px;
+    }
+    p {
+        margin-bottom: 32px;
+    }
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        background: url(../imgs/page/homepage21/overlay.png) no-repeat;
+        background-size: cover;
+        z-index: 1;
+    }
+    .box-banner-video-inner {
+        position: relative;
+        z-index: 2;
+    }
+}
+.box-categories-slider-home21 {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    .box-categories-left {
+        position: relative;
+        max-width: 300px;
+        min-width: 300px;
+        width: 100%;
+        padding-right: 70px;
+    }
+    .box-categories-right {
+        position: relative;
+        width: 100%;
+    }
+}
+.block-categories-slider-home21 {
+    padding: 40px 0px;
+}
+.container-slider-padding {
+    overflow: hidden;
+}
+.swiper-full-scroll {
+    .swiper-slide {
+        max-width: 320px;
+        width: 100%;
+    }
+    .swiper-pagination-popular-product {
+        max-width: 100%;
+    }
+    .swiper-pagination-popular-product-2 {
+        max-width: 100%;
+    }
+}
+.swiper-pagination-scrollbar-product, .swiper-pagination-scrollbar-product-2 {
+    position: static;
+    width: 100%;
+    cursor: pointer;
+    margin: 0 auto;
+    border-radius: 10px;
+    position: relative;
+    max-width: 100%;
+    margin-top: 45px !important;
+    height: 2px;
+    background-color: #eee;
+}
+.swiper-slide {
+    .cardProductType03 {
+        margin-bottom: 0px;
+    }
+}
+.box-product-border-radius {
+    .cardProductType03 {
+        .cardImage {
+            overflow: hidden;
+            border-radius: 12px;
+        }
+    }
+}
+.block-banner-video-home21 {
+    padding: 40px 0px;
+}
+.block-products-slider-home21 {
+    padding-bottom: 80px;
+    padding-top: 40px;
+}

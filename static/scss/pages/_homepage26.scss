@@ -1,0 +1,96 @@
+.block-banner-home26 {
+    position: relative;
+    .box-pagination-button {
+        bottom: 40px;
+    }
+    .btn-prev-style-3 {
+        background-image: url(../imgs/template/icons/prev-banner.svg);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        height: 14px;
+        width: 30px;
+        position: absolute;
+        top: 50%;
+        margin-top: -7px;
+        left: 80px;
+    }
+    .btn-next-style-3 {
+        margin-top: 20px;
+        background-image: url(../imgs/template/icons/next-banner.svg);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        height: 14px;
+        width: 30px;
+        position: absolute;
+        top: 50%;
+        margin-top: -7px;
+        right: 80px;
+    }
+    .box-banner-cover {
+        background-color: $color-shape-background;
+        padding-top: 60px;
+        .box-banner-cover-inner {
+            background-image: url(../imgs/page/homepage26/banner.png);
+            background-position: right center;
+            background-repeat: no-repeat;
+            background-size: contain;
+            height: 760px;
+            display: flex;
+            align-items: center;
+            &.bg-2 {
+                background-image: url(../imgs/page/homepage26/banner2.png);
+                background-color: transparent !important;
+            }
+            &.bg-3 {
+                background-image: url(../imgs/page/homepage26/banner3.png);
+                background-color: transparent !important;
+            }
+        }
+        h1 {
+            text-transform: uppercase;
+        }
+    }
+}
+.box-banner-video {
+    width: 100%;
+    height: 600px;
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    .btn-play-video {
+        position:absolute;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        margin: auto;
+        height: 100px;
+        width: 100px;
+        background: url(../imgs/page/homepage26/btn-play.svg) no-repeat center;
+    }
+}
+.box-button-top-0 {
+    .box-page-swiper {
+        top: 0px;
+    }
+}
+.block-moving-forward-home26 {
+    padding: 80px 0px 40px 0px;
+}
+.block-categories-home26 {
+    padding: 40px 0px;
+}
+.box-product-list-home26 {
+    .nav-tabs-style-4 {
+        .nav-link {
+            font-size: 28px;
+            line-height: 36px;
+        }
+    }
+}
+.block-icon-box-type3 {
+    padding: 80px 0px;
+}

@@ -1,0 +1,31 @@
+.box-pagination-leftright {
+    position: static;
+    .swiper-button-prev {
+        position: absolute;
+        top: 50%;
+        margin-top: -18px;
+        left: -40px;
+        right: auto;
+    }
+    .swiper-button-next {
+        position: absolute;
+        top: 50%;
+        left: auto;
+        margin-top: -18px;
+        right: -40px;
+    }
+    .swiper-pagination {
+        bottom: -60px !important;
+    }
+}
+.block-banner-body {
+    height: 600px;
+    width: 100%;
+    background: url(../imgs/page/homepage9/banner-body.png) no-repeat bottom center;
+    background-size: cover;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 80px;
+}

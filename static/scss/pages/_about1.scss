@@ -1,0 +1,60 @@
+.block-banner-about-1 {
+    height: 600px;
+    line-height: 600px;
+    width: 100%;
+    background: url(../imgs/page/about1/banner.png) no-repeat top center;
+    background-size: cover;
+    position: relative;
+    .box-info-banner {
+        width: 100%;
+        display: inline-block;
+        color: $color-white;
+        vertical-align: middle;
+    }
+}
+.block-our-shop {
+    padding: 80px 0px;
+}
+.block-team {
+    padding: 80px 0px 50px 0px;
+}
+.banner-about-us2 {
+    background-color: $background-bg-21;
+    position: relative;
+    .box-cover-image {
+        height: 700px;
+        background-size: auto 95%;
+        background-position: bottom right 200px;
+        background-color: $background-bg-21;
+    }
+    .box-banner-info {
+        text-align: left;
+    }
+}
+.box-image-about-2-top {
+    max-width: 420px;
+    img {
+        border-radius: 200px 200px 0 0;
+    }
+}
+.box-image-about-2-bottom {
+    max-width: 420px;
+    img {
+        border-radius: 0 0 200px 200px;
+    }
+}
+.block-our-shop {
+    .socials a {
+        margin: 0px 24px 0px 0px;
+    }
+}
+.block-icon-box-grey {
+    background-color: $color-shape-background;
+    padding: 80px 0px;
+}
+.block-our-shop-2 {
+    padding: 80px 0px 0px 0px;
+}
+.block-testimonials-2 {
+    background-color: $background-white;
+}

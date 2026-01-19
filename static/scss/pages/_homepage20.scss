@@ -1,0 +1,79 @@
+.banner-homepage20 {
+    padding: 180px 0px 120px 0px;
+    background-color: $color-shape-background;
+}
+.box-image-banner-20 {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    .image-banner-1 {
+        margin-right: 30px;
+        margin-top: 40px;
+    }
+}
+.box-tip-home20 {
+    padding: 80px 0px 50px 0px;
+    background-color: $color-shape-background;
+}
+.box-product-2-home20 {
+    padding: 80px 0px 0px 0px;
+}
+.box-banner-text-inner {
+    position: relative;
+    max-width: 370px;
+    width: 100%;
+}
+.box-review-home20 {
+    position: relative;
+    margin: 30px 0px 0px 0px;
+    padding: 0px 0px 0px 45px;
+    background: url(../imgs/page/homepage20/quote.svg) no-repeat top left;
+    max-width: 415px;
+    width: 100%;
+}
+.box-texts {
+    position: absolute;
+    bottom: 79px;
+    right: -356px;
+    z-index: 3;
+    font-family: $font-jost;
+    max-width: 423px;
+    width: 100%;
+    min-width: 423px;
+    .text-1, .text-2 {
+        margin-bottom: 24px;
+    }
+    .text-2 {
+        .text-white {
+            width: 65px;
+            display: inline-block;
+            overflow: hidden;
+        }
+        .text-black {
+            width: 140px;
+            display: inline-block;
+            overflow: hidden;
+            text-align: right;
+            direction: rtl;
+        }
+    }
+    .text-3 {
+        .text-white {
+            width: 67px;
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .text-black {
+            width: 311px;
+            display: inline-block;
+            overflow: hidden;
+            text-align: right;
+            direction: rtl;
+            white-space: nowrap;
+        }
+    }
+}
+.box-product-home20 {
+    padding: 120px 0px 40px 0px;
+}

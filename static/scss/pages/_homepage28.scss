@@ -1,0 +1,80 @@
+.block-banner-home28 {
+    background-color: $background-bg-42;
+    .box-banner-cover {
+        background-image: url(../imgs/page/homepage28/lotus.png);
+        background-repeat: no-repeat;
+        background-position: bottom right 45%;
+    }
+}
+.box-image-banner {
+    height: 820px;
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+}
+.card-category-grey {
+    background-color: $color-shape-background;
+    padding: 40px;
+    margin-bottom: 30px;
+    min-height: 313px;
+    display: flex;
+    align-items: center;
+    &.card-socks {
+        background-image: url(../imgs/page/homepage28/socks.png);
+        background-repeat: no-repeat;
+        background-position: top right;
+    }
+    &.card-bras {
+        background-image: url(../imgs/page/homepage28/bras.png);
+        background-repeat: no-repeat;
+        background-position: center right;
+        background-size: 70% auto;
+    }
+    &.card-legging {
+        background-image: url(../imgs/page/homepage28/leggings.png);
+        background-repeat: no-repeat;
+        background-position: bottom right;
+    }
+}
+.block-legging-collection {
+    background-image: url(../imgs/page/homepage28/legging-collection2.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: contain;
+    min-height: 428px;
+    margin-bottom: 80px;
+    padding-bottom: 0px;
+}
+.block-video-home28 {
+    height: 600px;
+    background-image: url(../imgs/page/homepage28/bg-video.png);
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: cover;
+    position: relative;
+}
+.brand-list {
+    margin: 0px -30px;
+    display: flex;
+    align-items: center;
+    .brand-item {
+        width: 25%;
+        padding: 0px 30px;
+        margin-bottom: 40px;
+    }
+}
+.block-instagram-type-1 {
+    .gallery-1 {
+        width: 40.5%;
+    }
+}
+.productNotsaleType02 {
+    .cardProduct {
+        .cardInfo {
+            text-align: center;
+            .box-colors {
+                justify-content: center;
+            }
+        }
+    }
+}

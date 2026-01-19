@@ -1,0 +1,36 @@
+.box-title-between {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+}
+.box-feature-cat {
+    padding: 64px 0px;
+}
+.nav-tabs-big {
+    .nav-link {
+        font-size: 28px;
+        line-height: 36px;
+        font-weight: 500;
+    }
+}
+.block-product-tabs {
+    padding-bottom: 50px;
+}
+.box-blogs {
+    padding: 80px 0px 50px 0px;
+}
+.box-subsciber-type-1 {
+    max-width: 100%;
+    text-align: left;
+}
+.box-sale-countdown {
+    background-color: $background-bg-5;
+    img {
+        display: block;
+    }
+}
+.box-info-sale-countdown {
+    padding-left: 30px;
+}

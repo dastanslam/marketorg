@@ -1,0 +1,376 @@
+.footer {
+    background-color: $color-primary;
+    background-repeat: no-repeat;
+    background-position: top left;
+    background-size: cover;
+    padding: 50px 0px 0px 0px;
+    .menu-footer {
+        display: inline-block;
+        li {
+            list-style: none;
+            margin-bottom: 12px;
+            a {
+                color: #ffffffd5;
+                font-size: 17px;
+                line-height: 24px;
+                font-family: $font-jost;
+                font-weight: 400;
+                text-decoration: none;
+                display: block;
+                padding: 0px 0px 0px 0px;
+                transition-duration: 0.2s;
+                &:hover {
+                    transition-duration: 0.2s;
+                    padding-left: 2px;
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+    .desc-company {
+        margin-bottom: 24px;
+    }
+    .phone-footer, .email-footer {
+        margin-bottom: 8px;
+    }
+    p.color-white {
+        color: #ffffffd5;
+    }
+    &.footer-white {
+        background-color: $background-white;
+        border-top: 1px solid $color-shape-border;
+        .color-white {
+            color: $color-neutral-dark;
+        }
+        .menu-footer li a {
+            color: #111111c5;
+        }
+        .desc-company {
+            color: #111111c5 !important;
+        }
+        .btn.btn-line-bottom {
+            color: #111111c5;
+            border-bottom-color: $color-neutral-light-medium;
+            &:after {
+                background-image: url(../imgs/template/icons/arrow-down-grey.svg);
+            }
+        }
+        .footer-2 {
+            border-top-color: $color-shape-border;
+        }
+        p.color-white {
+            color: #111111c5;
+        }
+    }
+    &.footer-type3-light {
+        background-color: $color-white;
+        .menu-footer li a {
+            color: $color-neutral-dark;
+        }
+        .footer-2 {
+            border-top-color: $color-shape-border;
+        }
+        .menu-bottom li a {
+            color: $color-neutral-dark;
+        }
+        .box-form-subscribe-white .btn-subscribe {
+            color: $color-neutral-dark;
+            font-weight: 500;
+        }
+        .box-form-subscribe-white {
+            border-bottom-color: $color-neutral-dark;
+        }
+        .socials {
+            justify-content: flex-end;
+        }
+    }
+    &.footer-type3-grey {
+        background-color: $color-shape-background;
+    }
+    &.footer-type3-light-top-border {
+        border-top: 1px solid $color-shape-border;
+        margin-top: 40px;
+    }
+    &.footer-type2-light {
+        background-color: $color-white;
+        .menu-footer li a {
+            color: $color-neutral-dark;
+        }
+        .footer-2 {
+            border-top-color: $color-shape-border;
+        }
+        .menu-bottom li a {
+            color: $color-neutral-dark;
+        }
+        .box-form-subscribe-white .btn-subscribe {
+            color: $color-neutral-dark;
+            font-weight: 500;
+        }
+        .box-form-subscribe-white {
+            border-bottom-color: $color-neutral-dark;
+        }
+        .menu-footer-inline {
+            display: inline-block;
+            padding: 0px 10px;
+            vertical-align: middle;
+            margin-bottom: 20px;
+            li {
+                display: inline-block;
+                a {
+                    font-size: 16px;
+                    line-height: 24px;
+                    color: $color-neutral-dark;
+                    font-weight: 400;
+                    padding: 0px 18px;
+                }
+            }
+        }
+        .footer-2 {
+            border-top: 0px;
+        }
+        .socials {
+            justify-content: flex-end;
+        }
+        .footer-bottom {
+            padding: 22px 0px 20px 0px;
+        }
+    }
+    &.footer-type1-light {
+        background-color: $color-white;
+        .color-white {
+            color: $color-neutral-dark;
+        }
+        .menu-footer li a {
+            color: $color-neutral-dark;
+        }
+        .footer-2 {
+            border-top-color: $color-shape-border;
+        }
+        .menu-bottom li a {
+            color: $color-neutral-dark;
+        }
+        .box-form-subscribe-white .btn-subscribe {
+            color: $color-neutral-dark;
+            font-weight: 500;
+        }
+        .box-form-subscribe-white {
+            border-bottom-color: $color-neutral-dark;
+        }
+        .footerBorder::before {
+            background-color: $color-shape-border;
+        }
+    }
+}
+.logo-footer {
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 20px;
+}
+.footer-2 {
+    border-top: 1px solid #eeeeee38;
+}
+.footerBorder {
+    position: relative;
+    &::before {
+        content: "";
+        height: 100%;
+        width: 1px;
+        background-color: #ffffff3b;
+        position: absolute;
+        left: -10px;
+        top: 0px;
+    }
+}
+.box-payments {
+    img {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 15px;
+        &:last-child {
+            margin-right: 0px;
+        }
+    }
+}
+.footer-bottom {
+    padding: 40px 0px 20px 0px;
+}
+.menu-bottom {
+    display: inline-block;
+    padding-left: 20px;
+    li {
+        display: inline-block;
+        color: $color-white;
+        padding: 0px 20px;
+        a {
+            color: $color-white;
+            &:hover {
+                color: $color-green;
+            }
+        }
+    }
+}
+.bg-download {
+    background-color: $background-bg-2;
+    background-image: url(../imgs/page/homepage1/bg-download.png);
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: cover;
+    padding: 123px 0px;
+    position: relative;
+    .container-sub {
+        position: relative;
+        z-index: 2;
+    }
+    &::before {
+        content: "";
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        background-image: url(../imgs/page/homepage1/phone.png);
+        background-repeat: no-repeat;
+        background-position: right center;
+        background-size: auto 100%;
+        z-index: 1;
+    }
+}
+.bg-download-2 {
+    background-image: url(../imgs/page/homepage2/bg-download.png);
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: cover;
+    padding: 123px 0px;
+    position: relative;
+    .container-sub {
+        position: relative;
+        z-index: 2;
+    }
+    &::before {
+        content: "";
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        background-image: url(../imgs/page/homepage1/phone.png);
+        background-repeat: no-repeat;
+        background-position: right center;
+        background-size: auto 100%;
+        z-index: 1;
+    }
+}
+.bg-download-3 {
+    background-image: url(../imgs/page/homepage3/bg-download-3.png);
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: cover;
+    padding: 123px 0px;
+    position: relative;
+    .container-sub {
+        position: relative;
+        z-index: 2;
+    }
+    &::before {
+        content: "";
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        background-image: url(../imgs/page/homepage1/phone.png);
+        background-repeat: no-repeat;
+        background-position: right center;
+        background-size: auto 100%;
+        z-index: 1;
+    }
+}
+#scrollUp {
+	width: 56px;
+    height: 56px;
+    color: $color-white;
+    right: 20px;
+    bottom: 20px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    overflow: hidden;
+    z-index: 999 !important;
+    border: 0;
+    background-color: #fff;
+    transition-duration: 0.2s;
+    background-color: $color-brand-1;
+    i {
+        display: block;
+        line-height: 56px !important;
+        font-size: 20px;
+        color: #fff;
+    }
+    &:hover {
+        transform: translateY(-3px);
+        transition-duration: 0.2s;
+        background-color: $color-brand-1-hover;
+    }
+}
+
+footer a {
+    text-decoration: none;
+}
+.icon-socials {
+    display: inline-block;
+    margin-right: 8px;
+    height: 40px;
+    width: 40px;
+    line-height: 40px;
+    transition-duration: 0.2s;
+    vertical-align: middle;
+    &:last-child {
+        margin-right: 0px;
+    }
+    &.icon-facebook {
+        background: url(../imgs/template/icons/fb.png) no-repeat center;
+        transition-duration: 0.2s;
+        &:hover {
+            background: url(../imgs/template/icons/fb.png) no-repeat center;
+            transition-duration: 0.2s;
+            background-color: rgb(255 255 255 / 20%);
+        }
+    }
+    &.icon-twitter {
+        background: url(../imgs/template/icons/tw.png) no-repeat center;
+        transition-duration: 0.2s;
+        &:hover {
+            background: url(../imgs/template/icons/tw.png) no-repeat center;
+            transition-duration: 0.2s;
+            background-color: rgb(255 255 255 / 20%);
+        }
+    }
+    &.icon-instagram {
+        background: url(../imgs/template/icons/instagram.png) no-repeat center;
+        transition-duration: 0.2s;
+        &:hover {
+            background: url(../imgs/template/icons/instagram.png) no-repeat center;
+            transition-duration: 0.2s;
+            background-color: rgb(255 255 255 / 20%);
+        }
+    }
+    &.icon-linkedin {
+        background: url(../imgs/template/icons/linkedin.png) no-repeat center;
+        transition-duration: 0.2s;
+        &:hover {
+            background: url(../imgs/template/icons/linkedin.png) no-repeat center;
+            transition-duration: 0.2s;
+            background-color: rgb(255 255 255 / 20%);
+        }
+    }
+    &:hover {
+        transform: translateY(-3px);
+        transition-duration: 0.2s;
+        border-radius: 50%;
+    }
+}
+.box-footer-top {
+    padding: 30px 0px 10px 0px;
+    border-bottom: 1px solid rgb(255 255 255 / 20%);
+    margin-bottom: 60px;
+}

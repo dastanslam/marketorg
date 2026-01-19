@@ -1,0 +1,268 @@
+.block-intro {
+    padding: 80px 0px;
+}
+.box-cat {
+    display: inline-block;
+    width: 100%;
+    position: relative;
+    margin-bottom: 26px;
+    text-align: center;
+    img {
+        display: block;
+        width: 100%;
+    }
+    .box-link {
+        position: absolute;
+        bottom: 30px;
+        left: 0px;
+        right: 0px;
+        margin: auto;
+        text-align: center;
+    }
+    .link-cat {
+        background-color: $background-white;
+        color: $color-neutral-dark;
+        font-size: 24px;
+        line-height: 32px;
+        font-family: $font-fjalla;
+        font-weight: 400;
+        display: inline-block;
+        text-transform: uppercase;
+        padding: 10px 20px;
+        &:hover {
+            background-color: $color-neutral-dark;
+            color: $color-white;
+        }
+    }
+}
+.homepage14-page {
+    background-color: $color-shape-background;
+}
+.swiper-pagination-popular-product {
+    position: static;
+    width: 100%;
+    cursor: pointer;
+    margin: 0 auto;
+    border-radius: 10px;
+    position: relative;
+    max-width: 400px;
+    margin-top: 45px !important;
+    height: 2px;
+    background-color: #eee;
+}
+.swiper-scrollbar-drag {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    background: rgba(0,0,0,.5);
+    border-radius: 10px;
+    left: 0;
+    top: 0;
+}
+.swiper-scrollbar-drag {
+    background-color: $color-neutral-dark;
+}
+.block-banner-street {
+    height: 650px;
+    background-image: url(../imgs/page/homepage14/street.png);
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    position: relative;
+}
+.box-banner-street {
+    position: absolute;
+    top: 50%;
+    text-align: center;
+    transform: translateY(-50%);
+    width: 100%;
+    left: 0px;
+    * {
+        color: $color-white;
+    }
+}
+.block-testimonials-type4 {
+    background-color: $color-shape-background;
+    padding: 0px 0px;
+}
+.block-product-detail {
+    background-color: $background-white;
+    padding: 80px 0px;
+}
+.block-popular-product {
+    padding-bottom: 80px;
+    padding-top: 50px;
+}
+.title-product {
+    margin-bottom: 4px;
+}
+.block-rating {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    img {
+        margin-right: 2px;
+    }
+    span {
+        margin-left: 7px;
+    }
+}
+.block-price {
+    margin-bottom: 24px;
+    .price-line {
+        font-size: 24px;
+        line-height: 32px;
+        color: $color-neutral-medium;
+        display: inline-block;
+        margin-right: 11px;
+    }
+    .price-main {
+        font-size: 24px;
+        line-height: 32px;
+        display: inline-block;
+        color: $color-neutral-dark;
+    }
+}
+.block-view {
+    margin-bottom: 24px;
+    .viewed-product {
+        font-size: 17px;
+        line-height: 24px;
+        font-weight: 500;
+        color: $color-neutral-dark;
+        background: url(../imgs/template/icons/eyes.svg) no-repeat left center;
+        padding-left: 30px;
+    }
+}
+.block-hurry {
+    margin-bottom: 24px;
+    p.tone-red {
+        margin-bottom: 12px;
+    }
+    .box-count .deals-countdown .countdown-section {
+        border-color: $color-tone-red;
+    }
+}
+.block-color, .block-size {
+    margin-bottom: 21px;
+    span, label {
+        color: $color-neutral-medium-dark;
+        font-size: 17px;
+        line-height: 24px;
+        font-weight: 400;
+        display: inline-block;
+        margin-right: 9px;
+    }
+    label {
+        color: $color-neutral-dark;
+    }
+    .list-colors {
+        margin-top: 10px;
+    }
+}
+.block-size {
+    margin-bottom: 24px;
+}
+.list-sizes {
+    margin-top: 10px;
+    .item-size {
+        height: 42px;
+        line-height: 42px;
+        padding: 0px 12px;
+        border: 1px solid $color-neutral-medium-dark;
+        border-radius: 4px;
+        margin-right: 8px;
+        cursor: pointer;
+        &.out-stock {
+            color: $color-neutral-medium;
+            border-color: $color-shape-border;
+            text-decoration: line-through;
+        }
+        &.active, &:hover {
+            border-color: $color-neutral-dark;
+            color: $color-neutral-dark;
+        }
+    }
+}
+.box-list-sizes {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    .link-underline {
+        color: $color-neutral-medium;
+        border-bottom-color: $color-neutral-medium;
+        &:hover {
+            color: $color-neutral-dark;
+            border-bottom-color: $color-neutral-dark;
+        }
+    }
+}
+.box-form-cart {
+    display: flex;
+    width: 100%;
+    .form-cart {
+        min-width: 136px;
+        max-width: 136px;
+        width: 100%;
+        border: 1px solid $color-shape-border;
+        border-radius: 4px;
+        position: relative;
+        height: 48px;
+        margin-right: 8px;
+        .minus {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 54px;
+            height: 100%;
+            z-index: 2;
+            background-image: url(../imgs/template/icons/minus.svg);
+            background-position: center;
+            background-repeat: no-repeat;
+            cursor: pointer;
+        }
+        .plus {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 54px;
+            height: 100%;
+            z-index: 2;
+            background-image: url(../imgs/template/icons/plus.svg);
+            background-position: center;
+            background-repeat: no-repeat;
+            cursor: pointer;
+        }
+        input[type="text"] {
+            border: 0px;
+            height: 100%;
+            width: 100%;
+            text-align: center;
+        }
+    }
+    .btn {
+        width: 100%;
+        margin-right: 8px;
+        &:last-child {
+            margin-right: 0px;
+        }
+    }
+}
+.box-slider-product-images {
+    padding: 0px 60px;
+    .box-button-leftright .swiper-button-prev {
+        background: url(../imgs/template/icons/arrow-prev-dark.svg) no-repeat center;
+        left: 0px;
+        border: 0px;
+    }
+    .box-button-leftright .swiper-button-next {
+        border: 0px;
+        right: 0px;
+        background: url(../imgs/template/icons/arrow-next-dark.svg) no-repeat center;
+    }
+}
+.block-testimonials-type4 {
+    padding-top: 80px;
+}

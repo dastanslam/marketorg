@@ -1,0 +1,93 @@
+.block-banner-home31 {
+    .box-banner-cover {
+        background-color: $color-neutral-dark;
+        background-image: url(../imgs/page/homepage31/banner.png);
+        background-repeat: no-repeat;
+        background-position: right top;
+        background-size: contain;
+        height: 720px;
+    }
+    .btn-border-white {
+        &:hover {
+            background-color: $color-white;
+            color: $color-neutral-dark;
+        }
+    }
+}
+.height-720 {
+    height: 720px;
+}
+.image-story {
+    img {
+        display: block;
+    }
+    .row {
+        margin: 0px -4px;
+    }
+    .col-lg-12 {
+        margin-bottom: 8px;
+        padding: 0px 4px;
+    }
+    .col-lg-6 {
+        padding: 0px 4px;
+        margin-bottom: 8px;
+    }
+}
+.mw-410 {
+    max-width: 410px;
+    margin: auto;
+    p {
+        text-align: justify;
+    }
+}
+.block-our-story {
+    background: url(../imgs/page/homepage31/bg-watch.png) no-repeat right 10% center;
+}
+.block-instagram-type-3-grey {
+    background-color: $color-shape-background;
+    padding-top: 20px;
+    padding-bottom: 0px !important;
+    margin-bottom: 40px;
+}
+.block-brands {
+    .brand-list {
+        .brand-item {
+            width: 20%;
+            img {
+                display: block;
+                margin: auto;
+            }
+        }
+    } 
+}
+.nav-tabs-style-5 {
+    margin-bottom: 40px;
+    .nav-item {
+        padding: 0px 4px;
+    }
+    .nav-link {
+        font-size: 17px;
+        line-height: 24px;
+        font-weight: 500;
+        color: $color-neutral-medium;
+        &:hover {
+            color: $color-neutral-dark;
+            border-bottom: 0px;
+        }
+        &.active{
+            color: $color-neutral-dark;
+            border-bottom: 0px;
+            padding-right: 70px;
+            position: relative;
+            &::before {
+                content: "";
+                width: 50px;
+                height: 1px;
+                background-color: $color-neutral-dark;
+                position: absolute;
+                top: 20px;
+                right: 7px;
+            }
+        }
+    }
+}

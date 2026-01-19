@@ -1,0 +1,39 @@
+.block-product-home8 {
+    padding: 80px 0px;
+}
+.block-collection-home8 {
+    padding-top: 80px;
+}
+.box-banner-image-sale {
+    height: 600px;
+    width: 100%;
+    background-image: url(../imgs/page/homepage8/banner-sale.jpg);
+    background-position: bottom center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+}
+.box-banner-sale {
+    padding: 0px 0px 80px 0px;
+}
+.box-dropdown-1 {
+    position: absolute;
+    bottom: 225px;
+    left: 240px;
+}
+.box-dropdown-2 {
+    position: absolute;
+    bottom: 160px;
+    right: 210px;
+}
+.box-dropdown-2, .box-dropdown-1 {
+    .dropdown-menu {
+        padding: 15px;
+        min-width: 270px;
+        width: 100%;
+        max-width: 300px;
+        font-size: 16px;
+        line-height: 24px;
+        color: $color-neutral-dark;
+    }
+}

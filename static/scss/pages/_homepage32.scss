@@ -1,0 +1,21 @@
+.block-banner-home32 {
+    background-color: $background-bg-46;
+    .box-banner-cover {
+        background-image: url(../imgs/page/homepage32/banner.png);
+        background-repeat: no-repeat;
+        background-position: left top;
+        background-size: contain;
+        height: 720px;
+    }
+}
+.box-book-grey {
+    background-color: $color-shape-background;
+}
+.img-book {
+    margin-top: -25px;
+    height: calc(100% + 15px);
+}
+.block-banner-book {
+    margin-top: 80px;
+    margin-bottom: 80px;
+}

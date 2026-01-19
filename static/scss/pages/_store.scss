@@ -1,0 +1,17 @@
+.banner-500 {
+    position: relative;
+    .box-cover-image {
+        height: 500px;
+        background-color: $background-bg-21;
+    }
+}
+.block-our-store {
+    padding: 80px 0px;
+    .row {
+        margin: 0px -25px;
+        .col-lg-6 {
+            padding-left: 25px;
+            padding-right: 25px;
+        }
+    }
+}

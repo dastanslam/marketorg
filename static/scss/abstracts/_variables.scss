@@ -1,0 +1,164 @@
+//1.FONT
+@import url(https://fonts.bunny.net/css?family=jost:400,500,600,700|cormorant:400,500,700|quicksand:400,500,700|eb-garamond:400,500,600|fjalla-one:400|bebas-neue:400|family=poppins:400,800,900);
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap');
+$font-dm-sans: 'DM Sans', sans-serif;
+$font-cormorant: 'cormorant', sans-serif;
+$font-eb: 'EB Garamond', serif;
+$font-fjalla: 'Fjalla One', sans-serif;
+$font-jost: 'Jost', sans-serif;
+$font-shippori: 'shippori-mincho', sans-serif;
+$font-chivo: 'chivo', sans-serif;
+$font-quicksand: 'quicksand', sans-serif;
+$font-bebas: 'Bebas Neue', sans-serif;
+$font-oswald: 'Oswald', sans-serif;
+$font-poppins: 'Poppins', sans-serif;
+$font-3xs: 8px;
+$font-2xs: 10px;
+$font-xs: 12px;
+$font-sm: 14px;
+$font-md: 16px;
+$font-lg: 18px;
+$font-xl: 24px;
+$font-2xl: 28px;
+$font-3xl: 34px;
+
+//2.COLOR
+$color-primary-navy: #C8815F;
+$color-primary-dark: #111111;
+$color-neutral-dark: #111111;
+$color-neutral-medium-dark: #555555;
+$color-neutral-medium: #999999;
+$color-neutral-light-medium: #DDDDDD;
+$color-shape-border: #EEEEEE;
+$color-shape-background: #F9F9F9;
+$color-tone-red: #ED0006;
+$color-tone-yellow: #FFD75E;
+$color-tone-green: #3AB446;
+$color-icon-dark: #111111;
+$color-icon-medium: #DDDDDD;
+$color-1: #003466;
+$color-2: #C8815F;
+$color-3: #777777;
+$color-4: #443DF6;
+$color-5: #FC3131;
+$color-6: #FFD687;
+$color-7: #666666;
+$color-8: #FF7380;
+$color-9: #F84C5D;
+
+
+
+$color-text: #181A1F;
+$color-border: #E5E5E5;
+$color-grey: #626262;
+$color-dark: #181818;
+$color-white: #fff;
+$color-primary: #000000;
+$color-secondary: #E95440;
+$color-lemon: #EFFC53;
+$color-green: #22C58B;
+$color-brand-1: #024430;
+$color-brand-1-hover: #066a4c;
+$color-brand-2: #FFE7BB;
+$color-brand-3: #AFEAE4;
+$color-brand-4: #E8B0E8;
+$color-success: #06D6A0;
+$color-danger: #EF476F;
+$color-warning: #FFD166;
+$color-mutted: #CFDEE3;
+$color-info: #28A7E6;
+$color-gray-50: #ECF1F2;
+$color-gray-60: #E0F1F4;
+$color-gray-80: #CDE2E7;
+$color-gray-100: #B9CAD0;
+$color-gray-200: #8EA4AC;
+$color-gray-300: #6A838C;
+$color-gray-400: #4E6770;
+$color-gray-500: #3D565F;
+$color-gray-600: #1F3C45;
+$color-gray-700: #0E2932;
+$color-gray-800: #122830;
+$color-gray-900: #071920;
+
+$color-black: #414357;
+$color-blue: #006D77;
+// End New
+
+//3.Boxshadow
+$box-shadow-1: 3px 3px 30px rgba(0, 0, 0, 0.05);
+$box-shadow-2: 0px 6px 24px rgba(0, 0, 0, 0.1);
+$box-shadow-3: 0px 10px 40px rgba(0, 0, 0, 0.05);
+$box-shadow-4: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+
+$box-shadow-5: 0px 0px 35px rgba(181, 181, 195, 0.15);
+$box-shadow-6: 3px 3px 30px rgba(0, 0, 0, 0.05);
+$box-shadow-1-1: 14px 14px 36px rgba(153, 153, 153, 0.22);
+$box-shadow-inner: inset 0px 40px 80px #FCFCFC;
+
+
+//5. Background
+// New
+$background-white: #ffffff;
+$background-bg-1: #F6E5CF;
+$background-bg-2: #F8F4F1;
+$background-bg-3: #F8F6F5;
+$background-bg-4: #f7f7f7;
+$background-bg-5: #ECC6C2;
+$background-bg-6: #EBF2F6;
+$background-bg-7: #ECDCD4;
+$background-bg-8: #EAAA61;
+$background-bg-9: #EDE6CF;
+$background-bg-10:#F8F4EE;
+$background-bg-11: #F9F7F1;
+$background-bg-12: #F2F2EF;
+$background-bg-13: #FFC9C7;
+$background-bg-14: #FFF5D8;
+$background-bg-15: #E9F3F6;
+$background-bg-16: #F7FAFA;
+$background-bg-17: #F6F5F5;
+$background-bg-18: #FFEEEA;
+$background-bg-19: #f5f5f5;
+$background-bg-20: #F3EFEB;
+$background-bg-21: #FAF0E8;
+$background-bg-22: #F0F0F0;
+$background-bg-23: #eae9e7;
+$background-bg-24: #E8E8EA;
+$background-bg-25: #FFF8EF;
+$background-bg-26: #FFD24C;
+$background-bg-27: #47B5FF;
+$background-bg-28: #FFCC8F;
+$background-bg-29: #007EE4;
+$background-bg-30: #B7E5FF;
+$background-bg-31: #A2D2FF;
+$background-bg-32: #FBBC04;
+$background-bg-33: #71BA78;
+$background-bg-34: #E3DCD3;
+$background-bg-35: #E9E7DF;
+$background-bg-36: #FFEFEF;
+$background-bg-37: #EFF8FF;
+$background-bg-38: #F8EDED;
+$background-bg-39: #DDF3F5;
+$background-bg-40: #FEF5ED;
+$background-bg-41: #D8E7EC;
+$background-bg-42: #FFECD7;
+$background-bg-43: #F3E7D4;
+$background-bg-44: #FDD3B9;
+$background-bg-45: #CBF3D9;
+$background-bg-46: #F8E7E0;
+// End new
+// 6. text-shadow
+$text-shadow: 0px 4px 4px rgba(0,0,0,0.25);
+
+// 7. breakpoints
+$grid-breakpoints: ( xs: 0,
+xxsm: 350px,
+xssm2: 400px,
+xssm: 450px,
+xsm: 500px,
+sm: 576px,
+smd: 650px,
+md: 768px,
+lg: 992px,
+xl: 1200px,
+xxl: 1400px);

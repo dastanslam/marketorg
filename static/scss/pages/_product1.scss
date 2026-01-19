@@ -1,0 +1,436 @@
+.block-may-also-like {
+    padding: 60px 0px;
+    border-top: 1px solid $color-shape-border;
+}
+.detail-gallery {
+    position: relative;
+    margin-bottom: 30px;
+    width: 100%;
+    display: flex;
+}
+.slick-vertical .slick-slide {
+    margin-bottom: 10px;
+}
+.box-main-gallery {
+    position: relative;
+    width: 100%;
+    max-width: 460px;
+    height: 635px;
+    overflow: hidden;
+}
+.slick-prev {
+    position: absolute;
+    top: 40px;
+    left: 0px;
+    right: 0px;
+    margin: auto;
+    height: 42px;
+    width: 42px;
+    background-color: $color-white;
+    background-image: url(../imgs/template/icons/arrow-prev.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 123;
+    border: 0px;
+    border-radius: 50%;
+    transform: rotate(90deg);
+    border: 1px solid transparent;
+    opacity: 0.8;
+    svg {
+        display: none;
+    }
+    &:hover {
+        border-color: $color-neutral-dark;
+        opacity: 1;
+    }
+}
+.slick-next {
+    position: absolute;
+    bottom: 40px;
+    left: 0px;
+    right: 0px;
+    margin: auto;
+    height: 42px;
+    width: 42px;
+    background-color: $color-white;
+    background-image: url(../imgs/template/icons/arrow-next.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 123;
+    border: 0px;
+    border-radius: 50%;
+    transform: rotate(90deg);
+    border: 1px solid transparent;
+    opacity: 0.8;
+    svg {
+        display: none;
+    }
+    &:hover {
+        border-color: $color-neutral-dark;
+        opacity: 1;
+    }
+}
+.slider-nav-thumbnails {
+    min-width: 100px;
+    max-width: 100px;
+    margin-right: 10px;
+    height: 635px;
+    .slick-prev {
+        display: none !important;
+    }
+    .slick-next {
+        display: none !important;
+    }
+    &:hover {
+        .slick-prev {
+            display: inline-block !important;
+        }
+        .slick-next {
+            display: inline-block !important;
+        }   
+    }
+    .slick-slide {
+        border: 1px solid $color-white;
+        &:hover {
+            border-color: $color-neutral-dark;
+        }
+    }
+    .slick-current.slick-active {
+        border-color: $color-neutral-dark;
+    }
+}
+.slick-vertical .slick-slide {
+    height: 119px;
+    overflow: hidden;
+}
+.zoom-image {
+    position: absolute;
+    z-index: 12;
+    height: 42px;
+    width: 42px;
+    background-image: url(../imgs/template/icons/zoom.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    top: 20px;
+    right: -150px;
+    transition: all 0.5s ease-in-out;
+    cursor: pointer;
+}
+.box-main-gallery {
+    figure {
+        &:hover {
+            .zoom-image {
+                right: 15px;
+            }
+        }
+    }
+}
+.box-main-gallery {
+    &:hover > {
+        .zoom-image {
+            right: 15px;
+        }
+    }
+}
+.product-image-slider {
+    figure {
+        position: relative;
+        overflow: hidden;
+    }
+    .slick-next {
+        right: -210px;
+        left: auto;
+        bottom: auto;
+        top: 50%;
+        transition: all 0.5s ease-in-out;
+        transform: translateY(-50%) rotate(0deg);
+    }
+    .slick-prev {
+        left: -210px;
+        right: auto;
+        bottom: auto;
+        top: 50%;
+        transition: all 0.5s ease-in-out;
+        transform: translateY(-50%) rotate(0deg);
+    }
+    &:hover {
+        .slick-prev {
+            left: 10px;
+        }
+        .slick-next {
+            right: 10px;
+        }   
+    }
+    .slick-list {
+        max-height: 645px;
+    }
+}
+.nav-tab-product {
+    display: flex;
+    border-bottom: 0px solid $color-shape-border;
+    margin-bottom: 20px;
+    justify-content: center;
+    .nav-item {
+        padding: 0px 20px;
+        .nav-link {
+            font-family: $font-jost;
+            font-size: 18px;
+            line-height: 28px;
+            font-weight: 500;
+            padding: 10px 10px 10px 0px;
+            color: $color-neutral-medium;
+            &:hover, &.active {
+                color: $color-brand-1;
+                border-bottom-color: $color-neutral-dark;
+                color: $color-neutral-dark;
+            }
+        }
+    }
+}
+.block-product-content {
+    .tab-pane {
+        p {
+            font-size: 16px;
+            line-height: 24px;
+            font-weight: 400;
+            color: $color-neutral-dark;
+            margin-bottom: 28px;
+        }
+        h5 {
+            font-size: 20px;
+            line-height: 28px;
+            font-weight: bold;
+            margin-bottom: 14px;
+            color: $color-neutral-dark;
+        }
+        ul {
+            margin-bottom: 35px;
+            list-style-type: disc;
+            padding-left: 15px;
+            li {
+                font-size: 12px;
+                margin-bottom: 6px;
+                line-height: 18px;
+                color: $color-neutral-dark;
+                span {
+                    min-width: 120px;
+                    display: inline-block;
+                    &:first-child {
+                        margin-right: 25px;
+                    }
+                }
+            }
+        }
+    }
+}
+.product-image-slider {
+    .slick-slide img {
+        display: block;
+        height: 100%;
+        width: auto;
+        max-width: fit-content;
+    }
+    .slick-initialized .slick-slide {
+        height: 645px;
+    }
+}
+.viewed-guest {
+    color: $color-primary-dark;
+    padding-left: 25px;
+    background: url(../imgs/template/icons/view-red.svg) no-repeat left center;
+}
+.block-product-single {
+    padding-top: 40px;
+}
+.box-product-info {
+    padding-left: 20px;
+    .block-price .price-line {
+        text-decoration: line-through;
+    }
+    .block-price .price-main {
+        margin-right: 11px;
+    }
+    .block-description {
+        margin-bottom: 24px;
+    }
+    .block-size {
+        margin-bottom: 21px;
+    }
+    .box-form-cart .btn {
+        max-width: 150px;
+        padding-left: 15px;
+        padding-right: 15px;
+        width: 100%;
+    }
+}
+.block-shipping {
+    margin-top: 24px;
+    border-bottom: 1px solid $color-shape-border;
+    padding-bottom: 14px;
+    margin-bottom: 21px;
+}
+.free-shipping {
+    background: url(../imgs/template/icons/ship.svg) no-repeat left center;
+    padding: 10px 0px 10px 50px;
+    font-size: 17px;
+    line-height: 24px;
+    margin-bottom: 6px;
+    color: $color-neutral-medium-dark;
+}
+.time-shipping {
+    background: url(../imgs/template/icons/time-ship.svg) no-repeat left center;
+    padding: 10px 0px 10px 50px;
+    font-size: 17px;
+    line-height: 24px;
+    margin-bottom: 6px;
+    color: $color-neutral-medium-dark;
+}
+.social-neutral-dark svg {
+    height: 18px;
+    color: $color-neutral-dark;
+    fill: $color-neutral-dark;
+}
+.box-detail-product {
+    border-top: 1px solid $color-shape-border;
+    padding-top: 50px;
+    margin-bottom: 80px;
+    margin-top: 50px;
+    .tab-content {
+        max-width: 770px;
+        margin: auto;
+        p {
+            color: $color-neutral-medium-dark;
+            font-size: 17px;
+            line-height: 24px;
+            font-weight: 400;
+        }
+    }
+}
+.block-socials-product {
+    position: relative;
+}
+.block-tags-product {
+    margin-bottom: 24px;
+    p {
+        margin-bottom: 8px;
+    }
+}
+.box-product-info {
+    .box-form-cart {
+        .btn-wishlist {
+            display: inline-block;
+            min-width: 40px;
+            max-width: 40px;
+            text-align: center;
+            padding-left: 0px;
+            padding-right: 0px;
+            svg {
+                fill: $color-neutral-dark;
+            }
+            &:hover {
+                svg {
+                    fill: $color-primary-navy;
+                }
+            }
+        }
+    }
+}
+// Reviews
+.title-question
+{
+    font-size: 18px;
+    color: $color-neutral-dark;
+    line-height: 28px;
+}
+.product-rate {
+    background-image: url(../imgs/page/product/rating-stars.png);
+    background-position: 0 -12px;
+    background-repeat: repeat-x;
+    height: 12px;
+    width: 60px;
+    transition: all 0.5s ease-out 0s;
+    -webkit-transition: all 0.5s ease-out 0s;
+}
+.product-rating {
+    height: 12px;
+    background-repeat: repeat-x;
+    background-image: url(../imgs/page/product/rating-stars.png);
+    background-position: 0 0;
+}
+.progress span {
+    line-height: 16px;
+    background: $background-white;
+    padding-right: 10px;
+    width: 45px;
+}
+.comments-area {
+    .progress {
+        height: 15px;
+        border-radius: 10px;
+        font-size: 12px;
+    }
+    .progress-bar {
+        border-radius: 10px;
+        background-color: $color-primary-navy;
+    }
+    .progress + .progress {
+        margin-top: 1rem;
+    }
+}
+
+.comments-area h6, .vendor-logo h6 {
+    font-size: 16px;
+    color: $color-neutral-dark;
+    font-weight: 700;
+    line-height: 1.2;
+}
+.comments-area .comment-list:last-child {
+    padding-bottom: 0px;
+}
+.comments-area .comment-list .single-comment {
+    margin: 0 0 15px 0;
+    border: 1px solid $color-gray-100;
+    border-radius: 4px;
+    padding: 20px;
+    -webkit-transition: 0.2s;
+    transition: 0.2s;
+}
+.comments-area .comment-list .single-comment:not(:last-child) {
+    border-bottom: 1px solid #ececec;
+}
+.justify-content-between {
+    justify-content: space-between!important;
+}
+.d-flex {
+    display: flex!important;
+}
+.comments-area .thumb {
+    margin-right: 20px;
+}
+.comments-area .comment-list .single-comment img {
+    min-width: 80px;
+    max-width: 80px;
+}
+.comments-area .thumb img {
+    width: 70px;
+    border-radius: 50%;
+}
+.text-brand {
+    color: $color-neutral-dark !important;
+    line-height: 1.2;
+}
+.comments-area .comment-list .single-comment .reply {
+    opacity: 0;
+    -webkit-transition: 0.2s;
+    transition: 0.2s;
+    color: $color-primary-navy;
+}
+.comments-area .comment-list .single-comment:hover .reply {
+    opacity: 1;
+    -webkit-transition: 0.2s;
+    transition: 0.2s;
+}
+.comments-area .comment-list .single-comment .reply:hover {
+    color: $color-primary-dark;
+}
+// end reviews

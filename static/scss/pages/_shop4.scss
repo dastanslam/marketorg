@@ -1,0 +1,19 @@
+.box-filters {
+    display: flex;
+    align-items: center;
+    .dropdown-sort .btn {
+        font-weight: 500;
+    }
+}
+.box-dropdown-filter {
+    padding: 16px 20px;
+    .head-filter {
+        margin-bottom: 20px;
+        font-size: 18px;
+        line-height: 28px;
+        font-weight: 500;
+    }
+}
+.dropdown-menu-category {
+    min-width: 220px;
+}

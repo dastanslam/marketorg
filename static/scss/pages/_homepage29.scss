@@ -1,0 +1,67 @@
+.block-banner-home29 {
+    .box-banner-cover {
+        height: 720px;
+        background-image: url(../imgs/page/homepage29/banner.png);
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center top;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        p {
+            max-width: 420px;
+        }
+    }
+}
+.mw-650 {
+    max-width: 650px;
+    margin: auto;
+}
+.mw-500 {
+    max-width: 500px;
+    width: 100%;
+}
+.btn-prev-style-4 {
+    background-image: url(../imgs/template/icons/prev-sm.svg);
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: contain !important;
+    height: 14px;
+    width: 30px;
+    margin-right: 5px;
+    &:hover {
+        background-image: url(../imgs/template/icons/prev-sm-hover.svg) !important;
+    }
+}
+.btn-next-style-4 {
+    background-image: url(../imgs/template/icons/next-sm.svg);
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: contain !important;
+    height: 14px;
+    width: 30px;
+    &:hover {
+        background-image: url(../imgs/template/icons/next-sm-hover.svg) !important;
+    }
+}
+.box-title-slider {
+    .box-page-swiper {
+        padding-top: 6px;
+    }
+}
+.block-earings-collection {
+    background-color: $background-bg-43;
+}
+.box-image-video {
+    position: absolute;
+    bottom: -80px;
+    right: -120px;
+    z-index: 12;
+}
+.block-why-us-home29 {
+    padding-bottom: 150px;
+}
+.mw-470 {
+    max-width: 470px;
+    position: relative;
+}

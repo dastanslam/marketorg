@@ -1,0 +1,129 @@
+.banner-homepage23 {
+    position: relative;
+    .box-cover-image {
+        &::before {
+            content: "";
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            background: url(../imgs/page/homepage23/overlay.png);
+            z-index: 1;
+        }
+    }
+    .box-banner-info {
+        height: 100%;
+        display: flex;
+        align-items: flex-end;
+        padding-bottom: 130px;
+        top: 0px;
+        transform: none;
+        justify-content: center;
+    }
+}
+.block-best-seller-home23 {
+    padding: 80px 0px 40px 0px;
+    .tab-pane {
+        position: relative;
+    }
+}
+.nav-tabs-upper {
+    justify-content: flex-start;
+    .nav-link {
+        text-transform: uppercase;
+        font-family: $font-bebas;
+    }
+}
+.subsciber-type-1-bg {
+    background-color: $color-shape-background;
+    .box-subsciber-type-1 {
+        padding: 20px 0px 30px 0px;
+    }
+}
+.box-blogs-style-2 {
+    h3 {
+        font-family: $font-bebas;
+    }
+    .cardBlog {
+        .cardTitle {
+            * {
+                font-family: $font-bebas;
+                text-transform: uppercase;
+            }
+        }
+        .cardTags {
+            a {
+                color: $color-primary-navy;
+                &:hover {
+                    color: $color-neutral-dark;
+                }
+            }
+        }
+    }
+}
+.box-banner-video-bg {
+    background: url(../imgs/page/homepage23/bg-video.png) no-repeat top center;
+    background-size: cover;
+    height: 400px;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    padding: 40px;
+    position: relative;
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        background: url(../imgs/page/homepage23/overlay.png) no-repeat top center;
+        background-size: cover;
+        z-index: 1;
+    }
+    .box-banner-video-info {
+        position: relative;
+        z-index: 3;
+        h1 {
+            font-family: $font-bebas;
+            margin-bottom: 8px;
+        }
+        p {
+            margin-bottom: 24px;
+        }
+    }
+}
+.box-banner-video-bg-2 {
+    background: url(../imgs/page/homepage23/bg-video-2.png) no-repeat top center;
+    background-size: cover;
+    &::before {
+        background: url(../imgs/page/homepage23/overlay-w.png) no-repeat top center;
+        background-size: cover;
+    }
+    .box-banner-video-info {
+        h1, p {
+            color: $color-neutral-dark;
+        }
+    }
+}
+.box-product-list-home23 {
+    position: relative;
+    padding-top: 80px;
+}
+.card-banner-summer {
+    height: 320px;
+    width: 100%;
+    background: url(../imgs/page/homepage23/summer.png) no-repeat right center;
+    padding: 30px;
+    display: flex;
+    align-items: flex-end;
+}
+.card-banner-mega {
+    height: 320px;
+    width: 100%;
+    background: url(../imgs/page/homepage23/mega.png) no-repeat right center;
+    padding: 30px;
+    display: flex;
+    align-items: flex-end;
+}

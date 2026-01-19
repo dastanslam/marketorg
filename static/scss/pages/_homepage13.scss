@@ -1,0 +1,75 @@
+.block-cat-homepage13 {
+    padding: 80px 0px 0px 0px;
+}
+.block-featured-products {
+    background-color: $color-shape-background;
+    position: relative;
+    .row {
+        margin: 0px;
+        .col-lg-6 {
+            padding: 0px;
+        }
+    }
+}
+.box-abs-feature {
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    max-height: 575px;
+    bottom: 0px;
+    top: 0px;
+    margin: auto;
+}
+.box-slide-featured {
+    padding: 20px 0px;
+    .cardProductSmall {
+        margin-bottom: 0px;
+    }
+}
+.swiper-auto-286 {
+    .swiper-slide {
+        max-width: 286px;
+    }
+}
+.row-space-small {
+    margin-left: -3px;
+    margin-right: -3px;
+    [class*="col-"] {
+        padding-left: 3px;
+        padding-right: 3px;
+    }
+}
+.block-banner-collection {
+    padding: 10px 0px 80px 0px;
+}
+.box-collection-1 {
+    background-color: $background-bg-11;
+    padding: 60px 30px 124px 30px;
+    background-image: url(../imgs/page/homepage13/collection.png);
+    background-position: bottom right;
+    background-repeat: no-repeat;
+    background-size: auto;
+}
+.box-collection-2 {
+    background-color: $background-bg-18;
+    padding: 60px 30px 124px 30px;
+    background-image: url(../imgs/page/homepage13/collection2.png);
+    background-position: bottom center;
+    background-repeat: no-repeat;
+    background-size: auto;
+    text-align: center;
+}
+.box-collection-3 {
+    background-color: $background-bg-6;
+    padding: 60px 30px 124px 30px;
+    background-image: url(../imgs/page/homepage13/collection3.png);
+    background-position: bottom center;
+    background-repeat: no-repeat;
+    background-size: auto;
+    text-align: center;
+}
+.block-testimonials-type3 {
+    padding: 80px 0px 40px 0px;
+    background-color: $color-shape-background;
+    margin-bottom: 40px;
+}

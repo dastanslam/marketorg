@@ -1,0 +1,26 @@
+.prev-product {
+    background: url(../imgs/template/icons/prev-product.svg) no-repeat center;
+    display: inline-block;
+    height: 28px;
+    width: 28px;
+    margin-right: 16px;
+    cursor: pointer;
+    &:hover {
+        background: url(../imgs/template/icons/prev-product-active.svg) no-repeat center;
+    }
+}
+.next-product {
+    background: url(../imgs/template/icons/next-product.svg) no-repeat center;
+    display: inline-block;
+    height: 28px;
+    width: 28px;
+    cursor: pointer;
+    &:hover {
+        background: url(../imgs/template/icons/next-product-active.svg) no-repeat center;
+    }
+}
+.box-breadcrumb {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

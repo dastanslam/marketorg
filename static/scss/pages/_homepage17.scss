@@ -1,0 +1,106 @@
+.banner-home-17 {
+    display: flex;
+    align-items: center;
+    height: 586px;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+    background-color: $background-bg-30;
+    padding: 64px;
+    background-image: url(../imgs/page/homepage17/banner.png);
+    background-position: right center;
+    background-repeat: no-repeat;
+}
+.container-banner {
+    max-width: 1340px;
+    margin: auto;
+    padding: 0px 15px;
+}
+.banner-home-17-2 {
+    display: flex;
+    align-items: center;
+    background-image: url(../imgs/page/homepage17/banner2.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 50px;
+    height: 586px;
+    border-radius: 8px;
+    overflow: hidden;
+    background-size: cover;
+    justify-content: center;
+    .banner-home-17-inner {
+        text-align: center;
+    }
+}
+.icon-box-type1-white {
+    background-color: $color-white;
+}
+.banner-homepage17 {
+    .box-pagination-button {
+        .swiper-pagination {
+            text-align: left;
+            padding-left: 25px;
+        }
+    }
+}
+.banner-app-homepage17 {
+    background-color: $color-shape-background;
+    padding: 40px 0px;
+    background-image: url(../imgs/page/homepage17/banner3.png);
+    background-repeat: no-repeat;
+    background-position: right 172px center;
+    height: 540px;
+    margin-top: 40px;
+}
+.box-list-category {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin: 0px -5px;
+    .item-category {
+        padding: 0px 5px;
+        width: 16.667%;
+        .item-category-inner {
+            border: 1px solid $color-shape-border;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            .item-category-image {
+                height: 120px;
+                width: 100%;
+                line-height: 120px;
+                margin-bottom: 12px;
+            }
+            .item-category-info {
+                position: relative;
+            }
+        }
+    }   
+}
+.box-best-sellers-home17 {
+    padding-top: 60px;
+    .row {
+        margin: 0px -4px;
+        .col-lg-3 {
+            padding: 0px 4px;
+        }
+    }
+}
+.box-category-home17 {
+    padding-top: 40px;
+}
+.banner-2-homepage17 {
+    padding: 80px 0px 0px 0px;
+    .box-banner-3 {
+        border-radius: 8px;
+    }
+    .box-banner-3-left {
+        width: 40%;
+    }
+    .box-banner-3-right {
+        width: 60%;
+        img {
+            max-height: 310px;
+        }
+    }
+}

@@ -1,0 +1,28 @@
+.detail-gallery-7 {
+    .box-main-gallery {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0px -5px;
+        figure {
+            width: 50%;
+            height: 480px;
+            padding: 5px;
+            overflow: hidden;
+            img {
+                height: 100%;
+                max-width: none;
+                width: auto;
+            }
+            .link-image {
+                overflow: hidden;
+                display: inline-block;
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+}
+.box-detail-product-2 {
+    padding-top: 20px;
+    margin-top: 30px;
+}

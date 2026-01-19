@@ -1,0 +1,36 @@
+.container-banner-home18 {
+    display: flex;
+    width: 100%;
+    .banner-main-1, .banner-main-2 {
+        width: 50%;
+        display: flex;
+        align-items: center;
+        padding: 90px;
+        height: 720px;
+        background-image: url(../imgs/page/homepage18/banner.png);
+        background-position: top center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        color: $color-white;
+    }
+    .banner-main-2 {
+        background-image: url(../imgs/page/homepage18/banner2.png);
+    }
+}
+.menu-banner {
+    li {
+        a {
+            color: $color-white;
+            font-size: 17px;
+            line-height: 24px;
+            font-weight: 500;
+            font-family: $font-jost;
+            text-transform: uppercase;
+            display: block;
+            padding-bottom: 20px;
+            &:hover {
+                color: $color-brand-3;
+            }
+        }
+    }
+}

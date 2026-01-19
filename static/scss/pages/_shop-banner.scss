@@ -1,0 +1,17 @@
+.banner-shop {
+    background-color: $background-bg-20;
+    padding: 50px;
+    background-image: url(../imgs/page/shop7/banner.png);
+    background-position: bottom right;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-bottom: 30px;
+}
+.block-breadcrumb {
+    margin-top: 80px;
+    background-color: $color-shape-background;
+    padding: 13px 0px 13px 0px;
+    .breadcrumbs {
+        margin-top: 0px;
+    }
+}

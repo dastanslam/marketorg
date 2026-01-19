@@ -1,0 +1,93 @@
+.box-customer-login {
+    background: url(../imgs/template/icons/customer.svg) no-repeat left center;
+    font-size: 17px;
+    line-height: 24px;
+    color: $color-neutral-medium-dark;
+    font-weight: 400;
+    padding: 0px 0px 0px 35px;
+    margin-bottom: 14px;
+    a {
+        color: $color-neutral-dark;
+    }
+}
+.box-gift-coupon {
+    background: url(../imgs/template/icons/gift.svg) no-repeat left center;
+    font-size: 17px;
+    line-height: 24px;
+    color: $color-neutral-medium-dark;
+    font-weight: 400;
+    margin-bottom: 14px;
+    padding: 0px 0px 0px 35px;
+    a {
+        color: $color-neutral-dark;
+    }
+}
+.mt-12 {
+    margin-top: 12px;
+}
+.mt-32 {
+    margin-top: 32px;
+}
+.cb-left {
+    float: left;
+    margin: 5px 10px 0px 0px;
+}
+.box-payment-method {
+    .list-radio {
+        .item-radio {
+            flex-wrap: wrap;
+            label {
+                color: $color-neutral-dark;
+            }
+            p {
+                padding-left: 24px;
+                padding-bottom: 20px;
+            }
+        }
+    }
+}
+.box-desc-checkout {
+    margin-bottom: 20px;
+}
+.extra-info {
+    display: none;
+    &.active {
+        display: block;
+    }
+}
+.box-info-checkout-inner {
+    margin-bottom: 20px;
+    .box-border-bottom {
+        padding: 0px 0px 20px 0px;
+        margin-bottom: 20px;
+    }
+    .list-items-cart {
+        .item-cart {
+            .item-cart-info {
+                align-items: flex-start;
+                .item-cart-info-1 {
+                    a {
+                        display: block;
+                        margin-bottom: 8px;
+                    }
+                    .box-color {
+                        margin-bottom: 8px;
+                    }
+                    .box-size, .box-color {
+                        display: block;
+                    }
+                }
+                .item-cart-info-2 {
+                    min-height: auto;
+                    justify-content: flex-start;
+                }
+            }
+        }
+    }
+}
+.box-button-checkout {
+    position: relative;
+    .btn {
+        width: 100%;
+    }
+}

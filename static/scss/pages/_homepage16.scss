@@ -1,0 +1,154 @@
+.banner-home-16 {
+    height: 560px;
+    background: url(../imgs/page/homepage16/banner.png) no-repeat top right;
+    width: 100%;
+    background-color: $background-bg-26;
+    background-size: auto 100%;
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 30px;
+}
+.banner-home-16-inner {
+    position: relative;
+    display: inline-block;
+    padding: 40px 40px 70px 40px;
+}
+.banner-home-16-2 {
+    background: url(../imgs/page/homepage16/airphone.png) no-repeat bottom right 10px;
+    background-color: $background-bg-27;
+    padding: 24px 24px 55px 24px;
+    margin-bottom: 30px;
+    height: 265px;
+}
+.banner-home-16-3 {
+    background: url(../imgs/page/homepage16/macbook.png) no-repeat bottom 15px right;
+    background-color: $background-bg-28;
+    padding: 24px 24px 55px 24px;
+    margin-bottom: 30px;
+    height: 265px;
+}
+.banner-homepage16 {
+    padding-top: 40px;
+}
+.button-slide-square {
+    .swiper-pagination {
+        text-align: left;
+        bottom: 6px !important;
+    }
+    .swiper-pagination .swiper-pagination-bullet {
+        width: 14px;
+        height: 2px;
+        display: inline-block;
+        border-radius: 4px;
+        background: $color-white;
+        opacity: 1;
+        border: 0px solid $color-white;
+        margin: 0px 8px;
+    }
+    .swiper-pagination .swiper-pagination-bullet-active {
+        width: 28px;
+        background: $color-neutral-dark;
+    }
+    .box-pagination-button {
+        left: 7px;
+    }
+}
+.nav-tabs-style-4 {
+    .nav-link {
+        font-size: 34px;
+        line-height: 44px;
+        font-weight: 500;
+        color: $color-neutral-medium;
+        &.active, &:hover {
+            color: $color-neutral-dark;
+            border-bottom: 0px solid $color-2;
+        }
+    }
+}
+.button-slide-square-2 {
+    .swiper-container {
+        padding-bottom: 50px;
+    }
+    .box-pagination-button {
+        left: 0px;
+    }
+    .swiper-pagination {
+        text-align: center;
+    }
+    .swiper-pagination .swiper-pagination-bullet {
+        margin: 0px 16px 0px 0px;
+        background-color: $color-neutral-medium;
+    }
+    .swiper-pagination .swiper-pagination-bullet-active {
+        background-color: $color-neutral-dark;
+    }
+}
+.banner-2-homepage16 {
+    background-color: $background-bg-29;
+    padding: 80px 0px;
+    background-image: url(../imgs/page/homepage16/bg1.png);
+    background-position: bottom left 40px;
+    background-repeat: no-repeat;
+    position: relative;
+    &::before {
+        content: "";
+        position: absolute;
+        bottom: 0px;
+        right: 128px;
+        height: 281px;
+        width: 207px;
+        background-image: url(../imgs/page/homepage16/bg2.png);
+        background-position: top center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        z-index: 1;
+    }
+    .container {
+        position: relative;
+        z-index: 3;
+    }
+}
+.category-homepage16 {
+    padding: 80px 0px;
+}
+.box-banner-3 {
+    background-color: $background-bg-28;
+    padding: 24px 0px 20px 32px;
+}
+.box-banner-3 {
+    display: flex;
+    min-height: 320px;
+    max-height: 320px;
+    overflow: hidden;
+    .box-banner-3-left {
+        display: flex;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        width: 50%;
+        .box-banner-3-image {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .box-banner-3-info {
+            width: 100%;
+        }
+    }
+    .box-banner-3-right {
+        text-align: right;
+        width: 50%;
+        img {
+            max-height: 280px;
+        }
+    }
+    &.box-banner-3-2 {
+        background-color: $background-bg-31;
+        .box-banner-3-left {
+            .box-banner-3-image {
+                margin-bottom: 20px;
+            }
+        }
+    }
+}
+.banner-3-homepage16 {
+    padding-bottom: 80px;
+}

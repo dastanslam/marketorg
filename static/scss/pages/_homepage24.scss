@@ -1,0 +1,75 @@
+.box-banner-home24 {
+    position: relative;
+    padding: 120px 0px;
+    background: url(../imgs/page/homepage24/banner.png) no-repeat top center;
+    background-size: cover;
+    width: 100%;
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        background: url(../imgs/page/homepage23/overlay.png) no-repeat top center;
+        background-size: cover;
+        z-index: 1;
+    }
+    .box-banner-home24-inner {
+        position: relative;
+        z-index: 3;
+        text-align: center;
+        h2 {
+            margin-bottom: 16px;
+        }
+        p {
+            margin-bottom: 24px;
+        }
+        h2, p {
+            color: $color-white;
+        }
+    }
+}
+.block-home-coffee {
+    padding: 40px 0px 80px 0px;
+}
+.home-coffee-info {
+    padding-left: 90px;
+}
+.box-banner-coffee-bg {
+    background: url(../imgs/page/homepage24/bg.png) no-repeat top center;
+    background-size: cover;
+    height: 400px;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    padding: 40px;
+    justify-content: center;
+    position: relative;
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        background: url(../imgs/page/homepage24/bg-ovelay.png) no-repeat top center;
+        background-size: cover;
+        z-index: 1;
+    }
+    .box-banner-coffee-info  {
+        position: relative;
+        z-index: 3;
+        text-align: center;
+        h1 {
+            font-family: $font-bebas;
+            color: $color-white;
+        }
+    }
+}
+.box-banner-coffee-home24 {
+    padding: 40px 0px;
+}
+.block-new-arrival-home24 {
+    padding: 80px 0px 0px 0px;
+}

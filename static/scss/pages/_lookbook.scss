@@ -1,0 +1,131 @@
+.list-lookbok {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    .item-lookbook {
+        position: relative;
+        width: 33.33%;
+        .item-lookbook-image {
+            position: relative;
+            img {
+                position: relative;
+                z-index: 1;
+                display: block;
+                width: 100%;
+            }
+            &::before {
+                content: "";
+                height: 100%;
+                width: 100%;
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                z-index: 2;
+                background: url(../imgs/page/lookbook/mask.png);
+            }
+        }
+        .item-lookbook-info {
+            position: absolute;
+            top: 55%;
+            transform: translateY(-50%);
+            text-align: center;
+            width: 100%;
+            z-index: 3;
+            transition: all .3s ease-in-out;
+            padding: 0px 15px;
+            .text-24 {
+                margin-bottom: 16px;
+            }
+            .btn {
+                visibility: hidden;
+                opacity: 0;
+                transition: all .3s ease-in-out;
+            }
+        }
+        &:hover {
+            .item-lookbook-info {
+                top: 50%;
+                .btn {
+                    visibility: visible;
+                    opacity: 1;
+                }
+            }
+        }
+    }
+}
+.list-lookbok-style-2 {
+    display: inline-block;
+    width: 100%;
+    position: relative;
+    .item-lookbook {
+        position: relative;
+        width: 100%;
+        .item-lookbook-image {
+            position: relative;
+            height: 800px;
+            img {
+                z-index: 1;
+                width: 100%;
+                -o-object-position: center;
+                object-position: center;
+                position: absolute;
+                top: 0px;
+                bottom: 0px;
+                height: 100%;
+                left: 0px;
+                right: 0px;
+                display: inline-block;
+                max-width: 100%;
+                font-size: 0;
+                overflow: hidden;
+                text-indent: -9999px;
+                white-space: nowrap;
+                -o-object-fit: cover;
+                object-fit: cover;
+            }
+        }
+        .item-lookbook-info {
+            position: absolute;
+            top: 55%;
+            transform: translateY(-50%);
+            text-align: center;
+            width: 100%;
+            z-index: 3;
+            transition: all .3s ease-in-out;
+            padding: 0px 15px;
+            h1 {
+                margin-bottom: 12px;
+            }
+            .text-24 {
+                max-width: 319px;
+                margin: auto;
+                margin-bottom: 32px;
+            }
+        }
+        &:hover {
+            .item-lookbook-info {
+                top: 50%;
+            }
+        }
+        &.item-lookbook-left {
+            .item-lookbook-info {
+                padding-left: 135px;
+                text-align: left;
+                .text-24 {
+                    margin-left: 0px;
+                }
+            }
+        }
+        &.item-lookbook-right {
+            .item-lookbook-info {
+                text-align: left;
+                max-width: 339px;
+                margin: auto;
+                right: 25%;
+            }
+        }
+    }
+}
+.box-lookbook3-info {
+    padding-left: 40px;
+}

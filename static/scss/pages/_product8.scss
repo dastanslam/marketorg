@@ -1,0 +1,15 @@
+.detail-gallery-8 {
+    figure {
+        &:first-child {
+            width: 100%;
+            height: auto;
+            img {
+                width: 100%;
+                max-width: 100%;
+                height: auto;
+                margin-bottom: 0px;
+                display: block;
+            }
+        }
+    }
+}

@@ -1,0 +1,27 @@
+.block-save-more {
+    margin: 24px 0px;
+}
+.box-savemore-border {
+    border: 1px solid $color-tone-yellow;
+    padding: 24px;
+    border-radius: 4px;
+}
+.item-savemore {
+    display: flex;
+    align-items: center;
+    margin-bottom: 22px;
+    &:last-child {
+        margin-bottom: 0px;
+    }
+    .btn-red {
+        min-width: 110px;
+    }
+    .btn-add {
+        min-width: 92px;
+    }
+}
+.info-savemore {
+    padding: 0px 10px;
+    display: inline-block;
+    width: 100%;
+}
