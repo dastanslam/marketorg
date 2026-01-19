@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="msapplication-TileColor" content="#0E0E0E">
+    <meta name="template-color" content="#0E0E0E">
+    <meta name="description" content="Index page">
+    <meta name="keywords" content="index, page">
+    <meta name="author" content="">
+
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'imgs/template/favicon.svg' %}">
+    <link href="{% static 'css/style.css' %}?v=1.0.0" rel="stylesheet">
+
+    <title>{% block title %}Guza{% endblock %}</title>
+  </head>
+
+  <body>
+    <div id="preloader-active">
+      <div class="preloader d-flex align-items-center justify-content-center">
+        <div class="preloader-inner position-relative">
+          <div class="page-loading">
+            <div class="page-loading-inner">
+              <div class="scaling-dots">
+                <div></div><div></div><div></div><div></div><div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <header class="header sticky-bar">
+      <div class="container">
+        <div class="main-header">
+          <div class="header-logo">
+            <a class="d-flex" href="#">
+              <img alt="luxride" src="{% static 'imgs/template/logo.svg' %}">
+            </a>
+          </div>
+
+          <div class="header-menu">
+            <div class="header-nav">
+              <nav class="nav-main-menu d-none d-xl-block">
+                <ul class="main-menu">
+                  <li class="has-mega-menu"><a class="active" href="#">Home</a></li>
+                  <li class="has-children"><a href="#">Shop</a></li>
+                  <li><a href="#">Contact</a></li>
+                </ul>
+              </nav>
+              <div class="burger-icon burger-icon-white">
+                <span class="burger-icon-top"></span><span class="burger-icon-mid"></span><span class="burger-icon-bottom"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="header-account">
+            <!-- тут SVG без изменений -->
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="mobile-header-active mobile-header-wrapper-style perfect-scrollbar">
+      <div class="mobile-header-wrapper-inner">
+        <div class="mobile-header-content-area">
+          <div class="mobile-menu-head">
+            <div class="box-head-1">
+              <a class="link-underline mr-20 account-icon account" href="#">Login</a>
+              <a class="link-underline account-icon account" href="#">Sign Up</a>
+              <a class="close-mobile" href="#">
+                <img src="{% static 'imgs/template/icons/close.svg' %}" alt="Guza">
+              </a>
+            </div>
+            <div class="box-head-2">
+              <a class="back-mobile" href="#">
+                <img src="{% static 'imgs/template/icons/back.svg' %}" alt="Guza">
+              </a>
+            </div>
+          </div>
+
+          <div class="perfect-scroll">
+            <div class="mobile-menu-wrap mobile-header-border">
+              <nav>
+                <ul class="mobile-menu font-heading">
+                  <li class="has-children"><a class="active" href="#">Home</a></li>
+                  <li class="has-children"><a href="#">Shop</a></li>
+                  <li><a href="#">Elements</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    {% block content %}{% endblock %}
+
+
+    <footer class="footer">
+      <!-- в футере надо заменить только img src где assets/... -->
+      <div class="footer-2">
+        <div class="container">
+          <div class="footer-bottom">
+            <div class="row align-items-center">
+              <div class="col-lg-6 col-md-12 text-center text-lg-start mb-20">
+                <span class="body-p1 color-white">© 2023 Guza.Co. All rights reserved</span>
+              </div>
+              <div class="col-lg-6 col-md-12 text-center text-lg-end mb-20">
+                <div class="d-flex justify-content-center justify-content-lg-end align-items-center box-all-payments">
+                  <div class="d-inline-block box-payments mr-20">
+                    <img src="{% static 'imgs/template/icons/visa.svg' %}" alt="">
+                    <img src="{% static 'imgs/template/icons/master.svg' %}" alt="">
+                    <img src="{% static 'imgs/template/icons/stripe.svg' %}" alt="">
+                    <img src="{% static 'imgs/template/icons/paypal.svg' %}" alt="">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="{% static 'js/vendors/modernizr-3.6.0.min.js' %}"></script>
+    <script src="{% static 'js/vendors/jquery-3.7.0.min.js' %}"></script>
+    <script src="{% static 'js/vendors/jquery-migrate-3.3.0.min.js' %}"></script>
+    <script src="{% static 'js/vendors/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/vendors/waypoints.js' %}"></script>
+    <script src="{% static 'js/vendors/wow.js' %}"></script>
+    <script src="{% static 'js/vendors/magnific-popup.js' %}"></script>
+    <script src="{% static 'js/vendors/perfect-scrollbar.min.js' %}"></script>
+    <script src="{% static 'js/vendors/select2.min.js' %}"></script>
+    <script src="{% static 'js/vendors/isotope.js' %}"></script>
+    <script src="{% static 'js/vendors/swiper-bundle.min.js' %}"></script>
+    <script src="{% static 'js/vendors/counterup.js' %}"></script>
+    <script src="{% static 'js/vendors/jquery.countdown.min.js' %}"></script>
+    <script src="{% static 'js/vendors/slick.js' %}"></script>
+    <script src="{% static 'js/vendors/jquery.timepicker.min.js' %}"></script>
+    <script src="{% static 'js/vendors/glightbox.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}?v=1.0.0"></script>
+  </body>
+</html>
