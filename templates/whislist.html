@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+    <main class="main">
+      <div class="section block-breadcrumb">
+        <div class="container">
+          <div class="breadcrumbs">
+            <ul>
+              <li> <a href="#">Home </a></li>
+              <li> <a href="#">Cart Items</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <section class="section block-cart">
+        <div class="container">
+          <div class="row mt-20">
+            <div class="col-lg-7">
+              <div class="box-title-cart">
+                <h4>Your Cart</h4>
+                <h6>2 items</h6>
+              </div>
+              <div class="box-may-also-like">
+                <div class="list-items-also-like">
+                  <div class="item-also-like">
+                    <div class="item-also-like-image"><img src="{% static 'imgs/page/cart/sp3.png' %}" alt="Guza"></div>
+                    <div class="item-also-like-info">
+                      <div class="item-also-like-info-1"><a class="text-16-medium" href="#">Ball Crew Shirt</a>
+                        <p class="body-2 neutral-medium-dark mb-8">$35.00</p>
+                        <div class="box-color box-size mb-8"><span class="body-p2 neutral-medium-dark">Color:</span>
+                          <div class="dropdown">
+                            <button class="btn dropdown-toggle" id="dropdownColor" type="button" data-bs-toggle="dropdown" aria-expanded="false"><span>Black</span></button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownColor">
+                              <li><a class="dropdown-item" href="#">Black</a></li>
+                              <li><a class="dropdown-item" href="#">Navy</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="box-size mb-8"><span class="body-p2 neutral-medium-dark">Size:</span>
+                          <div class="dropdown">
+                            <button class="btn dropdown-toggle" id="dropdownSize" type="button" data-bs-toggle="dropdown" aria-expanded="false"><span>M</span></button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownSize">
+                              <li><a class="dropdown-item" href="#">S</a></li>
+                              <li><a class="dropdown-item" href="#">M</a></li>
+                              <li><a class="dropdown-item" href="#">XL</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="item-also-like-info-2">
+                        <div class="box-form-cart">
+                          <div class="form-cart detail-qty"><span class="minus"></span>
+                            <input class="qty-val form-control" type="text" name="quantity" value="1" min="1"><span class="plus"></span>
+                          </div><a class="btn btn-black-medium" href="#">Add to Cart</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="item-also-like">
+                    <div class="item-also-like-image"><img src="{% static 'imgs/page/cart/sp4.png' %}" alt="Guza"></div>
+                    <div class="item-also-like-info">
+                      <div class="item-also-like-info-1"><a class="text-16-medium" href="#">Ball Crew Shirt</a>
+                        <p class="body-2 neutral-medium-dark mb-8">$35.00</p>
+                        <div class="box-color box-size mb-8"><span class="body-p2 neutral-medium-dark">Color:</span>
+                          <div class="dropdown">
+                            <button class="btn dropdown-toggle" id="dropdownColor" type="button" data-bs-toggle="dropdown" aria-expanded="false"><span>Black</span></button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownColor">
+                              <li><a class="dropdown-item" href="#">Black</a></li>
+                              <li><a class="dropdown-item" href="#">Navy</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="box-size mb-8"><span class="body-p2 neutral-medium-dark">Size:</span>
+                          <div class="dropdown">
+                            <button class="btn dropdown-toggle" id="dropdownSize" type="button" data-bs-toggle="dropdown" aria-expanded="false"><span>M</span></button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownSize">
+                              <li><a class="dropdown-item" href="#">S</a></li>
+                              <li><a class="dropdown-item" href="#">M</a></li>
+                              <li><a class="dropdown-item" href="#">XL</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="item-also-like-info-2">
+                        <div class="box-form-cart">
+                          <div class="form-cart detail-qty"><span class="minus"></span>
+                            <input class="qty-val form-control" type="text" name="quantity" value="1" min="1"><span class="plus"></span>
+                          </div><a class="btn btn-black-medium" href="#">Add to Cart</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="item-also-like">
+                    <div class="item-also-like-image"><img src="{% static 'imgs/page/cart/sp5.png' %}" alt="Guza"></div>
+                    <div class="item-also-like-info">
+                      <div class="item-also-like-info-1"><a class="text-16-medium" href="#">Ball Crew Shirt</a>
+                        <p class="body-2 neutral-medium-dark mb-8">$35.00</p>
+                        <div class="box-color box-size mb-8"><span class="body-p2 neutral-medium-dark">Color:</span>
+                          <div class="dropdown">
+                            <button class="btn dropdown-toggle" id="dropdownColor" type="button" data-bs-toggle="dropdown" aria-expanded="false"><span>Black</span></button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownColor">
+                              <li><a class="dropdown-item" href="#">Black</a></li>
+                              <li><a class="dropdown-item" href="#">Navy</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="box-size mb-8"><span class="body-p2 neutral-medium-dark">Size:</span>
+                          <div class="dropdown">
+                            <button class="btn dropdown-toggle" id="dropdownSize" type="button" data-bs-toggle="dropdown" aria-expanded="false"><span>M</span></button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownSize">
+                              <li><a class="dropdown-item" href="#">S</a></li>
+                              <li><a class="dropdown-item" href="#">M</a></li>
+                              <li><a class="dropdown-item" href="#">XL</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="item-also-like-info-2">
+                        <div class="box-form-cart">
+                          <div class="form-cart detail-qty"><span class="minus"></span>
+                            <input class="qty-val form-control" type="text" name="quantity" value="1" min="1"><span class="plus"></span>
+                          </div><a class="btn btn-black-medium" href="#">Add to Cart</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+{% endblock %}
