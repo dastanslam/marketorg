@@ -13757,3 +13757,13 @@ quote {
 .page-content p {
   margin-bottom: 15px;
 }/*# sourceMappingURL=style.css.map */
+
+.cardImage:hover .imageMain {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.cardImage:hover .imageHover {
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
