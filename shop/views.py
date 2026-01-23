@@ -16,3 +16,12 @@ def cart(request):
 def whislist(request):
     return render(request, "whislist.html")
 
+def contact(request):
+    return render(request, "contact.html")
+
+def signin(request):
+    return render(request, "signin.html")
+
+def signup(request):
+    return render(request, "signup.html")
+
