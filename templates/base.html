@@ -35,7 +35,7 @@
     <header class="header sticky-bar">
       <div class="container">
         <div class="main-header">
-          <div class="header-logo"> <a class="d-flex" href="{% url 'index' %}"><img alt="luxride" src="{% static 'imgs/template/logo.svg' %}"></a></div>
+          <div class="header-logo"> <a class="d-flex" href="{% url 'index' %}"><h4>{{ store.name }}</h4></a></div>
           <div class="header-menu">
             <div class="header-nav">
               <nav class="nav-main-menu d-none d-xl-block">
@@ -123,24 +123,23 @@
         <div class="container">
           <div class="row">
             <div class="col-lg-4 mb-30">
-              <h6 class="color-white mb-20">About Shop</h6>
+              <h6 class="color-white mb-20">О магазине</h6>
               <p class="color-white body-p2 desc-company">{{ store.slogan }}</p>
-              <p class="color-white body-p2 email-footer">{{ store.email }}</p>
-              <p class="color-white body-p2 phone-footer">{{ store.phone }}</p>
+              <p class="color-white body-p2 email-footer">E. {{ store.email }}</p>
+              <p class="color-white body-p2 phone-footer">T. {{ store.phone }}</p>
             </div>
             <div class="col-lg-8 mb-30">
               <div class="row">
                 <div class="col-lg-3 mb-30">
-                  <h6 class="color-white mb-20">Company</h6>
+                  <h6 class="color-white mb-20">О компании</h6>
                   <ul class="menu-footer">
-                    <li><a href="about-us-1.html">About us</a></li>
-                    <li><a href="carrers.html">Careers</a></li>
-                    <li><a href="store-location.html">Store Locator</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="about-us-1.html">О нас</a></li>
+                    <li><a href="store-location.html">Магазины</a></li>
+                    <li><a href="contact.html">Контакты</a></li>
                   </ul>
                 </div>
                 <div class="col-lg-3 mb-30">
-                  <h6 class="color-white mb-20">Follow Us</h6>
+                  <h6 class="color-white mb-20">Мы в соцсетях</h6>
                   <ul class="menu-footer">
                     <li><a href="#">Instagram</a></li>
                     <li><a href="#">Facebook</a></li>

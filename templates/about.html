@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+    <main class="main">
+      <section class="section block-banner-about-1">
+        <div class="container">
+          <div class="text-center box-info-banner wow bounceIn">
+            <h1>Believe in Craftsmanship <br class="d-none d-lg-block">and Luxurious Design</h1>
+          </div>
+        </div>
+      </section>
+      <section class="section block-our-shop">
+        <div class="container">
+          <div class="text-center wow bounceIn">
+            <p class="text-17-medium text-uppercase mb-15 primary-navy">our shop</p>
+            <h3 class="mb-15">Focusing on Quality <br class="d-none d-lg-block">Material, Good Design</h3>
+            <div class="box-slide-customers">
+              <p class="body-p2 neutral-medium-dark">Donec non interdum nisl. Sed ut est ac lacus sodales convallis. Nam non velit justo. Mauris vel ultrices tortor. Proin bibendum magna porttitor porttitor suscipit. Praesent sit amet consequat eros. Quisque ullamcorper ornare vulputate. Nam sodales sem id diam sollicitudin, id lobortis tellus tincidunt. </p>
+            </div>
+          </div>
+          <div class="row mt-60 wow bounceIn">
+            <div class="col-lg-6"><img src="{% static 'imgs/page/about1/about1.png' %}" alt="Guza"></div>
+            <div class="col-lg-6"><img src="{% static 'imgs/page/about1/about2.png' %}" alt="Guza"></div>
+          </div>
+        </div>
+      </section>
+      <section class="section block-icon-box">
+        <div class="container">
+          <div class="text-center">
+            <h6 class="text-17-medium primary-navy text-uppercase mb-15 wow fadeInLeft">Our quality promise</h6>
+            <h3 class="mb-65 wow fadeInRight">We Developed Products We Need</h3>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 hasborder">
+              <div class="cardIcon wow fadeInUp">
+                <div class="cardImage"><img src="{% static 'imgs/page/homepage7/simplicity.svg' %}" alt="Guza"></div>
+                <div class="cardInfo">
+                  <h6 class="cardTitle">Shipping Worldwide</h6>
+                  <p class="body-p2">To stores and home</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 hasborder">
+              <div class="cardIcon wow fadeInUp">
+                <div class="cardImage"><img src="{% static 'imgs/page/homepage7/clothes.svg' %}" alt="Guza"></div>
+                <div class="cardInfo">
+                  <h6 class="cardTitle">60 - Days Returns</h6>
+                  <p class="body-p2">60 - days free return policy</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="cardIcon wow fadeInUp">
+                <div class="cardImage"><img src="{% static 'imgs/page/homepage7/nature.svg' %}" alt="Guza"></div>
+                <div class="cardInfo">
+                  <h6 class="cardTitle">Security Payment</h6>
+                  <p class="body-p2">We accept all major credit cards</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section block-testimonials">
+        <div class="container">
+          <div class="text-center wow bounceIn">
+            <p class="text-17-medium text-uppercase mb-15 primary-navy">WHAT BUYERS SAY</p>
+            <h3 class="neutral-dark mb-40 wow fadeInLeft">Customers Reviews</h3>
+          </div>
+          <div class="box-slide-customers wow fadeInUp wow bounceIn">
+            <div class="box-swiper">
+              <div class="swiper-container swiper-banner">
+                <div class="swiper-wrapper">
+                  <div class="swiper-slide">
+                    <p class="text-italic-28 mb-30">“ As women who value our health, we’re here to do what we do best - roll up our sleeves to get it done right.”</p>
+                    <p class="text-16-medium">Randy Workman</p>
+                  </div>
+                  <div class="swiper-slide">
+                    <p class="text-italic-28 mb-30">“ As women who value our health, we’re here to do what we do best - roll up our sleeves to get it done right.”</p>
+                    <p class="text-16-medium">Randy Workman</p>
+                  </div>
+                  <div class="swiper-slide">
+                    <p class="text-italic-28 mb-30">“ As women who value our health, we’re here to do what we do best - roll up our sleeves to get it done right.”</p>
+                    <p class="text-16-medium">Randy Workman</p>
+                  </div>
+                </div>
+                <div class="box-pagination-button">
+                  <div class="swiper-pagination swiper-pagination-banner"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section block-team">
+        <div class="container">
+          <div class="text-center wow bounceIn">
+            <p class="text-17-medium text-uppercase mb-15 primary-navy">Meet the founders</p>
+            <h3 class="mb-15">We're Supply Chain</h3>
+          </div>
+          <div class="row mt-60 wow zoomIn">
+            <div class="col-lg-4">
+              <div class="cardTeam">
+                <div class="cardImage"><img src="{% static 'imgs/page/about1/team.png' %}" alt="Guza"></div>
+                <div class="cardInfo">
+                  <h6 class="cardTitle text-17-medium">Anna Madsen</h6>
+                  <p class="cardDesc text-17 neutral-medium-dark">Co-founder</p>
+                  <div class="socials"><a href="#"><img src="{% static 'imgs/page/about1/fb.svg' %}" alt="Guza"></a><a href="#"><img src="{% static 'imgs/page/about1/insta.svg' %}" alt="Guza"></a></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="cardTeam">
+                <div class="cardImage"><img src="{% static 'imgs/page/about1/team2.png' %}" alt="Guza"></div>
+                <div class="cardInfo">
+                  <h6 class="cardTitle text-17-medium">Terry Kenter</h6>
+                  <p class="cardDesc text-17 neutral-medium-dark">Designer</p>
+                  <div class="socials"><a href="#"><img src="{% static 'imgs/page/about1/fb.svg' %}" alt="Guza"></a><a href="#"><img src="{% static 'imgs/page/about1/insta.svg' %}" alt="Guza"></a></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="cardTeam">
+                <div class="cardImage"><img src="{% static 'imgs/page/about1/team3.png' %}" alt="Guza"></div>
+                <div class="cardInfo">
+                  <h6 class="cardTitle text-17-medium">Ruben Donin</h6>
+                  <p class="cardDesc text-17 neutral-medium-dark">Makerter</p>
+                  <div class="socials"><a href="#"><img src="{% static 'imgs/page/about1/fb.svg' %}" alt="Guza"></a><a href="#"><img src="{% static 'imgs/page/about1/insta.svg' %}" alt="Guza"></a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+{% endblock %}

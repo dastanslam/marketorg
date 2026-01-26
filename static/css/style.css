@@ -4212,9 +4212,8 @@ button:focus:not(:focus-visible) {
   position: relative;
 }
 .header .main-header .header-logo {
-  max-width: 150px;
+  max-width: auto;
   width: 10%;
-  min-width: 65px;
 }
 .header .main-header .header-logo a {
   display: block;
@@ -4441,7 +4440,7 @@ button:focus:not(:focus-visible) {
   margin-left: 50px;
 }
 .header.header-style-5 .burger-icon {
-  top: 23px;
+  top: 25px;
   right: auto;
   z-index: 1004;
   left: 0px;
@@ -5113,7 +5112,7 @@ button:focus:not(:focus-visible) {
   height: 22px;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
-  top: 21px;
+  top: 25px;
   right: 2px;
   z-index: 1004;
 }
