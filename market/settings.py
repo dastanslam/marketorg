@@ -42,13 +42,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'shop.middleware.StoreSubdomainMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'shop.middleware.StoreSubdomainMiddleware',
 ]
 
 ROOT_URLCONF = 'market.urls'
@@ -123,8 +123,17 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-BASE_DOMAIN = "127.0.0.1.nip.io"
-ALLOWED_HOSTS = ["127.0.0.1", ".127.0.0.1.nip.io", "localhost"]
+BASE_DOMAIN = "store.localhost"
+SUBDOMAIN_IGNORED = ["www"]
+SUBDOMAIN_BYPASS_PREFIXES = ["api", "admin"]
+
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    ".store.localhost",   # 👈 важно
+]
+
+
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"

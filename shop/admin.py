@@ -1,8 +1,16 @@
 from django.contrib import admin
-from .models import *  # + другие модели если есть
-from django.db import models
+from .models import *
 from django.forms import BaseInlineFormSet
 from django.core.exceptions import ValidationError
+from django import forms
+
+class ProductColorInlineForm(forms.ModelForm):
+    class Meta:
+        model = ProductColor
+        fields = ("name", "hex")
+        widgets = {
+            "hex": forms.TextInput(attrs={"type": "color", "style": "width:60px; padding:0;"}),
+        }
 
 
 @admin.register(Store)
@@ -23,6 +31,7 @@ class ProductVariantInline(admin.TabularInline):
 
 class ProductColorInline(admin.TabularInline):
     model = ProductColor
+    form = ProductColorInlineForm
     extra = 1
     fields = ("name", "hex")
 

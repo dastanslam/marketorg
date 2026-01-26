@@ -1,4 +1,3 @@
-# stores/middleware.py
 from django.http import Http404
 from django.utils.deprecation import MiddlewareMixin
 from django.conf import settings

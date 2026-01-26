@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Добавить товар</h2>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <fieldset style="margin-bottom:20px;">
+    <legend>Товар</legend>
+    {{ form.non_field_errors }}
+    {% for field in form %}
+      <div style="margin-bottom:10px;">
+        <label>{{ field.label }}:</label><br>
+        {{ field }}
+        <div style="color:red;">{{ field.errors }}</div>
+      </div>
+    {% endfor %}
+  </fieldset>
+
+  <fieldset style="margin-bottom:20px;">
+    <legend>Цвета</legend>
+    {{ color_fs.management_form }}
+    {{ color_fs.non_form_errors }}
+
+    {% for f in color_fs %}
+      <div style="border:1px solid #ddd; padding:10px; margin:10px 0;">
+        {{ f.id }}
+        {% for field in f.visible_fields %}
+          <div style="margin-bottom:8px;">
+            <label>{{ field.label }}:</label><br>
+            {{ field }}
+            <div style="color:red;">{{ field.errors }}</div>
+          </div>
+        {% endfor %}
+
+        {% if f.DELETE %}
+          <label>{{ f.DELETE }} Удалить</label>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </fieldset>
+
+  <fieldset style="margin-bottom:20px;">
+    <legend>Варианты (цена/остаток)</legend>
+    {{ variant_fs.management_form }}
+    {{ variant_fs.non_form_errors }}
+
+    {% for f in variant_fs %}
+      <div style="border:1px solid #ddd; padding:10px; margin:10px 0;">
+        {{ f.id }}
+        {% for field in f.visible_fields %}
+          <div style="margin-bottom:8px;">
+            <label>{{ field.label }}:</label><br>
+            {{ field }}
+            <div style="color:red;">{{ field.errors }}</div>
+          </div>
+        {% endfor %}
+
+        {% if f.DELETE %}
+          <label>{{ f.DELETE }} Удалить</label>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </fieldset>
+
+  <fieldset style="margin-bottom:20px;">
+    <legend>Фото</legend>
+    {{ image_fs.management_form }}
+    {{ image_fs.non_form_errors }}
+
+    {% for f in image_fs %}
+      <div style="border:1px solid #ddd; padding:10px; margin:10px 0;">
+        {{ f.id }}
+        {% for field in f.visible_fields %}
+          <div style="margin-bottom:8px;">
+            <label>{{ field.label }}:</label><br>
+            {{ field }}
+            <div style="color:red;">{{ field.errors }}</div>
+          </div>
+        {% endfor %}
+
+        {% if f.DELETE %}
+          <label>{{ f.DELETE }} Удалить</label>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </fieldset>
+
+  <button type="submit">Сохранить</button>
+</form>
+{% endblock %}

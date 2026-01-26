@@ -12,7 +12,7 @@
     <meta name="author" content="">
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'imgs/template/favicon.svg' %}">
     <link href="{% static 'css/style.css' %}?v=1.0.0" rel="stylesheet">
-    <title>Guza - Multipurpose Startup SaaS HTML Template</title>
+    <title>{{ store.name }}</title>
   </head>
   <body>
     <div id="preloader-active">
@@ -124,9 +124,9 @@
           <div class="row">
             <div class="col-lg-4 mb-30">
               <h6 class="color-white mb-20">About Shop</h6>
-              <p class="color-white body-p2 desc-company">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Read more</p>
-              <p class="color-white body-p2 email-footer">E. hello@uxper.co</p>
-              <p class="color-white body-p2 phone-footer">T. (00) 342 489 33</p>
+              <p class="color-white body-p2 desc-company">{{ store.slogan }}</p>
+              <p class="color-white body-p2 email-footer">{{ store.email }}</p>
+              <p class="color-white body-p2 phone-footer">{{ store.phone }}</p>
             </div>
             <div class="col-lg-8 mb-30">
               <div class="row">
