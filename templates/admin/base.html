@@ -1,0 +1,202 @@
+{% load static %}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<head>
+    <meta charset="utf-8">
+    <title>{{ store.name }}-Admin</title>
+    <meta name="author" content="themesflat.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <!-- Theme Style -->
+    <link rel="stylesheet" href="{% static 'admin/css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/css/animation.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/css/bootstrap-select.min.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/css/style.css' %}">
+
+    <!-- Font -->
+    <link rel="stylesheet" href="{% static 'admin/font/fonts.css' %}">
+
+    <!-- Icon -->
+    <link rel="stylesheet" href="{% static 'admin/icon/style.css' %}">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'admin/images/favicon.png' %}">
+    <link rel="apple-touch-icon-precomposed" href="{% static 'admin/images/favicon.png' %}">
+
+</head>
+<body class="body">
+
+    <!-- #wrapper -->
+    <div id="wrapper">
+        <!-- #page -->
+        <div id="page" class="">
+            <!-- layout-wrap -->
+           <div class="layout-wrap">
+                <!-- preload -->
+                <div id="preload" class="preload-container">
+                    <div class="preloading">
+                        <span></span>
+                    </div>
+                </div>
+                <!-- /preload -->
+                <!-- section-menu-left -->
+                <div class="section-menu-left">
+                    <div class="box-logo">
+                        <a href="index.html" id="site-logo-inner">
+                            <img class="" id="logo_header" alt="" src={% static 'admin/images/logo/logo.png' %} data-light={% static 'admin/images/logo/logo.png' %} data-dark={% static 'admin/images/logo/logo.png' %} >
+                        </a>
+                        <div class="button-show-hide">
+                            <i class="icon-menu-left"></i>
+                        </div>
+                    </div>
+                    <div class="center">
+                        <div class="center-item">
+                            <ul class="menu-list">
+                                <li class="menu-item has-children">
+                                    <a href="javascript:void(0);" class="menu-item-button">
+                                        <div class="icon"><i class="icon-shopping-cart"></i></div>
+                                        <div class="text">Товары</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item has-children">
+                                    <a href="javascript:void(0);" class="menu-item-button">
+                                        <div class="icon"><i class="icon-layers"></i></div>
+                                        <div class="text">Категория</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item has-children">
+                                    <a href="javascript:void(0);" class="menu-item-button">
+                                        <div class="icon"><i class="icon-box"></i></div>
+                                        <div class="text">Новый товар</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item has-children">
+                                    <a href="javascript:void(0);" class="menu-item-button">
+                                        <div class="icon"><i class="icon-file-plus"></i></div>
+                                        <div class="text">Заказы</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item has-children">
+                                    <a href="javascript:void(0);" class="menu-item-button">
+                                        <div class="icon"><i class="icon-user"></i></div>
+                                        <div class="text">Пользователи</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- /section-menu-left -->
+                <!-- section-content-right -->
+                <div class="section-content-right">
+                    <!-- header-dashboard -->
+                    <div class="header-dashboard">
+                        <div class="wrap">
+                            <div class="header-left">
+                                <a href="index.html">
+                                    <img class="" id="logo_header_mobile" alt="" src="images/logo/logo.png" data-light="images/logo/logo.png" data-dark="images/logo/logo-dark.png" data-width="154px" data-height="52px" data-retina="images/logo/logo@2x.png">
+                                </a>
+                                <div class="button-show-hide">
+                                    <i class="icon-menu-left"></i>
+                                </div>
+                            </div>
+                            <div class="header-grid">
+                                <div class="header-item button-dark-light">
+                                    <i class="icon-moon"></i>
+                                </div>
+                                <div class="header-item button-zoom-maximize">
+                                    <div class="">
+                                        <i class="icon-maximize"></i>
+                                    </div>
+                                </div>
+                                <div class="popup-wrap user type-header">
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="header-user wg-user">
+                                                <span class="image">
+                                                    <img src="images/avatar/user-1.png" alt="">
+                                                </span>
+                                                <span class="flex flex-column">
+                                                    <span class="body-title mb-2">Kristin Watson</span>
+                                                    <span class="text-tiny">Admin</span>
+                                                </span>
+                                            </span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end has-content" aria-labelledby="dropdownMenuButton3" >
+                                            <li>
+                                                <a href="setting.html" class="user-item">
+                                                    <div class="icon">
+                                                        <i class="icon-settings"></i>
+                                                    </div>
+                                                    <div class="body-title-2">Setting</div>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="login.html" class="user-item">
+                                                    <div class="icon">
+                                                        <i class="icon-log-out"></i>
+                                                    </div>
+                                                    <div class="body-title-2">Log out</div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /header-dashboard -->
+                    <!-- main-content -->
+                    <div class="main-content">
+                        <!-- main-content-wrap -->
+                        {% block content %}{% endblock %}
+                        <!-- /main-content-wrap -->
+                        <!-- bottom-page -->
+                        <div class="bottom-page">
+                            <div class="body-text">Copyright © 2024 Remos. Design with</div>
+                            <i class="icon-heart"></i>
+                            <div class="body-text">by <a href="https://themeforest.net/user/themesflat/portfolio">Themesflat</a> All rights reserved.</div>
+                        </div>
+                        <!-- /bottom-page -->
+                    </div>
+                    <!-- /main-content -->
+                </div>
+                <!-- /section-content-right -->
+            </div>
+            <!-- /layout-wrap -->
+        </div>
+        <!-- /#page -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- Javascript -->
+    <script src="{% static 'admin/js/jquery.min.js' %}"></script>
+    <script src="{% static 'admin/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'admin/js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'admin/js/zoom.js' %}"></script>
+    <script src="{% static 'admin/js/jvectormap-1.2.2.min.js' %}"></script>
+    <script src="{% static 'admin/js/jvectormap-us-lcc.js' %}"></script>
+    <script src="{% static 'admin/js/jvectormap.js' %}"></script>
+    <script src="{% static 'admin/js/raphael.min.js' %}"></script>
+    <script src="{% static 'admin/js/morris.min.js' %}"></script>
+    <script src="{% static 'admin/js/morris.js' %}"></script>
+    <script src="{% static 'admin/js/apexcharts/apexcharts.js' %}"></script>
+    <script src="{% static 'admin/js/apexcharts/line-chart-1.js' %}"></script>
+    <script src="{% static 'admin/js/apexcharts/line-chart-6.js' %}"></script>
+    <script src="{% static 'admin/js/apexcharts/line-chart-7.js' %}"></script>
+    <script src="{% static 'admin/js/apexcharts/line-chart-9.js' %}"></script>
+    <script src="{% static 'admin/js/apexcharts/line-chart-14.js' %}"></script>
+    <script src="{% static 'admin/js/apexcharts/line-chart-15.js' %}"></script>
+    <script src="{% static 'admin/js/apexcharts/line-chart-18.js' %}"></script>
+    <script src="{% static 'admin/js/theme-settings.js' %}"></script>
+    <script src="{% static 'admin/js/main.js' %}"></script>
+    <script src="{% static 'admin/js/apexcharts/line-chart-2.js' %}"></script>
+    <script src="{% static 'admin/js/apexcharts/line-chart-3.js' %}"></script>
+    <script src="{% static 'admin/js/apexcharts/line-chart-4.js' %}"></script>
+    <script src="{% static 'admin/js/apexcharts/line-chart-8.js' %}"></script>
+    <script src="{% static 'admin/js/apexcharts/line-chart-9.js' %}"></script>
+    <script src="{% static 'admin/js/apexcharts/line-chart-10.js' %}"></script>
+</body>
+
+</html>
