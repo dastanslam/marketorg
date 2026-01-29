@@ -29,5 +29,3 @@ def signup(request):
 def about(request):
     return render(request, "about.html", {"store": request.store})
 
-def adminstore(request):
-    return render(request, "admin/index.html", {"store": request.store})
