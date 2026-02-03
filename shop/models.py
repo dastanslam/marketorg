@@ -1,15 +1,13 @@
-from django.db import models
-from django.db.models import Q
+import re
+import secrets
+
+from django.db import models, transaction, IntegrityError
+from django.db.models import Avg, Count, Q, F, Min, Max
 from django.utils.text import slugify
-from django.core.validators import RegexValidator
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
 from django.conf import settings
-
-hex_validator = RegexValidator(
-    regex=r"^#(?:[0-9a-fA-F]{6})$",
-    message="HEX должен быть в формате #RRGGBB, например #FFAA00",
-)
-
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 
 class Store(models.Model):
     subdomain = models.SlugField(max_length=63, unique=True, blank=True, db_index=True)
@@ -34,19 +32,28 @@ class Store(models.Model):
             self.subdomain = sub
         super().save(*args, **kwargs)
 
-class Category(models.Model):
-    store = models.ForeignKey(
-        "Store",
-        related_name="categories",
-        on_delete=models.CASCADE
-    )
+hex_validator = RegexValidator(
+    regex=r'^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$',
+    message='Введите корректный HEX-код (например, #FFFFFF)'
+)
 
+
+def _norm(s: str) -> str:
+    return re.sub(r"[^a-zA-Z0-9]+", "-", (s or "").strip()).strip("-").lower()
+
+
+class Category(models.Model):
+    store = models.ForeignKey("Store", related_name="categories", on_delete=models.CASCADE)
     name = models.CharField("Название", max_length=100)
     slug = models.SlugField(max_length=120, blank=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:
-        unique_together = ("store", "slug")
+        verbose_name = "Категория"
+        verbose_name_plural = "Категории"
+        constraints = [
+            models.UniqueConstraint(fields=["store", "slug"], name="uniq_category_slug_per_store")
+        ]
         ordering = ["name"]
 
     def save(self, *args, **kwargs):
@@ -59,18 +66,17 @@ class Category(models.Model):
 
 
 class Brand(models.Model):
-    store = models.ForeignKey(
-        "Store",
-        related_name="brands",
-        on_delete=models.CASCADE
-    )
-
+    store = models.ForeignKey("Store", related_name="brands", on_delete=models.CASCADE)
     name = models.CharField("Название", max_length=100)
     slug = models.SlugField(max_length=120, blank=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:
-        unique_together = ("store", "slug")
+        verbose_name = "Бренд"
+        verbose_name_plural = "Бренды"
+        constraints = [
+            models.UniqueConstraint(fields=["store", "slug"], name="uniq_brand_slug_per_store")
+        ]
         ordering = ["name"]
 
     def save(self, *args, **kwargs):
@@ -83,210 +89,224 @@ class Brand(models.Model):
 
 
 class Gender(models.Model):
-    """
-    Не привязываем к store — значения глобальные
-    """
-    name = models.CharField("Название", max_length=50)
+    name = models.CharField("Название", max_length=50, unique=True)
 
     class Meta:
+        verbose_name = "Пол"
+        verbose_name_plural = "Полы"
         ordering = ["id"]
 
     def __str__(self):
         return self.name
 
+
 class Product(models.Model):
-    store = models.ForeignKey(Store, related_name="products", on_delete=models.CASCADE)
+    store = models.ForeignKey("Store", related_name="products", on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, related_name="products", on_delete=models.SET_NULL, null=True, blank=True)
+    brand = models.ForeignKey(Brand, related_name="products", on_delete=models.SET_NULL, null=True, blank=True)
+    gender = models.ForeignKey(Gender, related_name="products", on_delete=models.SET_NULL, null=True, blank=True)
 
-    category = models.ForeignKey(
-        Category,
-        related_name="products",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
-
-    brand = models.ForeignKey(
-        Brand,
-        related_name="products",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
-
-    gender = models.ForeignKey(
-        Gender,
-        related_name="products",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
-
-    name = models.CharField("Название", max_length=255)
-    slug = models.SlugField(max_length=255, blank=True, db_index=True)
-
+    name = models.CharField("Название", max_length=255, db_index=True)
+    slug = models.SlugField(max_length=255, blank=True)
     description = models.TextField("Описание", blank=True)
 
     country = models.CharField("Страна производитель", max_length=100, blank=True)
     material = models.CharField("Тип материала", max_length=100, blank=True)
 
+    # Статистика
     views = models.PositiveIntegerField("Просмотры", default=0)
-
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
     rating_avg = models.DecimalField("Средний рейтинг", max_digits=3, decimal_places=2, default=0)
     rating_count = models.PositiveIntegerField("Кол-во отзывов", default=0)
 
+    # Денормализация цен
+    min_price = models.DecimalField(max_digits=10, decimal_places=2, default=0, editable=False)
+    max_price = models.DecimalField(max_digits=10, decimal_places=2, default=0, editable=False)
+
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
     class Meta:
+        verbose_name = "Товар"
+        verbose_name_plural = "Товары"
         indexes = [
             models.Index(fields=["store", "is_active"]),
-            models.Index(fields=["store", "slug"]),
+            models.Index(fields=["min_price", "max_price"]),
+            models.Index(fields=["created_at"]),
         ]
         constraints = [
-            # чтобы в одном магазине не было 2 товаров с одинаковым slug
             models.UniqueConstraint(fields=["store", "slug"], name="uniq_product_slug_per_store"),
         ]
 
+    def update_rating(self):
+        stats = self.reviews.filter(is_published=True).aggregate(
+            avg=Avg("rating"),
+            count=Count("id")
+        )
+        avg = stats["avg"] or 0
+        count = stats["count"] or 0
+        Product.objects.filter(pk=self.pk).update(rating_avg=avg, rating_count=count)
+        self.rating_avg = avg
+        self.rating_count = count
+
+    def update_prices(self):
+        stats = self.variants.filter(is_active=True).aggregate(
+            min_p=Min("price"),
+            max_p=Max("price")
+        )
+        min_p = stats["min_p"] or 0
+        max_p = stats["max_p"] or 0
+        Product.objects.filter(pk=self.pk).update(min_price=min_p, max_price=max_p)
+        self.min_price = min_p
+        self.max_price = max_p
+
     def save(self, *args, **kwargs):
-        if not self.slug:
-            base = slugify(self.name) or "product"
-            slug = base
-            i = 2
-            while Product.objects.filter(store=self.store, slug=slug).exists():
-                slug = f"{base}-{i}"
-                i += 1
+        # Slug: optimistic + IntegrityError retry (anti-race)
+        if self.slug:
+            return super().save(*args, **kwargs)
+
+        base = slugify(self.name) or "product"
+        slug = base
+
+        for _ in range(8):
             self.slug = slug
-        super().save(*args, **kwargs)
+            try:
+                with transaction.atomic():
+                    return super().save(*args, **kwargs)
+            except IntegrityError:
+                suffix = secrets.token_hex(2)  # 4 hex
+                slug = f"{base}-{suffix}"
+
+        self.slug = f"{base}-{secrets.token_hex(4)}"
+        with transaction.atomic():
+            return super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.name} ({self.store.name})"
 
-class ProductColor(models.Model):
-    product = models.ForeignKey(
-        "Product",
-        related_name="colors",
-        on_delete=models.CASCADE
-    )
 
+class ProductColor(models.Model):
+    product = models.ForeignKey(Product, related_name="colors", on_delete=models.CASCADE)
     name = models.CharField("Название цвета", max_length=50, blank=True)
     hex = models.CharField("HEX", max_length=7, validators=[hex_validator])
 
     class Meta:
+        verbose_name = "Цвет товара"
+        verbose_name_plural = "Цвета товаров"
         constraints = [
             models.UniqueConstraint(fields=["product", "hex"], name="uniq_hex_per_product"),
         ]
 
     def __str__(self):
-        n = f"{self.name} " if self.name else ""
-        return f"{n}{self.hex}"
+        return self.name or self.hex
 
 
 class ProductVariant(models.Model):
-    """
-    Реальная сущность продажи: конкретный вариант товара.
-    Тут лежит цена, старая цена и остаток.
-    """
     product = models.ForeignKey(Product, related_name="variants", on_delete=models.CASCADE)
+    color = models.ForeignKey(ProductColor, related_name="variants", on_delete=models.SET_NULL, null=True, blank=True)
 
-    # если цвет не нужен (например, товар без цветов) — можно null
-    color = models.ForeignKey(ProductColor, related_name="variants",
-                              on_delete=models.SET_NULL, null=True, blank=True)
-
-    # без choices: любые размеры (XS, 40, 40x60, 128GB...)
     size = models.CharField("Размер", max_length=20, blank=True)
-
-    sku = models.CharField("SKU / Артикул", max_length=64, blank=True)
+    sku = models.CharField("SKU / Артикул", max_length=64, blank=True, db_index=True)
 
     price = models.DecimalField("Цена", max_digits=10, decimal_places=2)
     old_price = models.DecimalField("Старая цена", max_digits=10, decimal_places=2, null=True, blank=True)
-
     stock = models.PositiveIntegerField("Остаток", default=0)
-    is_active = models.BooleanField(default=True)
 
+    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        indexes = [
-            models.Index(fields=["product", "is_active"]),
-            models.Index(fields=["product", "stock"]),
-        ]
+        verbose_name = "Вариант товара"
+        verbose_name_plural = "Варианты товаров"
         constraints = [
-            # уникальность комбинации (product + color + size)
             models.UniqueConstraint(fields=["product", "color", "size"], name="uniq_variant_per_product"),
-            # если есть old_price, то она должна быть >= price (логика скидки)
             models.CheckConstraint(
-                condition=Q(old_price__isnull=True) | Q(old_price__gte=models.F("price")),
-                name="old_price_gte_price_or_null",
+                condition=Q(old_price__isnull=True) | Q(old_price__gte=F("price")),
+                name="old_price_gte_price",
             ),
         ]
 
+    def save(self, *args, update_parent: bool = True, **kwargs):
+        # SKU auto (если не задан)
+        if not self.sku and self.product_id:
+            color_part = "nocolor"
+            if self.color_id and self.color and self.color.hex:
+                color_part = self.color.hex.replace("#", "").lower()
+            size_part = _norm(self.size) or "nosize"
+            self.sku = f"{self.product.slug}-{color_part}-{size_part}"[:64]
+
+        # change detection (чтобы не дёргать Product.update_prices без нужды)
+        need_parent_update = False
+        if self.pk:
+            old = ProductVariant.objects.filter(pk=self.pk).values("price", "is_active").first()
+            if old and (old["price"] != self.price or old["is_active"] != self.is_active):
+                need_parent_update = True
+        else:
+            need_parent_update = True
+
+        super().save(*args, **kwargs)
+
+        if update_parent and need_parent_update:
+            self.product.update_prices()
+
     def __str__(self):
-        parts = [self.product.name]
-        if self.color_id:
-            parts.append(str(self.color))
-        if self.size:
-            parts.append(self.size)
-        return " / ".join(parts)
+        return f"{self.product.name} | {self.color} | {self.size}"
 
 
 class ProductImage(models.Model):
-    """
-    Фотки товара (не привязаны к цвету).
-    Можно выбрать "главную" — для каталога.
-    """
     product = models.ForeignKey(Product, related_name="images", on_delete=models.CASCADE)
-    image = models.ImageField("Фото", upload_to="products/")
+    color = models.ForeignKey(ProductColor, related_name="images", on_delete=models.SET_NULL, null=True, blank=True)
+
+    image = models.ImageField("Фото", upload_to="products/%Y/%m/")
     is_main = models.BooleanField("Главное фото", default=False)
     sort = models.PositiveIntegerField("Порядок", default=0)
 
     class Meta:
+        verbose_name = "Изображение"
+        verbose_name_plural = "Изображения"
         ordering = ["sort", "id"]
-        indexes = [models.Index(fields=["product", "is_main"])]
 
     def __str__(self):
         return f"Image for {self.product.name}"
 
-class ProductReview(models.Model):
-    product = models.ForeignKey(
-        Product,
-        related_name="reviews",
-        on_delete=models.CASCADE
-    )
 
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
+class ProductReview(models.Model):
+    product = models.ForeignKey(Product, related_name="reviews", on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
 
     rating = models.PositiveSmallIntegerField(
         "Оценка (1-5)",
         validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
-
     text = models.TextField("Отзыв", blank=True)
-
     is_published = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        indexes = [
-            models.Index(fields=["product", "is_published"]),
-            models.Index(fields=["product", "created_at"]),
-        ]
+        verbose_name = "Отзыв"
+        verbose_name_plural = "Отзывы"
         ordering = ["-created_at"]
-
-        # если хочешь: 1 отзыв на 1 товар от 1 пользователя
         constraints = [
             models.UniqueConstraint(
                 fields=["product", "user"],
-                condition=models.Q(user__isnull=False),
+                condition=Q(user__isnull=False),
                 name="uniq_review_per_user_product"
             )
         ]
 
     def __str__(self):
         return f"{self.product.name} - {self.rating}"
+
+
+# --- СИГНАЛЫ ---
+@receiver([post_save, post_delete], sender=ProductReview)
+def handle_review_change(sender, instance, **kwargs):
+    instance.product.update_rating()
+
+
+@receiver(post_delete, sender=ProductVariant)
+def handle_variant_delete(sender, instance, **kwargs):
+    # при одиночном delete ок
+    instance.product.update_prices()
 
 class StoreSocial(models.Model):
     store = models.ForeignKey(

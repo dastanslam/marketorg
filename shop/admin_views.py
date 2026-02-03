@@ -46,38 +46,92 @@ def settings(request):
     socials = store.socials.order_by("order")  # related_name='socials'
     return render(request, "admin/settings.html", {"store": store, "socials": socials})
 
+def _extract_color_choices(post):
+    """
+    Достаём цвета из colors formset прямо из POST,
+    чтобы заполнить select вариантов ДО сохранения товара.
+
+    Возвращает list[(hex, title), ...]
+    где title = name (если есть) иначе hex
+    """
+    total = int(post.get("colors-TOTAL_FORMS", 0))
+    out = []
+    seen = set()
+
+    for i in range(total):
+        hexv = (post.get(f"colors-{i}-hex") or "").strip()
+        name = (post.get(f"colors-{i}-name") or "").strip()
+        delete = post.get(f"colors-{i}-DELETE")
+
+        if delete:
+            continue
+        if not hexv:
+            continue
+        if hexv in seen:
+            continue
+
+        seen.add(hexv)
+        out.append((hexv, name or hexv))
+
+    return out
+
+
 @transaction.atomic
 def product_add(request):
+    temp_product = Product(store=request.store)
+
+    # ВАЖНО: при POST строим choices для вариантов из введенных цветов
+    color_choices = _extract_color_choices(request.POST) if request.method == "POST" else []
+
     if request.method == "POST":
-        pform = ProductForm(request.POST or None)
-
-        pform.fields["category"].queryset = Category.objects.filter(
-            store=request.store, is_active=True
+        pform = ProductForm(request.POST, store=request.store)
+        colors_fs = ColorFormSet(request.POST, instance=temp_product, prefix="colors")
+        variants_fs = VariantFormSet(
+            request.POST,
+            instance=temp_product,
+            prefix="variants",
+            form_kwargs={"color_choices": color_choices},
         )
-        pform.fields["brand"].queryset = Brand.objects.filter(
-            store=request.store, is_active=True
-        )
 
-        pform = ProductForm(request.POST)
-        vform = VariantForm(request.POST)
-
-        # временный инстанс чтобы formset мог валидироваться
-        temp_product = Product(store=request.store)
-        colors_fs = ColorFormSet(request.POST, instance=temp_product)
-
-        if pform.is_valid() and vform.is_valid() and colors_fs.is_valid():
+        if pform.is_valid() and colors_fs.is_valid() and variants_fs.is_valid():
             product = pform.save(commit=False)
             product.store = request.store
+            product.is_active = True
             product.save()
 
+            # 1) сохраняем цвета
             colors_fs.instance = product
             colors_fs.save()
 
-            variant = vform.save(commit=False)
-            variant.product = product
-            variant.save()
+            # 2) создаём map hex -> ProductColor
+            color_map = {c.hex: c for c in product.colors.all()}
 
-            # multiple upload (без формы)
+            # 3) сохраняем варианты: берем color_hex и ставим FK color
+            variants_fs.instance = product
+
+            for form in variants_fs.forms:
+                if not form.cleaned_data:
+                    continue
+                if form.cleaned_data.get("DELETE"):
+                    continue
+
+                v = form.save(commit=False)
+                hexv = (form.cleaned_data.get("color_hex") or "").strip()
+
+                v.product = product
+                v.is_active = True
+                v.color = color_map.get(hexv) if hexv else None
+
+                v.save(update_parent=False)
+
+            # удаление (если редактирование будет)
+            for obj in variants_fs.deleted_objects:
+                obj.delete()
+
+            # пересчет цен один раз
+            product.update_prices()
+
+            # картинки multiple
             files = request.FILES.getlist("images")
             main_set = False
             for i, f in enumerate(files):
@@ -85,25 +139,29 @@ def product_add(request):
                     product=product,
                     image=f,
                     sort=i,
-                    is_main=(False if main_set else True),
+                    is_main=(not main_set),
                 )
                 main_set = True
 
             messages.success(request, "Товар добавлен")
             return redirect("product_list")
 
-        messages.error(request, "Проверь поля формы — есть ошибки")
+        messages.error(request, "Проверь поля — есть ошибки")
 
     else:
-        pform = ProductForm()
-        vform = VariantForm()
-        colors_fs = ColorFormSet(instance=Product(store=request.store))
+        pform = ProductForm(store=request.store)
+        colors_fs = ColorFormSet(instance=temp_product, prefix="colors")
+        variants_fs = VariantFormSet(
+            instance=temp_product,
+            prefix="variants",
+            form_kwargs={"color_choices": []},
+        )
 
     return render(request, "admin/product_add.html", {
         "store": request.store,
         "pform": pform,
-        "vform": vform,
         "colors_fs": colors_fs,
+        "variants_fs": variants_fs,
     })
 
 
