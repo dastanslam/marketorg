@@ -34,9 +34,92 @@ class Store(models.Model):
             self.subdomain = sub
         super().save(*args, **kwargs)
 
+class Category(models.Model):
+    store = models.ForeignKey(
+        "Store",
+        related_name="categories",
+        on_delete=models.CASCADE
+    )
+
+    name = models.CharField("Название", max_length=100)
+    slug = models.SlugField(max_length=120, blank=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ("store", "slug")
+        ordering = ["name"]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name) or "category"
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+class Brand(models.Model):
+    store = models.ForeignKey(
+        "Store",
+        related_name="brands",
+        on_delete=models.CASCADE
+    )
+
+    name = models.CharField("Название", max_length=100)
+    slug = models.SlugField(max_length=120, blank=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ("store", "slug")
+        ordering = ["name"]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name) or "brand"
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+class Gender(models.Model):
+    """
+    Не привязываем к store — значения глобальные
+    """
+    name = models.CharField("Название", max_length=50)
+
+    class Meta:
+        ordering = ["id"]
+
+    def __str__(self):
+        return self.name
 
 class Product(models.Model):
     store = models.ForeignKey(Store, related_name="products", on_delete=models.CASCADE)
+
+    category = models.ForeignKey(
+        Category,
+        related_name="products",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+
+    brand = models.ForeignKey(
+        Brand,
+        related_name="products",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+
+    gender = models.ForeignKey(
+        Gender,
+        related_name="products",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
 
     name = models.CharField("Название", max_length=255)
     slug = models.SlugField(max_length=255, blank=True, db_index=True)
@@ -204,3 +287,19 @@ class ProductReview(models.Model):
 
     def __str__(self):
         return f"{self.product.name} - {self.rating}"
+
+class StoreSocial(models.Model):
+    store = models.ForeignKey(
+        Store,
+        on_delete=models.CASCADE,
+        related_name='socials'
+    )
+
+    name = models.CharField(max_length=50)      # Instagram, Telegram, WhatsApp
+    link = models.URLField(max_length=255)
+
+    order = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.store.name} — {self.name}"
+
