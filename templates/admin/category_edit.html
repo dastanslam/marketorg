@@ -1,6 +1,191 @@
 {% extends "admin/base.html" %}
 {% load static %}
 
-{% block title %}Главная{% endblock %}
+{% block title %}{{ store.name }} - Новая категория{% endblock %}
 
-{% block content %}{% endblock %}
+{% block content %}
+    <!-- main-content-wrap -->
+    <div class="main-content-inner">
+        <!-- main-content-wrap -->
+        <div class="main-content-wrap">
+            <div class="flex items-center flex-wrap justify-between gap20 mb-27">
+                <h3>Информация о категории</h3>
+                <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                    <li>
+                        <a href="{% url 'dashboard' %}">
+                            <div class="text-tiny">Панель управления</div>
+                        </a>
+                    </li>
+                    <li>
+                        <i class="icon-chevron-right"></i>
+                    </li>
+                    <li>
+                        <a href="{% url 'category_list' %}">
+                            <div class="text-tiny">Категории</div>
+                        </a>
+                    </li>
+                    <li>
+                        <i class="icon-chevron-right"></i>
+                    </li>
+                    <li>
+                        <div class="text-tiny">Новая категория</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- new-category -->
+            <div class="wg-box">
+                <form class="form-new-product form-style-1"
+                      method="post"
+                      enctype="multipart/form-data">
+
+                    {% csrf_token %}
+
+                    <!-- Название категории -->
+                    <fieldset class="name">
+                        <div class="body-title">Название категории</div>
+                        <input class="flex-grow"
+                               type="text"
+                               name="name"
+                               placeholder="Введите название категории"
+                               required
+                               value="{{ category.name }}">
+                    </fieldset>
+
+                    <!-- Активность категории -->
+                    <fieldset>
+                        <label style="display:flex;align-items:center;gap:10px;">
+                            <input type="checkbox"
+                                   name="is_active"
+                                   {% if category.is_active %}checked{% endif %}>
+                            Категория активна (показывать в магазине)
+                        </label>
+                    </fieldset>
+
+                    <!-- Фото категории -->
+                    <fieldset>
+                        <div class="body-title">Фото категории</div>
+
+                        {% if category.image %}
+                            <div style="margin-bottom:12px;">
+                                <img src="{{ category.image.url }}"
+                                     style="max-width:220px;border-radius:12px;">
+                            </div>
+                        {% endif %}
+
+                        <div class="upload-image flex-grow">
+                            <div class="item up-load">
+                                <label class="uploadfile">
+                        <span class="body-text">
+                            Выбрать новое изображение
+                        </span>
+                                    <input type="file"
+                                           name="image"
+                                           accept="image/*"
+                                           hidden>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="body-text" style="margin-top:8px;">
+                            Если не выбирать — текущее фото сохранится
+                        </div>
+                    </fieldset>
+
+                    <!-- Скидка % -->
+                    <fieldset>
+                        <div class="body-title">Скидка (%)</div>
+                        <input type="number"
+                               min="0"
+                               max="100"
+                               name="discount_percent"
+                               value="{{ category.discount_percent }}">
+                    </fieldset>
+
+                    <!-- Включить скидку -->
+                    <fieldset>
+                        <label style="display:flex;align-items:center;gap:10px;">
+                            <input type="checkbox"
+                                   name="discount_active"
+                                   {% if category.discount_active %}checked{% endif %}>
+                            Активировать скидку
+                        </label>
+                    </fieldset>
+
+                    <!-- Начало скидки -->
+                    <fieldset>
+                        <div class="body-title">Начало скидки</div>
+                        <input type="datetime-local"
+                               name="discount_start"
+                               value="{{ category.discount_start|date:'Y-m-d\\TH:i' }}">
+                    </fieldset>
+
+                    <!-- Конец скидки -->
+                    <fieldset>
+                        <div class="body-title">Конец скидки</div>
+                        <input type="datetime-local"
+                               name="discount_end"
+                               value="{{ category.discount_end|date:'Y-m-d\\TH:i' }}">
+                    </fieldset>
+
+                    <!-- Кнопка -->
+                    <div class="bot">
+                        <div></div>
+                        <button class="tf-button w208" type="submit">
+                            Сохранить изменения
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+            <!-- /new-category -->
+        </div>
+        <!-- /main-content-wrap -->
+    </div>
+    <!-- /main-content-wrap -->
+    <script>
+        function previewCategoryImage(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const box = document.getElementById("uploadBox");
+
+                box.style.backgroundImage = `url(${e.target.result})`;
+                box.style.backgroundSize = "cover";
+                box.style.backgroundPosition = "center";
+                box.style.border = "none";
+
+                box.querySelector(".icon").style.display = "none";
+                box.querySelector(".body-text").style.display = "none";
+            };
+
+            reader.readAsDataURL(file);
+        }
+    </script>
+    <style>
+        /* label кликается только внутри синего квадрата */
+        #uploadBox {
+            position: relative;
+        }
+
+        #uploadBox .uploadfile {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        /* кнопка всегда поверх */
+        .bot {
+            position: relative;
+            z-index: 5;
+        }
+    </style>
+{% endblock %}

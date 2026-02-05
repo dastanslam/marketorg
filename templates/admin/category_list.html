@@ -118,8 +118,10 @@
                                                 class="icon-eye"></i></a>
                                         <a class="item edit" href="{% url 'category_edit' c.id %}"><i
                                                 class="icon-edit-3"></i></a>
-                                        <a class="item trash" href="{% url 'category_delete' c.id %}"><i
-                                                class="icon-trash-2"></i></a>
+                                        <form action="{% url 'category_delete' c.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit">DELETE TEST</button>
+                                        </form>
                                     </div>
                                 </div>
                             </li>

@@ -1,9 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db import transaction
 from .models import *
 from .forms import *
 from django.core.paginator import Paginator
+from django.utils.dateparse import parse_datetime
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 
 def dashboard(request):
     return render(request, "admin/index.html", {"store": request.store})
@@ -229,11 +232,69 @@ def category_add(request):
 
 
 def category_edit(request, pk):
-    return render(request, "admin/category_edit.html", {
+    category = get_object_or_404(Category, pk=pk, store=request.store)
+
+    if request.method == "POST":
+        category.name = request.POST.get("name")
+
+        if request.FILES.get("image"):
+            category.image = request.FILES["image"]
+
+        category.is_active = bool(request.POST.get("is_active"))
+
+        category.discount_percent = int(request.POST.get("discount_percent") or 0)
+        category.discount_active = bool(request.POST.get("discount_active"))
+
+        category.discount_start = parse_datetime(request.POST.get("discount_start")) \
+            if request.POST.get("discount_start") else None
+        category.discount_end = parse_datetime(request.POST.get("discount_end")) \
+            if request.POST.get("discount_end") else None
+
+        category.save()
+        return redirect("category_list")
+
+    return render(request, "admin/category_edit.html", {"category": category})
+
+
+def category_show(request, pk):
+    return render(request, "admin/category_show.html", {
         "store": request.store,
         "pk": pk
     })
 
+@require_POST
+def category_delete(request, pk):
+    print("== DELETE START ==")
+    print("pk:", pk)
+    print("store:", getattr(request, "store", None), "store_id:", getattr(getattr(request, "store", None), "id", None))
+
+    category = get_object_or_404(Category, pk=pk, store=request.store)
+    print("FOUND CATEGORY:", category.id, category.name)
+
+    try:
+        with transaction.atomic():
+            # сколько товаров было
+            cnt = category.products.count()
+            print("PRODUCTS COUNT BEFORE:", cnt)
+
+            # удаляем товары
+            deleted_products = category.products.all().delete()
+            print("PRODUCTS DELETE RESULT:", deleted_products)
+
+            # удаляем категорию
+            category.delete()
+            print("CATEGORY DELETE DONE")
+
+        # проверка: осталась ли категория в базе
+        still_exists = Category.objects.filter(pk=pk).exists()
+        print("CATEGORY STILL EXISTS IN DB:", still_exists)
+
+    except Exception as e:
+        print("DELETE ERROR:", repr(e))
+        raise
+
+    messages.success(request, "Категория удалена.")
+    return redirect("category_list")
 
 # ===== ORDERS =====
 def order_list(request):

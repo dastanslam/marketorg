@@ -14,6 +14,8 @@ urlpatterns = [
     path('categories/add/', admin_views.category_add, name='category_add'),
     path('categories/<int:pk>/', admin_views.category_show, name='category_show'),
     path('categories/<int:pk>/edit/', admin_views.category_edit, name='category_edit'),
+    path('categories/<int:pk>/delete/', admin_views.category_delete, name='category_delete'),
+
 
     path('orders/', admin_views.order_list, name='order_list'),
     path('orders/<int:pk>/', admin_views.order_detail, name='order_detail'),
