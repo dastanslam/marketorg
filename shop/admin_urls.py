@@ -12,6 +12,7 @@ urlpatterns = [
 
     path('categories/', admin_views.category_list, name='category_list'),
     path('categories/add/', admin_views.category_add, name='category_add'),
+    path('categories/<int:pk>/', admin_views.category_show, name='category_show'),
     path('categories/<int:pk>/edit/', admin_views.category_edit, name='category_edit'),
 
     path('orders/', admin_views.order_list, name='order_list'),

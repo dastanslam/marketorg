@@ -4681,7 +4681,7 @@ select.h40 {
   width: 100%;
 }
 .wg-table.table-all-category ul.table-title li:first-child {
-  width: 430px;
+  width: 300px;
   flex-shrink: 0;
 }
 .wg-table.table-all-category ul.table-title li:last-child {
@@ -4699,7 +4699,7 @@ select.h40 {
   width: 100%;
 }
 .wg-table.table-all-category .product-item > .flex > div:first-child {
-  width: 366px;
+  width: 300px;
   flex-shrink: 0;
 }
 .wg-table.table-all-category .product-item > .flex > div:last-child {

@@ -3,4 +3,161 @@
 
 {% block title %}Главная{% endblock %}
 
-{% block content %}{% endblock %}
+{% block content %}
+    <div class="main-content-inner">
+        <div class="main-content-wrap">
+
+            <div class="flex items-center flex-wrap justify-between gap20 mb-27">
+                <h3>Все категории</h3>
+                <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                    <li><a href="{% url 'dashboard' %}">
+                        <div class="text-tiny">Панель управления</div>
+                    </a></li>
+                    <li><i class="icon-chevron-right"></i></li>
+                    <li><a href="#">
+                        <div class="text-tiny">Категория</div>
+                    </a></li>
+                    <li><i class="icon-chevron-right"></i></li>
+                    <li>
+                        <div class="text-tiny">Все категории</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="wg-box">
+                <div class="flex items-center justify-between gap10 flex-wrap">
+                    <div class="wg-filter flex-grow">
+
+                        <div class="show">
+                            <div class="text-tiny">Показать</div>
+                            <div class="select">
+                                <select onchange="location = this.value;">
+                                    <option value="?per_page=10&name={{ q }}"{% if per_page == 10 %}
+                                            selected{% endif %}>10
+                                    </option>
+                                    <option value="?per_page=20&name={{ q }}"{% if per_page == 20 %}
+                                            selected{% endif %}>20
+                                    </option>
+                                    <option value="?per_page=30&name={{ q }}"{% if per_page == 30 %}
+                                            selected{% endif %}>30
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="text-tiny">записей</div>
+                        </div>
+
+                        <form class="form-search" method="get">
+                            <input type="hidden" name="per_page" value="{{ per_page }}">
+                            <fieldset class="name">
+                                <input type="text" placeholder="Искать здесь..." class="" name="name"
+                                       value="{{ q }}">
+                            </fieldset>
+                            <div class="button-submit">
+                                <button class="" type="submit"><i class="icon-search"></i></button>
+                            </div>
+                        </form>
+
+                    </div>
+
+                    <a class="tf-button style-1 w208" href="{% url 'category_add' %}">
+                        <i class="icon-plus"></i>Добавить
+                    </a>
+                </div>
+
+                <div class="wg-table table-all-category">
+                    <ul class="table-title flex gap10 mb-14">
+                        <li>
+                            <div class="body-title">Категория</div>
+                        </li>
+                        <li>
+                            <div class="body-title">Количество</div>
+                        </li>
+                        <li>
+                            <div class="body-title">Скидка (%)</div>
+                        </li>
+                        <li>
+                            <div class="body-title">Начало</div>
+                        </li>
+                        <li>
+                            <div class="body-title">Конец</div>
+                        </li>
+                        <li>
+                            <div class="body-title">Действие</div>
+                        </li>
+                    </ul>
+
+                    <ul class="flex flex-column">
+                        {% for c in page_obj %}
+                            <li class="product-item gap14">
+                                <div class="flex items-center justify-start gap20 flex-grow">
+                                    <div class="name">
+                                        <a href="{% url 'category_edit' c.id %}" class="body-title-2">{{ c.name }}</a>
+                                    </div>
+
+                                    <div class="body-text">{{ c.products_count }}</div>
+
+                                    <div class="body-text">
+                                        {% if c.discount_active and c.discount_percent %}
+                                            {{ c.discount_percent }}
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="body-text">
+                                        {% if c.discount_start %}{{ c.discount_start|date:"d M Y" }}{% else %}
+                                            —{% endif %}
+                                    </div>
+
+                                    <div class="body-text">
+                                        {% if c.discount_end %}{{ c.discount_end|date:"d M Y" }}{% else %}—{% endif %}
+                                    </div>
+
+                                    <div class="list-icon-function">
+                                        <a class="item eye" href="{% url 'category_show' c.id %}"><i
+                                                class="icon-eye"></i></a>
+                                        <a class="item edit" href="{% url 'category_edit' c.id %}"><i
+                                                class="icon-edit-3"></i></a>
+                                        <a class="item trash" href="{% url 'category_delete' c.id %}"><i
+                                                class="icon-trash-2"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                        {% empty %}
+                            <li class="body-text">Категорий нет</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="flex items-center justify-between flex-wrap gap10">
+                    <div class="text-tiny">
+                        Показано {{ page_obj.object_list|length }} из {{ page_obj.paginator.count }} записей
+                    </div>
+
+                    <ul class="wg-pagination">
+                        {% if page_obj.has_previous %}
+                            <li>
+                                <a href="?page={{ page_obj.previous_page_number }}&name={{ q }}&per_page={{ per_page }}"><i
+                                        class="icon-chevron-left"></i></a></li>
+                        {% else %}
+                            <li class="disabled"><a href="javascript:void(0)"><i class="icon-chevron-left"></i></a></li>
+                        {% endif %}
+
+                        <li class="active"><a href="#">{{ page_obj.number }}</a></li>
+
+                        {% if page_obj.has_next %}
+                            <li><a href="?page={{ page_obj.next_page_number }}&name={{ q }}&per_page={{ per_page }}"><i
+                                    class="icon-chevron-right"></i></a></li>
+                        {% else %}
+                            <li class="disabled"><a href="javascript:void(0)"><i class="icon-chevron-right"></i></a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

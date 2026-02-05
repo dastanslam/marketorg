@@ -1,6 +1,6 @@
 import re
 import secrets
-
+from django.utils import timezone
 from django.db import models, transaction, IntegrityError
 from django.db.models import Avg, Count, Q, F, Min, Max
 from django.utils.text import slugify
@@ -8,6 +8,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator, RegexVa
 from django.conf import settings
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
+from decimal import Decimal, ROUND_HALF_UP
 
 class Store(models.Model):
     subdomain = models.SlugField(max_length=63, unique=True, blank=True, db_index=True)
@@ -45,8 +46,14 @@ def _norm(s: str) -> str:
 class Category(models.Model):
     store = models.ForeignKey("Store", related_name="categories", on_delete=models.CASCADE)
     name = models.CharField("Название", max_length=100)
+    image = models.ImageField("Фото категории", upload_to="categories/", blank=True, null=True)
     slug = models.SlugField(max_length=120, blank=True)
     is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField("Дата добавления", auto_now_add=True)
+    discount_percent = models.PositiveSmallIntegerField("Скидка (%)", default=0)
+    discount_active = models.BooleanField(default=False)
+    discount_start = models.DateTimeField(null=True, blank=True)
+    discount_end = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         verbose_name = "Категория"
@@ -58,11 +65,28 @@ class Category(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name) or "category"
+            base = slugify(self.name) or "category"
+            slug = base
+            i = 2
+            # проверяем уникальность slug в рамках store
+            while Category.objects.filter(store=self.store, slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base}-{i}"
+                i += 1
+            self.slug = slug
         super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
+
+    def discount_is_active_now(self):
+        if not self.discount_active or not self.discount_percent:
+            return False
+        now = timezone.now()
+        if self.discount_start and now < self.discount_start:
+            return False
+        if self.discount_end and now > self.discount_end:
+            return False
+        return True
 
 
 class Brand(models.Model):
@@ -250,6 +274,22 @@ class ProductVariant(models.Model):
 
     def __str__(self):
         return f"{self.product.name} | {self.color} | {self.size}"
+
+    @property
+    def price_final(self):
+        cat = self.product.category
+        if not cat or not cat.discount_is_active_now():
+            return self.price
+        d = Decimal(cat.discount_percent) / Decimal("100")
+        res = self.price * (Decimal("1") - d)
+        return res.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    @property
+    def old_price_effective(self):
+        # чтобы на витрине показать "старая цена"
+        if self.product.category and self.product.category.discount_is_active_now():
+            return self.price
+        return self.old_price
 
 
 class ProductImage(models.Model):

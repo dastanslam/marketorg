@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.db import transaction
 from .models import *
 from .forms import *
+from django.core.paginator import Paginator
 
 def dashboard(request):
     return render(request, "admin/index.html", {"store": request.store})
@@ -174,10 +175,56 @@ def product_edit(request, pk):
 
 # ===== CATEGORIES =====
 def category_list(request):
-    return render(request, "admin/category_list.html", {"store": request.store})
+    q = (request.GET.get("name") or "").strip()
+    per_page = request.GET.get("per_page") or "10"
+
+    try:
+        per_page = int(per_page)
+    except ValueError:
+        per_page = 10
+    per_page = per_page if per_page in (10, 20, 30, 50, 100) else 10
+
+    categories_qs = (
+        Category.objects
+        .filter(store=request.store)
+        .annotate(
+            products_count=Count(
+                "products",
+                filter=Q(products__is_active=True),
+                distinct=True
+            )
+        )
+    )
+
+    if q:
+        categories_qs = categories_qs.filter(name__icontains=q)
+
+    categories_qs = categories_qs.order_by("name")
+
+    paginator = Paginator(categories_qs, per_page)
+    page_obj = paginator.get_page(request.GET.get("page"))
+
+    return render(request, "admin/category_list.html", {
+        "store": request.store,
+        "page_obj": page_obj,
+        "q": q,
+        "per_page": per_page,
+    })
 
 
 def category_add(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        image = request.FILES.get("image")
+
+        Category.objects.create(
+            store=request.store,  # как у тебя уже используется
+            name=name,
+            image=image
+        )
+
+        return redirect("category_list")  # куда нужно после сохранения
+
     return render(request, "admin/category_add.html", {"store": request.store})
 
 
