@@ -8,7 +8,7 @@
         <!-- main-content-wrap -->
         <div class="main-content-wrap">
             <div class="flex items-center flex-wrap justify-between gap20 mb-27">
-                <h3>{{ name category }}</h3>
+                <h3>{{ category.name }}</h3>
                 <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
                     <li>
                         <a href="index.html">
@@ -25,7 +25,7 @@
                         <i class="icon-chevron-right"></i>
                     </li>
                     <li>
-                        <div class="text-tiny">{{ name category }}</div>
+                        <div class="text-tiny">{{ category.name }}</div>
                     </li>
                 </ul>
             </div>
@@ -33,7 +33,7 @@
             <div class="wg-box">
                 <div class="title-box">
                     <i class="icon-coffee"></i>
-                    <div class="body-text">Каждому товару присвоен уникальный ID, по которому вы можете найти именно то,
+                    <div class="body-text">Каждому товару присвоен уникальный SKU, по которому вы можете найти именно то,
                         что вам нужно.
                     </div>
                 </div>
@@ -42,19 +42,30 @@
                         <div class="show">
                             <div class="text-tiny">Показать</div>
                             <div class="select">
-                                <select class="">
-                                    <option>10</option>
-                                    <option>20</option>
-                                    <option>30</option>
-                                </select>
+                                <form method="get" id="perPageForm">
+                                    <select name="per_page" onchange="this.form.submit()">
+                                        <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                                        <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+                                        <option value="30" {% if per_page == 30 %}selected{% endif %}>30</option>
+                                    </select>
+                                    <input type="hidden" name="q" value="{{ q }}">
+                                </form>
                             </div>
                             <div class="text-tiny">записей</div>
                         </div>
-                        <form class="form-search">
+
+                        <form class="form-search" method="get">
                             <fieldset class="name">
-                                <input type="text" placeholder="Поиск..." class="" name="name" tabindex="2" value=""
-                                       aria-required="true" required="">
+                                <input type="text"
+                                       placeholder="Поиск по названию или SKU..."
+                                       class=""
+                                       name="q"
+                                       tabindex="2"
+                                       value="{{ q }}">
                             </fieldset>
+
+                            <input type="hidden" name="per_page" value="{{ per_page }}">
+
                             <div class="button-submit">
                                 <button class="" type="submit"><i class="icon-search"></i></button>
                             </div>
@@ -62,71 +73,111 @@
                     </div>
                 </div>
                 <div class="wg-table table-product-list">
-                    <ul class="table-title flex gap20 mb-14">
-                        <li>
-                            <div class="body-title">Товар</div>
-                        </li>
-                        <li>
-                            <div class="body-title">ID товара</div>
-                        </li>
-                        <li>
-                            <div class="body-title">Цена</div>
-                        </li>
-                        <li>
-                            <div class="body-title">Скидка</div>
-                        </li>
-                        <li>
-                            <div class="body-title">Дата </div>
-                        </li>
-                        <li>
-                            <div class="body-title">Действие</div>
-                        </li>
-                    </ul>
-                    <ul class="flex flex-column">
-                        <li class="product-item gap14">
-                            <div class="flex items-center justify-between gap20 flex-grow">
-                                <div class="name">
-                                    <a href="product-list.html" class="body-title-2">Dog Food, Chicken & Chicken Liver
-                                        Recipe...</a>
-                                </div>
-                                <div class="body-text">#7712309</div>
-                                <div class="body-text">$1,452.500</div>
-                                <div class="body-text">20</div>
-                                <div class="body-text">$28,672.36</div>
-                                <div class="list-icon-function">
-                                    <div class="item eye">
-                                        <i class="icon-eye"></i>
+                    <div class="table-scroll">
+                        <ul class="table-title flex gap20 mb-14">
+                            <li>
+                                <div class="body-title">Товар</div>
+                            </li>
+                            <li>
+                                <div class="body-title">SKU товара</div>
+                            </li>
+                            <li>
+                                <div class="body-title">Варианты товара</div>
+                            </li>
+                            <li>
+                                <div class="body-title">Цена (max-min)</div>
+                            </li>
+                            <li>
+                                <div class="body-title">Скидка (%)</div>
+                            </li>
+                            <li>
+                                <div class="body-title">Действие</div>
+                            </li>
+                        </ul>
+
+                        <ul class="flex flex-column">
+                            {% for product in products %}
+                                <li class="product-item gap14">
+                                    <div class="flex items-center justify-between gap20 flex-grow">
+
+                                        <!-- Товар -->
+                                        <div class="name">
+                                            <a href="#" class="body-title-2">
+                                                {{ product.name }}
+                                            </a>
+                                        </div>
+
+                                        <!-- SKU -->
+                                        <div class="body-text">
+                                            {{ product.first_sku|default:"—" }}
+                                        </div>
+
+                                        <!-- Количество вариантов -->
+                                        <div class="body-text">
+                                            {{ product.variants_count }}
+                                        </div>
+
+                                        <!-- Цена диапазон -->
+                                        <div class="body-text">
+                                            {{ product.max_p }} – {{ product.min_p }}
+                                        </div>
+
+                                        <!-- Скидка -->
+                                        <div class="body-text">
+                                            {% if product.discount_is_active %}
+                                                {{ product.discount_percent }}%
+                                            {% elif category.discount_is_active_now %}
+                                                {{ category.discount_percent }}%
+                                            {% else %}
+                                                —
+                                            {% endif %}
+                                        </div>
+
+                                        <!-- Действия -->
+                                        <div class="list-icon-function">
+                                            <div class="item eye"><i class="icon-eye"></i></div>
+                                            <div class="item edit"><i class="icon-edit-3"></i></div>
+                                            <div class="item trash"><i class="icon-trash-2"></i></div>
+                                        </div>
+
                                     </div>
-                                    <div class="item edit">
-                                        <i class="icon-edit-3"></i>
-                                    </div>
-                                    <div class="item trash">
-                                        <i class="icon-trash-2"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
+                                </li>
+                            {% empty %}
+                                <li class="product-item">
+                                    <div class="body-text">В категории пока нет товаров</div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
+
                 <div class="divider"></div>
+
                 <div class="flex items-center justify-between flex-wrap gap10">
-                    <div class="text-tiny">Показано 10 записей</div>
+                    <div class="text-tiny">
+                        Показано {{ page_obj.object_list|length }} из {{ page_obj.paginator.count }} записей
+                    </div>
+
                     <ul class="wg-pagination">
-                        <li>
-                            <a href="#"><i class="icon-chevron-left"></i></a>
-                        </li>
-                        <li class="active">
-                            <a href="#">1</a>
-                        </li>
-                        <li>
-                            <a href="#">2</a>
-                        </li>
-                        <li>
-                            <a href="#">3</a>
-                        </li>
-                        <li>
-                            <a href="#"><i class="icon-chevron-right"></i></a>
-                        </li>
+                        {% if page_obj.has_previous %}
+                            <li>
+                                <a href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}&q={{ q }}"><i class="icon-chevron-left"></i></a>
+                            </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if num == page_obj.number %}
+                                <li class="active"><a href="?page={{ num }}&per_page={{ per_page }}&q={{ q }}">{{ num }}</a></li>
+                            {% else %}
+                                <li><a href="?page={{ num }}&per_page={{ per_page }}&q={{ q }}">{{ num }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li>
+                                <a href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}&q={{ q }}"><i class="icon-chevron-right"></i></a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

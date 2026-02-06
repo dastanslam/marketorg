@@ -137,6 +137,11 @@ class Product(models.Model):
     country = models.CharField("Страна производитель", max_length=100, blank=True)
     material = models.CharField("Тип материала", max_length=100, blank=True)
 
+    discount_percent = models.PositiveSmallIntegerField(default=0)
+    discount_is_active = models.BooleanField(default=False)
+    discount_start = models.DateTimeField(null=True, blank=True)
+    discount_end = models.DateTimeField(null=True, blank=True)
+
     # Статистика
     views = models.PositiveIntegerField("Просмотры", default=0)
     rating_avg = models.DecimalField("Средний рейтинг", max_digits=3, decimal_places=2, default=0)

@@ -7,6 +7,7 @@ from django.core.paginator import Paginator
 from django.utils.dateparse import parse_datetime
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.db.models import Count, Min, Max, Q, OuterRef, Subquery
 
 def dashboard(request):
     return render(request, "admin/index.html", {"store": request.store})
@@ -257,9 +258,53 @@ def category_edit(request, pk):
 
 
 def category_show(request, pk):
+    category = get_object_or_404(Category, pk=pk, store=request.store)
+
+    # параметры
+    search = (request.GET.get("q") or "").strip()         # поиск (name или sku)
+    per_page = request.GET.get("per_page", "10")
+    try:
+        per_page = int(per_page)
+    except ValueError:
+        per_page = 10
+    if per_page not in (10, 20, 30):
+        per_page = 10
+
+    # базовый queryset
+    qs = (
+        category.products
+        .filter(store=request.store)
+        .annotate(
+            variants_count=Count("variants", distinct=True),
+            min_p=Min("variants__price"),
+            max_p=Max("variants__price"),
+        )
+    )
+
+    # поиск по названию ИЛИ по sku вариантов
+    if search:
+        qs = qs.filter(
+            Q(name__icontains=search) |
+            Q(variants__sku__icontains=search)
+        ).distinct()
+
+    # показать sku первого активного варианта (чтобы в шаблоне было быстро)
+    first_sku_subq = ProductVariant.objects.filter(
+        product_id=OuterRef("pk"),
+        is_active=True
+    ).order_by("id").values("sku")[:1]
+
+    qs = qs.annotate(first_sku=Subquery(first_sku_subq)).order_by("-created_at")
+
+    paginator = Paginator(qs, per_page)
+    page_obj = paginator.get_page(request.GET.get("page"))
+
     return render(request, "admin/category_show.html", {
-        "store": request.store,
-        "pk": pk
+        "category": category,
+        "products": page_obj.object_list,
+        "page_obj": page_obj,
+        "per_page": per_page,
+        "q": search,
     })
 
 @require_POST
