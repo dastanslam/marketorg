@@ -13766,3 +13766,36 @@ quote {
     opacity: 0 !important;
     visibility: hidden !important;
 }
+
+.delete-form {
+    display: inline;
+}
+
+.delete-reset {
+    all: unset;          /* полностью убирает стили кнопки */
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+}
+
+.delete-reset i {
+    pointer-events: none;
+}
+
+fieldset.photo-field{
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+}
+
+/* чтобы upload не тянулся в сторону */
+fieldset.photo-field .upload-image{
+    width: 100% !important;
+}
+
+/* если нужно центрировать */
+fieldset.photo-field > .body-title,
+fieldset.photo-field > .body-text{
+    text-align: left; /* или center */
+}
+

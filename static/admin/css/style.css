@@ -6353,5 +6353,58 @@ select.h40 {
     max-width: 50%;
 }
 
+fieldset.photo-field{
+    display: grid !important;
+    grid-template-columns: 240px 1fr !important;
+    gap: 12px 20px !important;
+    align-items: start !important;
+}
+fieldset.photo-field > .body-title{ grid-column: 1 / -1 !important; }
+fieldset.photo-field .current-photo{ grid-column: 1 !important; }
+fieldset.photo-field .upload-image{ grid-column: 2 !important; width:100% !important; }
+fieldset.photo-field > .body-text{ grid-column: 1 / -1 !important; }
+
+/* скролл включаем на обёртке */
+.table-scroll{
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+}
+
+/* делаем “полотно” шире контейнера */
+.table-scroll ul.table-title,
+.table-scroll ul.flex.flex-column{
+    min-width: 1200px;   /* можно 1400 */
+}
+
+/* главное: запретить сжатие колонок */
+.table-scroll .table-title,
+.table-scroll .product-item > div.flex{
+    flex-wrap: nowrap;
+}
+
+/* запретить перенос текста (иначе будет “прятаться”) */
+.table-scroll .product-item .body-text,
+.table-scroll .product-item .body-title-2{
+    white-space: nowrap;
+}
+/* 1) отменяем правило шаблона, которое ломает скролл */
+.wg-table.table-all-category > .table-scroll{
+    min-width: 0 !important;
+}
+
+/* 2) включаем горизонтальный скролл */
+.wg-table.table-all-category > .table-scroll{
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    width: 100% !important;
+}
+
+/* 3) делаем контент шире, чтобы появился скролл */
+.wg-table.table-all-category > .table-scroll > ul{
+    min-width: 1515px;   /* можешь больше */
+}
+
+
 
 /*# sourceMappingURL=style.css.map */

@@ -63,16 +63,15 @@
                     </fieldset>
 
                     <!-- Фото категории -->
-                    <fieldset>
+                    <fieldset class="photo-field">
                         <div class="body-title">Фото категории</div>
 
                         {% if category.image %}
-                            <div style="margin-bottom:12px;">
+                            <div class="current-photo" style="margin-bottom:12px;">
                                 <img src="{{ category.image.url }}"
                                      style="max-width:220px;border-radius:12px;">
                             </div>
                         {% endif %}
-
                         <div class="upload-image flex-grow">
                             <div class="item up-load">
                                 <label class="uploadfile">
@@ -86,7 +85,6 @@
                                 </label>
                             </div>
                         </div>
-
                         <div class="body-text" style="margin-top:8px;">
                             Если не выбирать — текущее фото сохранится
                         </div>
