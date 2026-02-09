@@ -4637,7 +4637,7 @@ select.h40 {
   flex-shrink: 0;
 }
 .wg-table.table-product-list ul.table-title li:nth-child(5), .wg-table.table-product-list ul.table-title li:nth-child(4) {
-  width: 90px;
+  width: 140px;
   flex-shrink: 0;
 }
 .wg-table.table-product-list ul.table-title li:last-child {
@@ -6449,7 +6449,32 @@ fieldset.photo-field > .body-text{ grid-column: 1 / -1 !important; }
     min-width: 1515px;   /* подгони под ширину колонок */
 }
 
+input.color-picker.color-circle {
+    -webkit-appearance: none !important;
+    appearance: none !important;
 
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 50% !important;
 
+    padding: 0 !important;
+    border: 2px solid #ddd !important;
+    cursor: pointer;
+    background: none !important;
+}
 
-/*# sourceMappingURL=style.css.map */
+/* Chrome / Edge */
+input.color-circle::-webkit-color-swatch-wrapper {
+    padding: 0 !important;
+}
+
+input.color-circle::-webkit-color-swatch {
+    border-radius: 50% !important;
+    border: none !important;
+}
+
+/* Firefox */
+input.color-circle::-moz-color-swatch {
+    border-radius: 50% !important;
+    border: none !important;
+}

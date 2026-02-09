@@ -52,13 +52,6 @@ def settings(request):
     return render(request, "admin/settings.html", {"store": store, "socials": socials})
 
 def _extract_color_choices(post):
-    """
-    Достаём цвета из colors formset прямо из POST,
-    чтобы заполнить select вариантов ДО сохранения товара.
-
-    Возвращает list[(hex, title), ...]
-    где title = name (если есть) иначе hex
-    """
     total = int(post.get("colors-TOTAL_FORMS", 0))
     out = []
     seen = set()
@@ -309,12 +302,7 @@ def category_show(request, pk):
 
 @require_POST
 def category_delete(request, pk):
-    print("== DELETE START ==")
-    print("pk:", pk)
-    print("store:", getattr(request, "store", None), "store_id:", getattr(getattr(request, "store", None), "id", None))
-
     category = get_object_or_404(Category, pk=pk, store=request.store)
-    print("FOUND CATEGORY:", category.id, category.name)
 
     try:
         with transaction.atomic():
