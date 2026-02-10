@@ -322,7 +322,7 @@
                 document.querySelectorAll('#variants-forms select[name$="-color_hex"]').forEach(sel => {
                     const current = sel.value;
                     sel.innerHTML =
-                        '<option value="">---------</option>' +
+                        '<option value="">Выберите цвет</option>' +
                         colors.map(c => `<option value="${c.hex}">${c.label}</option>`).join("");
 
                     if (colors.some(c => c.hex === current)) sel.value = current;

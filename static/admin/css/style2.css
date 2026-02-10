@@ -14,7 +14,7 @@
   --Palette-Orange-400: #FB923C;
   --Palette-Red-400: #F87171;
   --Palette-Red-500: #EF4444;
-  --Input:#dfdfdf;
+  --Input:#ECF0F4;
   --Icon: #CBD5E1;
   --Note: #95989D;
   --Text-Holder: #858B93;
@@ -4637,7 +4637,7 @@ select.h40 {
   flex-shrink: 0;
 }
 .wg-table.table-product-list ul.table-title li:nth-child(5), .wg-table.table-product-list ul.table-title li:nth-child(4) {
-  width: 140px;
+  width: 90px;
   flex-shrink: 0;
 }
 .wg-table.table-product-list ul.table-title li:last-child {
@@ -4655,7 +4655,7 @@ select.h40 {
   width: 100%;
 }
 .wg-table.table-product-list .product-item > .flex > div:first-child {
-  width: 430px;
+  width: 366px;
   flex-shrink: 0;
 }
 .wg-table.table-product-list .product-item > .flex > div:nth-child(5), .wg-table.table-product-list .product-item > .flex > div:nth-child(4) {
@@ -4681,7 +4681,7 @@ select.h40 {
   width: 100%;
 }
 .wg-table.table-all-category ul.table-title li:first-child {
-  width: 300px;
+  width: 430px;
   flex-shrink: 0;
 }
 .wg-table.table-all-category ul.table-title li:last-child {
@@ -4699,7 +4699,7 @@ select.h40 {
   width: 100%;
 }
 .wg-table.table-all-category .product-item > .flex > div:first-child {
-  width: 300px;
+  width: 366px;
   flex-shrink: 0;
 }
 .wg-table.table-all-category .product-item > .flex > div:last-child {
@@ -6304,150 +6304,6 @@ select.h40 {
   }
 }
 
-/* 1) Не расширять меню при hover (menu-style-icon) */
-.layout-wrap.menu-style-icon .section-menu-left:hover{
-  width: 92px !important;
-  min-width: 92px !important;
-}
-.layout-wrap.menu-style-icon .section-menu-left:hover .box-logo{
-  width: 92px !important;
-}
-.layout-wrap.menu-style-icon .section-menu-left:hover > .center > .center-item
-.menu-list > .menu-item > a > .text{
-  display: none !important;
-}
-
-/* 2) Не показывать sub-menu при hover (menu-style-icon-default) */
-.layout-wrap.menu-style-icon-default .section-menu-left
-.menu-item.has-children:hover .sub-menu{
-  opacity: 0 !important;
-  visibility: hidden !important;
-}
-
-.layout-wrap .section-menu-left .menu-item.has-children::after{
-  display: none !important;
-  content: none !important;
-}
-
-.form-row {
-    display: flex;
-    gap: 20px;
-}
-
-.form-row fieldset {
-    flex: 1;
-    min-width: 0;
-}
-
-.form-row input {
-    width: 100%;
-}
-
-.two-cols{
-    display: flex;
-    gap: 20px;
-}
-
-.two-cols > .col-6{
-    flex: 0 0 50%;
-    max-width: 50%;
-}
-
-fieldset.photo-field{
-    display: grid !important;
-    grid-template-columns: 240px 1fr !important;
-    gap: 12px 20px !important;
-    align-items: start !important;
-}
-fieldset.photo-field > .body-title{ grid-column: 1 / -1 !important; }
-fieldset.photo-field .current-photo{ grid-column: 1 !important; }
-fieldset.photo-field .upload-image{ grid-column: 2 !important; width:100% !important; }
-fieldset.photo-field > .body-text{ grid-column: 1 / -1 !important; }
-
-/* скролл включаем на обёртке */
-.table-scroll{
-    overflow-x: auto;
-    overflow-y: hidden;
-    width: 100%;
-}
-
-/* делаем “полотно” шире контейнера */
-.table-scroll ul.table-title,
-.table-scroll ul.flex.flex-column{
-    min-width: 1515px;   /* можно 1400 */
-}
-
-/* главное: запретить сжатие колонок */
-.table-scroll .table-title,
-.table-scroll .product-item > div.flex{
-    flex-wrap: nowrap;
-}
-
-/* запретить перенос текста (иначе будет “прятаться”) */
-.table-scroll .product-item .body-text,
-.table-scroll .product-item .body-title-2{
-    white-space: nowrap;
-}
-/* 1) отменяем правило шаблона, которое ломает скролл */
-.wg-table.table-all-category > .table-scroll{
-    min-width: 0 !important;
-}
-
-/* 2) включаем горизонтальный скролл */
-.wg-table.table-all-category > .table-scroll{
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    width: 100% !important;
-}
-
-/* 3) делаем контент шире, чтобы появился скролл */
-.wg-table.table-all-category > .table-scroll > ul{
-    min-width: 1515px;   /* можешь больше */
-}
-
-/* скролл включаем на обёртке */
-.table-scroll{
-    overflow-x: auto;
-    overflow-y: hidden;
-    width: 100%;
-}
-
-/* делаем “полотно” шире контейнера */
-.table-scroll ul.table-title,
-.table-scroll ul.flex.flex-column{
-    min-width: 1515px;   /* можешь увеличить */
-}
-
-/* главное: запретить сжатие колонок */
-.table-scroll .table-title,
-.table-scroll .product-item > div.flex{
-    flex-wrap: nowrap;
-}
-
-/* запретить перенос текста */
-.table-scroll .product-item .body-text,
-.table-scroll .product-item .body-title-2{
-    white-space: nowrap;
-}
-
-/* ===== ТЕПЕРЬ конкретно для товаров ===== */
-
-/* 1) отменяем шаблонные ограничения */
-.wg-table.table-product-list > .table-scroll{
-    min-width: 0 !important;
-}
-
-/* 2) включаем горизонтальный скролл */
-.wg-table.table-product-list > .table-scroll{
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    width: 100% !important;
-}
-
-/* 3) делаем контент шире */
-.wg-table.table-product-list > .table-scroll > ul{
-    min-width: 1515px;   /* подгони под ширину колонок */
-}
 
 input.color-picker.color-circle {
     -webkit-appearance: none !important;
@@ -6479,3 +6335,67 @@ input.color-circle::-moz-color-swatch {
     border: none !important;
 }
 
+/* 0) базово: скролл на обёртке */
+.table-scroll{
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+}
+
+/* 1) запрет сжатия/переносов */
+.table-scroll .table-title,
+.table-scroll .product-item > div.flex{
+  flex-wrap: nowrap;
+}
+
+.table-scroll .product-item .body-text,
+.table-scroll .product-item .body-title,
+.table-scroll .product-item .body-title-2{
+  white-space: nowrap;
+}
+
+/* 2) фикс для table-all-category (если там ломает шаблон) */
+.wg-table.table-all-category > .table-scroll{
+  min-width: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  width: 100% !important;
+}
+
+.wg-table.table-all-category > .table-scroll ul.table-title,
+.wg-table.table-all-category > .table-scroll ul.flex.flex-column{
+  min-width: 1515px;
+}
+
+/* 3) фикс для table-product-list (как у тебя) */
+.wg-table.table-product-list > .table-scroll{
+  min-width: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  width: 100% !important;
+}
+
+.wg-table.table-product-list > .table-scroll ul.table-title,
+.wg-table.table-product-list > .table-scroll ul.flex.flex-column{
+  min-width: 1515px;
+}
+
+.table-grid{
+  display: grid;
+  grid-template-columns: 3fr 1.2fr 1fr 0.8fr 1.2fr 1fr; /* настрой под себя */
+  gap: 20px;
+}
+
+.table-grid.align-center{
+  align-items: center;
+}
+
+/* чтобы заголовок ul не был flex */
+.table-title.table-grid{
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px 0;
+}
+.table-title.table-grid > li{
+  margin: 0;
+}
