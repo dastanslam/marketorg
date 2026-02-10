@@ -8,12 +8,21 @@ from .models import (
 
 
 class ProductForm(forms.ModelForm):
+    new_brand = forms.CharField(
+        required=False,
+        label="Новый бренд",
+        widget=forms.TextInput(attrs={
+            "placeholder": "Если нет в списке — напишите новый бренд"
+        })
+    )
+
     class Meta:
         model = Product
-        fields = ["name", "category", "gender", "brand", "description", "country", "material"]
+        fields = ["name", "category", "gender", "brand", "new_brand", "description", "country", "material"]
         widgets = {"description": forms.Textarea(attrs={"rows": 4})}
 
     def __init__(self, *args, store=None, **kwargs):
+        self.store = store
         super().__init__(*args, **kwargs)
 
         if store is not None:
@@ -21,6 +30,15 @@ class ProductForm(forms.ModelForm):
             self.fields["brand"].queryset = Brand.objects.filter(store=store, is_active=True)
 
         self.fields["gender"].queryset = Gender.objects.all()
+
+    def clean(self):
+        cleaned = super().clean()
+        brand = cleaned.get("brand")
+        new_brand = (cleaned.get("new_brand") or "").strip()
+
+        if not brand and not new_brand:
+            raise forms.ValidationError("Выберите бренд из списка или введите новый.")
+        return cleaned
 
 
 class ColorForm(forms.ModelForm):

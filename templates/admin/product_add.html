@@ -64,8 +64,11 @@
 
                     <fieldset class="brand">
                         <div class="body-title mb-10">Бренд</div>
-                        <div class="select">
+                        <div class="select mb-10">
                             {{ pform.brand }}
+                        </div>
+                        <div class="mb-10">
+                            {{ pform.new_brand }}
                         </div>
                     </fieldset>
 
@@ -238,7 +241,9 @@
                                 <div class="cols gap22">
                                     <fieldset class="name">
                                         <div class="body-title mb-10">Цвет</div>
-                                        {{ variants_fs.empty_form.color_hex }}
+                                        <div class="select">
+                                            {{ variants_fs.empty_form.color_hex }}
+                                        </div>
                                     </fieldset>
 
                                     <fieldset class="name">
@@ -252,7 +257,12 @@
                                         <div class="body-title mb-10">Цена <span class="tf-color-1">*</span></div>
                                         {{ variants_fs.empty_form.price }}
                                     </fieldset>
+                                    <div style="margin-top:10px;">
+                                        <button type="button" class="tf-button style-1 js-remove-variant" style="margin-top:19px !important;">Удалить
+                                        </button>
+                                    </div>
                                 </div>
+
                             </div>
                         </template>
 
@@ -271,9 +281,14 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
 
+            // =========================
+            // 1) COLORS: picker + add/remove + renumber + update variant selects
+            // =========================
+
             function bindPicker(picker) {
                 if (picker.dataset.bound) return;
                 picker.dataset.bound = "1";
+
                 picker.addEventListener("input", () => {
                     const hidden = document.getElementById(picker.dataset.targetId);
                     if (hidden) hidden.value = picker.value;
@@ -291,6 +306,7 @@
 
                 document.querySelectorAll("#colors-forms .color-row").forEach(row => {
                     if (row.style.display === "none") return;
+
                     const nameInput = row.querySelector('input[name$="-name"]');
                     const hexInput = row.querySelector('input[name$="-hex"]');
                     if (!hexInput) return;
@@ -308,17 +324,18 @@
                     sel.innerHTML =
                         '<option value="">---------</option>' +
                         colors.map(c => `<option value="${c.hex}">${c.label}</option>`).join("");
+
                     if (colors.some(c => c.hex === current)) sel.value = current;
                 });
             }
 
-            // Переиндексация formset после удаления строки
             function renumberColorForms() {
                 const container = document.getElementById("colors-forms");
+                if (!container) return;
+
                 const rows = Array.from(container.querySelectorAll(".color-row"));
 
                 rows.forEach((row, index) => {
-                    // обновляем все name/id/for, где встречается colors-<num>-
                     row.querySelectorAll("[name]").forEach(el => {
                         el.name = el.name.replace(/colors-\d+-/g, `colors-${index}-`);
                     });
@@ -329,15 +346,13 @@
                         el.htmlFor = el.htmlFor.replace(/colors-\d+-/g, `colors-${index}-`);
                     });
 
-                    // обновляем data-target-id у color input
                     const picker = row.querySelector(".color-picker");
                     const hidden = row.querySelector('input[name$="-hex"]');
                     if (picker && hidden) picker.dataset.targetId = hidden.id;
                 });
 
-                // TOTAL_FORMS = количество реально оставшихся строк
                 const total = document.querySelector('input[name="colors-TOTAL_FORMS"]');
-                total.value = String(rows.length);
+                if (total) total.value = String(rows.length);
 
                 syncPickers(container);
             }
@@ -351,122 +366,191 @@
                         const row = btn.closest(".color-row");
                         if (!row) return;
 
-                        row.remove();            // ✅ полностью убрали из DOM → на сервер не уйдёт
-                        renumberColorForms();    // ✅ переиндексация + TOTAL_FORMS
+                        row.remove();
+                        renumberColorForms();
                         refreshVariantColorSelects();
                     });
                 });
             }
 
-            document.getElementById("add-color-btn").addEventListener("click", () => {
-                const total = document.querySelector('input[name="colors-TOTAL_FORMS"]');
-                const idx = parseInt(total.value || "0", 10);
+            const addColorBtn = document.getElementById("add-color-btn");
+            if (addColorBtn) {
+                addColorBtn.addEventListener("click", () => {
+                    const total = document.querySelector('input[name="colors-TOTAL_FORMS"]');
+                    const idx = parseInt(total?.value || "0", 10);
 
-                const tpl = document.getElementById("colors-empty-form");
-                const container = document.getElementById("colors-forms");
+                    const tpl = document.getElementById("colors-empty-form");
+                    const container = document.getElementById("colors-forms");
+                    if (!tpl || !container || !total) return;
 
-                const html = tpl.innerHTML.replaceAll("__prefix__", String(idx)).trim();
-                container.insertAdjacentHTML("beforeend", html);
+                    const html = tpl.innerHTML.replaceAll("__prefix__", String(idx)).trim();
+                    container.insertAdjacentHTML("beforeend", html);
 
-                total.value = String(idx + 1);
+                    total.value = String(idx + 1);
 
-                const lastRow = container.lastElementChild;
-                syncPickers(lastRow);
-                bindRemoveButtons(lastRow);
-                refreshVariantColorSelects();
-            });
+                    const lastRow = container.lastElementChild;
+                    syncPickers(lastRow);
+                    bindRemoveButtons(lastRow);
+                    refreshVariantColorSelects();
+                });
+            }
 
+            // изменение названия цвета (для label в select)
             document.addEventListener("input", (e) => {
                 if (e.target?.name?.endsWith("-name")) refreshVariantColorSelects();
             });
 
+
+            // =========================
+            // 2) VARIANTS: add/remove new + renumber + refresh selects
+            // =========================
+
+            const variantsContainer = document.getElementById("variants-forms");
+            const addVariantBtn = document.getElementById("add-variant-btn");
+            const variantsTotal = document.querySelector('input[name="variants-TOTAL_FORMS"]');
+            const variantTemplate = document.getElementById("variants-empty-form");
+
+            function renumberVariants() {
+                if (!variantsContainer || !variantsTotal) return;
+
+                const rows = variantsContainer.querySelectorAll(".variant-row");
+                rows.forEach((row, index) => {
+                    row.querySelectorAll("[name]").forEach(el => {
+                        el.name = el.name.replace(/variants-(\d+|__prefix__)-/g, `variants-${index}-`);
+                    });
+                    row.querySelectorAll("[id]").forEach(el => {
+                        el.id = el.id.replace(/variants-(\d+|__prefix__)-/g, `variants-${index}-`);
+                    });
+                    row.querySelectorAll("label[for]").forEach(el => {
+                        el.htmlFor = el.htmlFor.replace(/variants-(\d+|__prefix__)-/g, `variants-${index}-`);
+                    });
+                });
+
+                variantsTotal.value = String(rows.length);
+            }
+
+            if (variantsContainer && addVariantBtn && variantsTotal && variantTemplate) {
+                addVariantBtn.addEventListener("click", () => {
+                    const index = parseInt(variantsTotal.value || "0", 10);
+
+                    let html = variantTemplate.innerHTML.replace(/__prefix__/g, String(index));
+                    variantsContainer.insertAdjacentHTML("beforeend", html);
+
+                    variantsTotal.value = String(index + 1);
+
+                    // ✅ важно: сразу заполнить options цветами в новом select
+                    refreshVariantColorSelects();
+                });
+
+                variantsContainer.addEventListener("click", (e) => {
+                    const btn = e.target.closest(".js-remove-variant");
+                    if (!btn) return;
+
+                    const row = btn.closest(".variant-row");
+                    if (!row) return;
+
+                    row.remove();
+                    renumberVariants();
+
+                    // ✅ обновить selects после удаления
+                    refreshVariantColorSelects();
+                });
+            }
+
+
+            // =========================
+            // 3) IMAGES: previews + remove + drag/drop + keep list
+            // =========================
+
+            const input = document.getElementById("imageInput");
+            const previewContainer = document.getElementById("preview-container");
+
+            if (input && previewContainer) {
+                const dt = new DataTransfer();
+
+                function clearOldPreviews() {
+                    previewContainer.querySelectorAll(".image-preview").forEach(el => el.remove());
+                }
+
+                function renderPreviews() {
+                    clearOldPreviews();
+
+                    [...dt.files].forEach((file, index) => {
+                        if (!file.type.startsWith("image/")) return;
+
+                        const url = URL.createObjectURL(file);
+
+                        const item = document.createElement("div");
+                        item.className = "item image-preview";
+                        item.innerHTML = `
+          <div class="thumb-wrap">
+            ${index === 0 ? `<span class="main-badge">Главное</span>` : ""}
+            <img class="thumb" src="${url}" alt="">
+            <div class="item trash remove-preview" title="Удалить">
+              <i class="icon-trash-2"></i>
+            </div>
+          </div>
+        `;
+
+                        item.querySelector(".remove-preview").addEventListener("click", () => {
+                            const newDT = new DataTransfer();
+                            [...dt.files].forEach((f, i) => {
+                                if (i !== index) newDT.items.add(f);
+                            });
+
+                            dt.items.clear();
+                            [...newDT.files].forEach(f => dt.items.add(f));
+
+                            input.files = dt.files;
+                            renderPreviews();
+                        });
+
+                        item.querySelector("img").addEventListener("load", () => URL.revokeObjectURL(url));
+
+                        const uploadItem = previewContainer.querySelector(".item.up-load");
+                        previewContainer.insertBefore(item, uploadItem);
+                    });
+                }
+
+                function addFiles(files) {
+                    [...files].forEach(f => {
+                        if (f && f.type && f.type.startsWith("image/")) dt.items.add(f);
+                    });
+                    input.files = dt.files;
+                    renderPreviews();
+                }
+
+                input.addEventListener("change", () => addFiles(input.files));
+
+                const uploadLabel = previewContainer.querySelector(".uploadfile");
+                if (uploadLabel) uploadLabel.addEventListener("click", () => input.click());
+
+                const dropZone = uploadLabel;
+                if (dropZone) {
+                    dropZone.addEventListener("dragover", e => {
+                        e.preventDefault();
+                        dropZone.classList.add("drag");
+                    });
+                    dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag"));
+                    dropZone.addEventListener("drop", e => {
+                        e.preventDefault();
+                        dropZone.classList.remove("drag");
+                        addFiles(e.dataTransfer.files);
+                    });
+                }
+            }
+
+
+            // =========================
+            // INIT
+            // =========================
             syncPickers();
             bindRemoveButtons();
             refreshVariantColorSelects();
+
         });
     </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const input = document.getElementById("imageInput");
-            const container = document.getElementById("preview-container");
 
-            // Накапливаем файлы (чтобы при повторном выборе не затиралось)
-            const dt = new DataTransfer();
-
-            function clearOldPreviews() {
-                container.querySelectorAll(".image-preview").forEach(el => el.remove());
-            }
-
-            function render() {
-                clearOldPreviews();
-
-                [...dt.files].forEach((file, index) => {
-                    if (!file.type.startsWith("image/")) return;
-
-                    const url = URL.createObjectURL(file);
-
-                    const item = document.createElement("div");
-                    item.className = "item image-preview";
-                    item.innerHTML = `
-        <div class="thumb-wrap">
-          ${index === 0 ? `<span class="main-badge">Главное</span>` : ""}
-          <img class="thumb" src="${url}" alt="">
-          <div class="item trash remove-preview" title="Удалить">
-            <i class="icon-trash-2"></i>
-          </div>
-        </div>
-      `;
-
-                    // удаление
-                    item.querySelector(".remove-preview").addEventListener("click", () => {
-                        const newDT = new DataTransfer();
-                        [...dt.files].forEach((f, i) => {
-                            if (i !== index) newDT.items.add(f);
-                        });
-
-                        dt.items.clear();
-                        [...newDT.files].forEach(f => dt.items.add(f));
-
-                        input.files = dt.files;
-                        render();
-                    });
-
-                    item.querySelector("img").addEventListener("load", () => URL.revokeObjectURL(url));
-
-                    // вставляем превью ПЕРЕД блоком загрузки
-                    const uploadItem = container.querySelector(".item.up-load");
-                    container.insertBefore(item, uploadItem);
-                });
-            }
-
-            function addFiles(files) {
-                [...files].forEach(f => {
-                    if (f && f.type && f.type.startsWith("image/")) dt.items.add(f);
-                });
-                input.files = dt.files;
-                render();
-            }
-
-            // выбор файлов
-            input.addEventListener("change", () => addFiles(input.files));
-
-            // click по зоне — открыть выбор файла
-            container.querySelector(".uploadfile").addEventListener("click", () => input.click());
-
-            // drag&drop
-            const dropZone = container.querySelector(".uploadfile");
-            dropZone.addEventListener("dragover", e => {
-                e.preventDefault();
-                dropZone.classList.add("drag");
-            });
-            dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag"));
-            dropZone.addEventListener("drop", e => {
-                e.preventDefault();
-                dropZone.classList.remove("drag");
-                addFiles(e.dataTransfer.files);
-            });
-        });
-    </script>
     <style>
         .image-preview .thumb-wrap {
             position: relative;

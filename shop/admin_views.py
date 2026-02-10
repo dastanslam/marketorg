@@ -92,54 +92,63 @@ def product_add(request):
         )
 
         if pform.is_valid() and colors_fs.is_valid() and variants_fs.is_valid():
-            product = pform.save(commit=False)
-            product.store = request.store
-            product.is_active = True
-            product.save()
+            with transaction.atomic():
+                product = pform.save(commit=False)
+                product.store = request.store
 
-            # 1) сохраняем цвета
-            colors_fs.instance = product
-            colors_fs.save()
+                # ✅ новый бренд (если ввели)
+                new_brand = (pform.cleaned_data.get("new_brand") or "").strip()
+                if new_brand:
+                    brand, _ = Brand.objects.get_or_create(
+                        store=request.store,
+                        name=new_brand,
+                        defaults={"is_active": True},
+                    )
+                    product.brand = brand
 
-            # 2) создаём map hex -> ProductColor
-            color_map = {c.hex: c for c in product.colors.all()}
+                product.is_active = True
+                product.save()
 
-            # 3) сохраняем варианты: берем color_hex и ставим FK color
-            variants_fs.instance = product
+                # 1) сохраняем цвета
+                colors_fs.instance = product
+                colors_fs.save()
 
-            for form in variants_fs.forms:
-                if not form.cleaned_data:
-                    continue
-                if form.cleaned_data.get("DELETE"):
-                    continue
+                # 2) создаём map hex -> ProductColor
+                color_map = {c.hex: c for c in product.colors.all()}
 
-                v = form.save(commit=False)
-                hexv = (form.cleaned_data.get("color_hex") or "").strip()
+                # 3) сохраняем варианты: берем color_hex и ставим FK color
+                variants_fs.instance = product
 
-                v.product = product
-                v.is_active = True
-                v.color = color_map.get(hexv) if hexv else None
+                for form in variants_fs.forms:
+                    if not form.cleaned_data:
+                        continue
+                    if form.cleaned_data.get("DELETE"):
+                        continue
 
-                v.save(update_parent=False)
+                    v = form.save(commit=False)
+                    hexv = (form.cleaned_data.get("color_hex") or "").strip()
 
-            # удаление (если редактирование будет)
-            for obj in variants_fs.deleted_objects:
-                obj.delete()
+                    v.product = product
+                    v.is_active = True
+                    v.color = color_map.get(hexv) if hexv else None
 
-            # пересчет цен один раз
-            product.update_prices()
+                    v.save(update_parent=False)
 
-            # картинки multiple
-            files = request.FILES.getlist("images")
-            main_set = False
-            for i, f in enumerate(files):
-                ProductImage.objects.create(
-                    product=product,
-                    image=f,
-                    sort=i,
-                    is_main=(not main_set),
-                )
-                main_set = True
+
+                # пересчет цен один раз
+                product.update_prices()
+
+                # картинки multiple
+                files = request.FILES.getlist("images")
+                main_set = False
+                for i, f in enumerate(files):
+                    ProductImage.objects.create(
+                        product=product,
+                        image=f,
+                        sort=i,
+                        is_main=(not main_set),
+                    )
+                    main_set = True
 
             messages.success(request, "Товар добавлен")
             return redirect("product_list")
