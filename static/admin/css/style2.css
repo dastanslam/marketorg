@@ -6380,22 +6380,3 @@ input.color-circle::-moz-color-swatch {
   min-width: 1515px;
 }
 
-.table-grid{
-  display: grid;
-  grid-template-columns: 3fr 1.2fr 1fr 0.8fr 1.2fr 1fr; /* настрой под себя */
-  gap: 20px;
-}
-
-.table-grid.align-center{
-  align-items: center;
-}
-
-/* чтобы заголовок ul не был flex */
-.table-title.table-grid{
-  list-style: none;
-  padding: 0;
-  margin: 0 0 14px 0;
-}
-.table-title.table-grid > li{
-  margin: 0;
-}

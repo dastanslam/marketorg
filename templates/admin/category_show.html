@@ -94,34 +94,31 @@
                                 <div class="body-title">Действие</div>
                             </li>
                         </ul>
-
                         <ul class="flex flex-column">
                             {% for product in products %}
                                 <li class="product-item gap20">
+                                    <div class="image no-bg">
+                                        <img src="images/products/41.png" alt="">
+                                    </div>
                                     <div class="flex items-center justify-between gap20 flex-grow">
-
                                         <!-- Товар -->
                                         <div class="name">
                                             <a href="#" class="body-title-2">
                                                 {{ product.name }}
                                             </a>
                                         </div>
-
                                         <!-- SKU -->
                                         <div class="body-text">
                                             {{ product.first_sku|default:"—" }}
                                         </div>
-
                                         <!-- Количество вариантов -->
                                         <div class="body-text">
                                             {{ product.variants_count }}
                                         </div>
-
                                         <!-- Цена диапазон -->
                                         <div class="body-text">
                                             {{ product.max_p }} – {{ product.min_p }}
                                         </div>
-
                                         <!-- Скидка -->
                                         <div class="body-text">
                                             {% if product.discount_is_active %}
@@ -132,14 +129,12 @@
                                                 —
                                             {% endif %}
                                         </div>
-
                                         <!-- Действия -->
                                         <div class="list-icon-function">
                                             <div class="item eye"><i class="icon-eye"></i></div>
                                             <div class="item edit"><i class="icon-edit-3"></i></div>
                                             <div class="item trash"><i class="icon-trash-2"></i></div>
                                         </div>
-
                                     </div>
                                 </li>
                             {% empty %}
