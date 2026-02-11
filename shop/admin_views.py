@@ -13,7 +13,52 @@ def dashboard(request):
     return render(request, "admin/index.html", {"store": request.store})
 
 def product_list(request):
-    return render(request, "admin/product_list.html", {"store": request.store})
+    store = request.store
+
+    # параметры
+    search = (request.GET.get("q") or "").strip()
+    per_page = request.GET.get("per_page", "10")
+    try:
+        per_page = int(per_page)
+    except ValueError:
+        per_page = 10
+    if per_page not in (10, 20, 30):
+        per_page = 10
+
+    # базовый queryset: все товары магазина
+    qs = (
+        Product.objects
+        .filter(store=store)
+        .annotate(
+            variants_count=Count("variants", distinct=True),
+            min_p=Min("variants__price"),
+            max_p=Max("variants__price"),
+        )
+    )
+
+    # поиск по названию ИЛИ по sku вариантов
+    if search:
+        if search.isdigit():
+            qs = qs.filter(id=int(search))
+        else:
+            qs = qs.filter(name__icontains=search)
+
+    # sku первого активного варианта
+    first_sku_subq = ProductVariant.objects.filter(
+        product_id=OuterRef("pk"),
+        is_active=True
+    ).order_by("id").values("sku")[:1]
+
+    qs = qs.annotate(first_sku=Subquery(first_sku_subq)).order_by("-created_at")
+
+    paginator = Paginator(qs, per_page)
+    page_obj = paginator.get_page(request.GET.get("page"))
+    return render(request, "admin/product_list.html", {
+        "products": page_obj.object_list,
+        "page_obj": page_obj,
+        "per_page": per_page,
+        "q": search,
+    })
 
 @transaction.atomic
 def settings(request):
@@ -173,9 +218,121 @@ def product_add(request):
 
 
 def product_edit(request, pk):
+    product = get_object_or_404(Product, pk=pk, store=request.store)
+
+    # choices для вариантов:
+    # POST -> из введённых цветов (чтобы сразу обновлялось)
+    # GET  -> из текущих цветов товара
+    if request.method == "POST":
+        color_choices = _extract_color_choices(request.POST)
+    else:
+        color_choices = [(c.hex, c.name) for c in product.colors.all()]
+
+    if request.method == "POST":
+        pform = ProductForm(request.POST, instance=product, store=request.store)
+        colors_fs = ColorFormSet(request.POST, instance=product, prefix="colors")
+        variants_fs = VariantFormSet(
+            request.POST,
+            instance=product,
+            prefix="variants",
+            form_kwargs={"color_choices": color_choices},
+        )
+
+        if pform.is_valid() and colors_fs.is_valid() and variants_fs.is_valid():
+            with transaction.atomic():
+                # -------- PRODUCT --------
+                product = pform.save(commit=False)
+                product.store = request.store
+
+                # новый бренд (если ввели)
+                new_brand = (pform.cleaned_data.get("new_brand") or "").strip()
+                if new_brand:
+                    brand, _ = Brand.objects.get_or_create(
+                        store=request.store,
+                        name=new_brand,
+                        defaults={"is_active": True},
+                    )
+                    product.brand = brand
+
+                product.save()
+
+                # -------- COLORS --------
+                colors_fs.save()
+                color_map = {c.hex: c for c in product.colors.all()}
+
+                # -------- VARIANTS --------
+                for form in variants_fs.forms:
+                    if not form.cleaned_data:
+                        continue
+
+                    # удаление существующего варианта
+                    if form.cleaned_data.get("DELETE") and form.instance.pk:
+                        form.instance.delete()
+                        continue
+
+                    v = form.save(commit=False)
+                    hexv = (form.cleaned_data.get("color_hex") or "").strip()
+
+                    v.product = product
+                    v.is_active = True
+                    v.color = color_map.get(hexv) if hexv else None
+                    v.save(update_parent=False)
+
+                # пересчёт цен один раз
+                product.update_prices()
+
+                # -------- IMAGES: delete + set main + add new --------
+                delete_ids = request.POST.getlist("delete_images")  # checkbox
+                main_id = request.POST.get("main_image")            # radio
+
+                # 1) удалить выбранные
+                if delete_ids:
+                    product.images.filter(id__in=delete_ids).delete()
+
+                # 2) добавить новые
+                files = request.FILES.getlist("images")
+                if files:
+                    start_sort = (product.images.aggregate(m=Max("sort")).get("m") or 0) + 1
+                    for i, f in enumerate(files):
+                        ProductImage.objects.create(
+                            product=product,
+                            image=f,
+                            sort=start_sort + i,
+                            is_main=False,
+                        )
+
+                # 3) назначить главную (если выбрали и её не удалили)
+                if main_id and not (delete_ids and str(main_id) in delete_ids):
+                    product.images.update(is_main=False)
+                    product.images.filter(id=main_id).update(is_main=True)
+
+                # 4) если главной нет — поставить первую
+                if not product.images.filter(is_main=True).exists():
+                    first_img = product.images.order_by("sort", "id").first()
+                    if first_img:
+                        first_img.is_main = True
+                        first_img.save(update_fields=["is_main"])
+
+            messages.success(request, "Товар обновлён")
+            return redirect("product_list")
+
+        messages.error(request, "Проверь поля — есть ошибки")
+
+    else:
+        pform = ProductForm(instance=product, store=request.store)
+        colors_fs = ColorFormSet(instance=product, prefix="colors")
+        variants_fs = VariantFormSet(
+            instance=product,
+            prefix="variants",
+            form_kwargs={"color_choices": color_choices},
+        )
+
     return render(request, "admin/product_edit.html", {
         "store": request.store,
-        "pk": pk
+        "product": product,
+        "pform": pform,
+        "colors_fs": colors_fs,
+        "variants_fs": variants_fs,
     })
 
 

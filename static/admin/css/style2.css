@@ -14,7 +14,7 @@
   --Palette-Orange-400: #FB923C;
   --Palette-Red-400: #F87171;
   --Palette-Red-500: #EF4444;
-  --Input:#ECF0F4;
+  --Input:#cbcbcb;
   --Icon: #CBD5E1;
   --Note: #95989D;
   --Text-Holder: #858B93;
@@ -6380,3 +6380,17 @@ input.color-circle::-moz-color-swatch {
   min-width: 1515px;
 }
 
+/* шапка: цена и скидка */
+.wg-table.table-product-list ul.table-title li:nth-child(4),
+.wg-table.table-product-list ul.table-title li:nth-child(5){
+  width: 120px;      /* поставь сколько надо */
+  flex-shrink: 0;
+}
+
+/* строки: цена и скидка (у тебя они внутри .flex-grow) */
+.wg-table.table-product-list .product-item .flex-grow > div:nth-child(4),
+.wg-table.table-product-list .product-item .flex-grow > div:nth-child(5){
+  width: 120px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}

@@ -3,4 +3,638 @@
 
 {% block title %}Главная{% endblock %}
 
-{% block content %}{% endblock %}
+{% block content %}
+    <div class="main-content-inner">
+        <!-- main-content-wrap -->
+        <div class="main-content-wrap">
+            <div class="flex items-center flex-wrap justify-between gap20 mb-27">
+                <h3>Редактирование товара</h3>
+                <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
+                    <li>
+                        <a href="{% url 'dashboard' %}">
+                            <div class="text-tiny">Панель управления</div>
+                        </a>
+                    </li>
+                    <li>
+                        <i class="icon-chevron-right"></i>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <div class="text-tiny">Магазин</div>
+                        </a>
+                    </li>
+                    <li>
+                        <i class="icon-chevron-right"></i>
+                    </li>
+                    <li>
+                        <div class="text-tiny">Редактирование товара</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- form-add-product -->
+            <form class="tf-section-2 form-add-product" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="wg-box">
+
+                    <div class="body-title mb-10">Редактирование: {{ product.name }}</div>
+
+                    <fieldset class="name">
+                        <div class="body-title mb-10">Название товара <span class="tf-color-1">*</span></div>
+                        {{ pform.name }}
+                        {% if pform.name.errors %}
+                            <div class="text-tiny tf-color-1">{{ pform.name.errors }}</div>
+                        {% endif %}
+                    </fieldset>
+
+                    <div class="gap22 cols">
+                        <fieldset class="category">
+                            <div class="body-title mb-10">Категория</div>
+                            <div class="select">
+                                {{ pform.category }}
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="male">
+                            <div class="body-title mb-10">Пол</div>
+                            <div class="select">
+                                {{ pform.gender }}
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <fieldset class="brand">
+                        <div class="body-title mb-10">Бренд</div>
+                        <div class="select mb-10">
+                            {{ pform.brand }}
+                        </div>
+                        <div class="mb-10">
+                            {{ pform.new_brand }}
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="description">
+                        <div class="body-title mb-10">Описание</div>
+                        {{ pform.description }}
+                        {% if pform.description.errors %}
+                            <div class="text-tiny tf-color-1">{{ pform.description.errors }}</div>
+                        {% endif %}
+                    </fieldset>
+
+                    <div class="gap22 cols">
+                        <fieldset class="country">
+                            <div class="body-title mb-10">Страна</div>
+                            {{ pform.country }}
+                            {% if pform.country.errors %}
+                                <div class="text-tiny tf-color-1">{{ pform.country.errors }}</div>
+                            {% endif %}
+                        </fieldset>
+
+                        <fieldset class="material">
+                            <div class="body-title mb-10">Материал</div>
+                            {{ pform.material }}
+                            {% if pform.material.errors %}
+                                <div class="text-tiny tf-color-1">{{ pform.material.errors }}</div>
+                            {% endif %}
+                        </fieldset>
+                    </div>
+
+                    {# ===== COLORS (ProductColor formset) ===== #}
+                    <div style="margin-top:16px;">
+                        <div class="body-title mb-10">Цвета</div>
+
+                        {{ colors_fs.management_form }}
+
+                        <div id="colors-forms">
+                            {% for f in colors_fs %}
+                                {% for h in f.hidden_fields %}{{ h }}{% endfor %}
+                                <div class="gap22 cols color-row" style="margin-bottom:10px;">
+                                    <fieldset class="name">
+                                        <div class="body-title mb-10">Название цвета</div>
+                                        {{ f.name }}
+                                        {% if f.name.errors %}
+                                            <div class="text-tiny tf-color-1">{{ f.name.errors }}</div>
+                                        {% endif %}
+                                    </fieldset>
+
+                                    <fieldset class="name">
+                                        <div class="body-title mb-10">Выбрать цвет</div>
+
+                                        <input type="color" class="color-picker color-circle"
+                                               value="{{ f.hex.value|default:'#000000' }}"
+                                               data-target-id="{{ f.hex.id_for_label }}">
+
+                                        {{ f.hex }}
+                                        {% if f.hex.errors %}
+                                            <div class="text-tiny tf-color-1">{{ f.hex.errors }}</div>
+                                        {% endif %}
+                                    </fieldset>
+
+                                    {% if f.instance.pk %}
+                                        <fieldset class="name">
+                                            <div class="body-title mb-10">Удалить</div>
+                                            {{ f.DELETE }}
+                                        </fieldset>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <template id="colors-empty-form">
+                            <div class="gap22 cols color-row" style="margin-bottom:10px;">
+                                <fieldset class="name">
+                                    <div class="body-title mb-10">Название цвета</div>
+                                    {{ colors_fs.empty_form.name }}
+                                </fieldset>
+
+                                <fieldset class="name">
+                                    <div class="body-title mb-10">Выбрать цвет</div>
+                                    <input type="color" class="color-picker color-circle"
+                                           value="#000000"
+                                           data-target-id="{{ colors_fs.empty_form.hex.id_for_label }}">
+                                    {{ colors_fs.empty_form.hex }}
+                                </fieldset>
+
+                                <fieldset class="name">
+                                    <div class="body-title mb-10">Действие</div>
+                                    <button type="button" class="tf-button style-1 color-remove-btn">Удалить</button>
+                                </fieldset>
+                            </div>
+                        </template>
+
+                        <button type="button" class="tf-button style-1" id="add-color-btn">+ Добавить цвет</button>
+                    </div>
+
+                </div>
+
+                <div class="wg-box">
+                    <fieldset>
+                        <div class="body-title mb-10">Загрузка изображений</div>
+
+                        {# ===== EXISTING IMAGES ===== #}
+                        {% if product.images.exists %}
+                            <div style="margin-bottom:16px;">
+                                <div class="body-title mb-10">Уже загруженные изображения</div>
+
+                                <div class="cols gap22" style="flex-wrap:wrap;">
+                                    {% for img in product.images.all %}
+                                        <div class="wg-box" style="width:210px;">
+                                            <div style="height:140px; display:flex; align-items:center; justify-content:center; overflow:hidden; border-radius:10px;">
+                                                <img src="{{ img.image.url }}" alt=""
+                                                     style="max-width:100%; max-height:100%;">
+                                            </div>
+
+                                            <div style="margin-top:10px;">
+                                                <label class="text-tiny"
+                                                       style="display:flex; gap:8px; align-items:center;">
+                                                    <input type="radio" name="main_image" value="{{ img.id }}"
+                                                           {% if img.is_main %}checked{% endif %}>
+                                                    Главная
+                                                </label>
+
+                                                <label class="text-tiny tf-color-1"
+                                                       style="display:flex; gap:8px; align-items:center; margin-top:6px;">
+                                                    <input type="checkbox" name="delete_images" value="{{ img.id }}">
+                                                    Удалить
+                                                </label>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                                <div class="text-tiny" style="margin-top:8px;">
+                                    Выберите одну “Главная”. Отметьте “Удалить” — чтобы убрать изображение.
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {# ===== UPLOAD NEW IMAGES ===== #}
+                        <div class="upload-image mb-16" id="preview-container">
+                            <div class="item up-load">
+                                <label class="uploadfile">
+                                    <span class="icon"><i class="icon-upload-cloud"></i></span>
+                                    <span class="text-tiny">
+                            Перетащите изображения сюда или выберите
+                            <span class="tf-color">нажмите для выбора</span>
+                        </span>
+                                    <input type="file" id="imageInput" name="images" multiple hidden>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="body-text">
+                            Можно загрузить новые изображения. Старые останутся, если не удалить.
+                        </div>
+                    </fieldset>
+
+                    {# ===== VARIANTS (formset) ===== #}
+                    <div style="margin-top:16px;">
+                        <div class="body-title mb-10">Варианты</div>
+
+                        {{ variants_fs.management_form }}
+
+                        <div id="variants-forms">
+                            {% for vf in variants_fs %}
+                                {% for h in vf.hidden_fields %}{{ h }}{% endfor %}
+                                <div class="wg-box variant-row" style="margin-bottom:14px;">
+                                    <div class="cols gap22">
+                                        <fieldset class="name">
+                                            <div class="body-title mb-10">Цвет</div>
+                                            <div class="select">
+                                                {{ vf.color_hex }}
+                                            </div>
+                                            {% if vf.color_hex.errors %}
+                                                <div class="text-tiny tf-color-1">{{ vf.color_hex.errors }}</div>
+                                            {% endif %}
+                                        </fieldset>
+
+                                        <fieldset class="name">
+                                            <div class="body-title mb-10">Размер</div>
+                                            {{ vf.size }}
+                                            {% if vf.size.errors %}
+                                                <div class="text-tiny tf-color-1">{{ vf.size.errors }}</div>
+                                            {% endif %}
+                                        </fieldset>
+                                    </div>
+
+                                    <div class="cols gap22">
+                                        <fieldset class="name">
+                                            <div class="body-title mb-10">Цена <span class="tf-color-1">*</span></div>
+                                            {{ vf.price }}
+                                            {% if vf.price.errors %}
+                                                <div class="text-tiny tf-color-1">{{ vf.price.errors }}</div>
+                                            {% endif %}
+                                        </fieldset>
+                                    </div>
+
+                                    {% if vf.instance.pk %}
+                                        <div style="margin-top:8px;">
+                                            {{ vf.DELETE }} <span class="text-tiny">Удалить вариант</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <template id="variants-empty-form">
+                            <div class="wg-box variant-row" style="margin-bottom:14px;">
+                                <div class="cols gap22">
+                                    <fieldset class="name">
+                                        <div class="body-title mb-10">Цвет</div>
+                                        <div class="select">
+                                            {{ variants_fs.empty_form.color_hex }}
+                                        </div>
+                                    </fieldset>
+
+                                    <fieldset class="name">
+                                        <div class="body-title mb-10">Размер</div>
+                                        {{ variants_fs.empty_form.size }}
+                                    </fieldset>
+                                </div>
+
+                                <div class="cols gap22">
+                                    <fieldset class="name">
+                                        <div class="body-title mb-10">Цена <span class="tf-color-1">*</span></div>
+                                        {{ variants_fs.empty_form.price }}
+                                    </fieldset>
+                                    <div style="margin-top:10px;">
+                                        <button type="button" class="tf-button style-1 js-remove-variant"
+                                                style="margin-top:19px !important;">
+                                            Удалить
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                        <button type="button" class="tf-button style-1" id="add-variant-btn">+ Добавить вариант</button>
+                    </div>
+
+                    <div class="cols gap10" style="margin-top:16px;">
+                        <button class="tf-button w-full" type="submit">Сохранить</button>
+                    </div>
+                </div>
+            </form>
+            <!-- /form-add-product -->
+        </div>
+        <!-- /main-content-wrap -->
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            // =========================
+            // 1) COLORS: picker + add/remove + renumber + update variant selects
+            // =========================
+
+            function bindPicker(picker) {
+                if (picker.dataset.bound) return;
+                picker.dataset.bound = "1";
+
+                picker.addEventListener("input", () => {
+                    const hidden = document.getElementById(picker.dataset.targetId);
+                    if (hidden) hidden.value = picker.value;
+                    refreshVariantColorSelects();
+                });
+            }
+
+            function syncPickers(scope = document) {
+                scope.querySelectorAll(".color-picker").forEach(bindPicker);
+            }
+
+            function refreshVariantColorSelects() {
+                const colors = [];
+                const seen = new Set();
+
+                document.querySelectorAll("#colors-forms .color-row").forEach(row => {
+                    if (row.style.display === "none") return;
+
+                    const nameInput = row.querySelector('input[name$="-name"]');
+                    const hexInput = row.querySelector('input[name$="-hex"]');
+                    if (!hexInput) return;
+
+                    const hex = (hexInput.value || "").trim();
+                    const name = (nameInput?.value || "").trim();
+                    if (!hex || seen.has(hex)) return;
+
+                    seen.add(hex);
+                    colors.push({hex, label: name || hex});
+                });
+
+                document.querySelectorAll('#variants-forms select[name$="-color_hex"]').forEach(sel => {
+                    const current = sel.value;
+                    sel.innerHTML =
+                        '<option value="">Выберите цвет</option>' +
+                        colors.map(c => `<option value="${c.hex}">${c.label}</option>`).join("");
+
+                    if (colors.some(c => c.hex === current)) sel.value = current;
+                });
+            }
+
+            function renumberColorForms() {
+                const container = document.getElementById("colors-forms");
+                if (!container) return;
+
+                const rows = Array.from(container.querySelectorAll(".color-row"));
+
+                rows.forEach((row, index) => {
+                    row.querySelectorAll("[name]").forEach(el => {
+                        el.name = el.name.replace(/colors-\d+-/g, `colors-${index}-`);
+                    });
+                    row.querySelectorAll("[id]").forEach(el => {
+                        el.id = el.id.replace(/colors-\d+-/g, `colors-${index}-`);
+                    });
+                    row.querySelectorAll("label[for]").forEach(el => {
+                        el.htmlFor = el.htmlFor.replace(/colors-\d+-/g, `colors-${index}-`);
+                    });
+
+                    const picker = row.querySelector(".color-picker");
+                    const hidden = row.querySelector('input[name$="-hex"]');
+                    if (picker && hidden) picker.dataset.targetId = hidden.id;
+                });
+
+                const total = document.querySelector('input[name="colors-TOTAL_FORMS"]');
+                if (total) total.value = String(rows.length);
+
+                syncPickers(container);
+            }
+
+            function bindRemoveButtons(scope = document) {
+                scope.querySelectorAll(".color-remove-btn").forEach(btn => {
+                    if (btn.dataset.bound) return;
+                    btn.dataset.bound = "1";
+
+                    btn.addEventListener("click", () => {
+                        const row = btn.closest(".color-row");
+                        if (!row) return;
+
+                        row.remove();
+                        renumberColorForms();
+                        refreshVariantColorSelects();
+                    });
+                });
+            }
+
+            const addColorBtn = document.getElementById("add-color-btn");
+            if (addColorBtn) {
+                addColorBtn.addEventListener("click", () => {
+                    const total = document.querySelector('input[name="colors-TOTAL_FORMS"]');
+                    const idx = parseInt(total?.value || "0", 10);
+
+                    const tpl = document.getElementById("colors-empty-form");
+                    const container = document.getElementById("colors-forms");
+                    if (!tpl || !container || !total) return;
+
+                    const html = tpl.innerHTML.replaceAll("__prefix__", String(idx)).trim();
+                    container.insertAdjacentHTML("beforeend", html);
+
+                    total.value = String(idx + 1);
+
+                    const lastRow = container.lastElementChild;
+                    syncPickers(lastRow);
+                    bindRemoveButtons(lastRow);
+                    refreshVariantColorSelects();
+                });
+            }
+
+            // изменение названия цвета (для label в select)
+            document.addEventListener("input", (e) => {
+                if (e.target?.name?.endsWith("-name")) refreshVariantColorSelects();
+            });
+
+
+            // =========================
+            // 2) VARIANTS: add/remove new + renumber + refresh selects
+            // =========================
+
+            const variantsContainer = document.getElementById("variants-forms");
+            const addVariantBtn = document.getElementById("add-variant-btn");
+            const variantsTotal = document.querySelector('input[name="variants-TOTAL_FORMS"]');
+            const variantTemplate = document.getElementById("variants-empty-form");
+
+            function renumberVariants() {
+                if (!variantsContainer || !variantsTotal) return;
+
+                const rows = variantsContainer.querySelectorAll(".variant-row");
+                rows.forEach((row, index) => {
+                    row.querySelectorAll("[name]").forEach(el => {
+                        el.name = el.name.replace(/variants-(\d+|__prefix__)-/g, `variants-${index}-`);
+                    });
+                    row.querySelectorAll("[id]").forEach(el => {
+                        el.id = el.id.replace(/variants-(\d+|__prefix__)-/g, `variants-${index}-`);
+                    });
+                    row.querySelectorAll("label[for]").forEach(el => {
+                        el.htmlFor = el.htmlFor.replace(/variants-(\d+|__prefix__)-/g, `variants-${index}-`);
+                    });
+                });
+
+                variantsTotal.value = String(rows.length);
+            }
+
+            if (variantsContainer && addVariantBtn && variantsTotal && variantTemplate) {
+                addVariantBtn.addEventListener("click", () => {
+                    const index = parseInt(variantsTotal.value || "0", 10);
+
+                    let html = variantTemplate.innerHTML.replace(/__prefix__/g, String(index));
+                    variantsContainer.insertAdjacentHTML("beforeend", html);
+
+                    variantsTotal.value = String(index + 1);
+
+                    // ✅ важно: сразу заполнить options цветами в новом select
+                    refreshVariantColorSelects();
+                });
+
+                variantsContainer.addEventListener("click", (e) => {
+                    const btn = e.target.closest(".js-remove-variant");
+                    if (!btn) return;
+
+                    const row = btn.closest(".variant-row");
+                    if (!row) return;
+
+                    row.remove();
+                    renumberVariants();
+
+                    // ✅ обновить selects после удаления
+                    refreshVariantColorSelects();
+                });
+            }
+
+
+            // =========================
+            // 3) IMAGES: previews + remove + drag/drop + keep list
+            // =========================
+
+            const input = document.getElementById("imageInput");
+            const previewContainer = document.getElementById("preview-container");
+
+            if (input && previewContainer) {
+                const dt = new DataTransfer();
+
+                function clearOldPreviews() {
+                    previewContainer.querySelectorAll(".image-preview").forEach(el => el.remove());
+                }
+
+                function renderPreviews() {
+                    clearOldPreviews();
+
+                    [...dt.files].forEach((file, index) => {
+                        if (!file.type.startsWith("image/")) return;
+
+                        const url = URL.createObjectURL(file);
+
+                        const item = document.createElement("div");
+                        item.className = "item image-preview";
+                        item.innerHTML = `
+          <div class="thumb-wrap">
+            ${index === 0 ? `<span class="main-badge">Главное</span>` : ""}
+            <img class="thumb" src="${url}" alt="">
+            <div class="item trash remove-preview" title="Удалить">
+              <i class="icon-trash-2"></i>
+            </div>
+          </div>
+        `;
+
+                        item.querySelector(".remove-preview").addEventListener("click", () => {
+                            const newDT = new DataTransfer();
+                            [...dt.files].forEach((f, i) => {
+                                if (i !== index) newDT.items.add(f);
+                            });
+
+                            dt.items.clear();
+                            [...newDT.files].forEach(f => dt.items.add(f));
+
+                            input.files = dt.files;
+                            renderPreviews();
+                        });
+
+                        item.querySelector("img").addEventListener("load", () => URL.revokeObjectURL(url));
+
+                        const uploadItem = previewContainer.querySelector(".item.up-load");
+                        previewContainer.insertBefore(item, uploadItem);
+                    });
+                }
+
+                function addFiles(files) {
+                    [...files].forEach(f => {
+                        if (f && f.type && f.type.startsWith("image/")) dt.items.add(f);
+                    });
+                    input.files = dt.files;
+                    renderPreviews();
+                }
+
+                input.addEventListener("change", () => {
+                    addFiles(input.files);
+                    input.value = "";
+                });
+
+
+                const dropZone = uploadLabel;
+                if (dropZone) {
+                    dropZone.addEventListener("dragover", e => {
+                        e.preventDefault();
+                        dropZone.classList.add("drag");
+                    });
+                    dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag"));
+                    dropZone.addEventListener("drop", e => {
+                        e.preventDefault();
+                        dropZone.classList.remove("drag");
+                        addFiles(e.dataTransfer.files);
+                    });
+                }
+            }
+
+
+            // =========================
+            // INIT
+            // =========================
+            syncPickers();
+            bindRemoveButtons();
+            refreshVariantColorSelects();
+
+        });
+    </script>
+
+    <style>
+        .image-preview .thumb-wrap {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #f3f3f3;
+        }
+
+        .image-preview .thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-preview .trash {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        .main-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: #ff2e63;
+            color: #fff;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 8px;
+            z-index: 3;
+        }
+
+        .uploadfile.drag {
+            outline: 2px dashed #2f80ed;
+            border-radius: 12px;
+        }
+    </style>
+
+{% endblock %}
