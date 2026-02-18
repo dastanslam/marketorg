@@ -1,11 +1,10 @@
 {% extends "admin/base.html" %}
 {% load static %}
 
-{% block title %}Главная{% endblock %}
+{% block title %}Добавить товар{% endblock %}
 
 {% block content %}
     <div class="main-content-inner">
-        <!-- main-content-wrap -->
         <div class="main-content-wrap">
             <div class="flex items-center flex-wrap justify-between gap20 mb-27">
                 <h3>Добавить товар</h3>
@@ -15,29 +14,21 @@
                             <div class="text-tiny">Панель управления</div>
                         </a>
                     </li>
-                    <li>
-                        <i class="icon-chevron-right"></i>
-                    </li>
+                    <li><i class="icon-chevron-right"></i></li>
                     <li>
                         <a href="#">
                             <div class="text-tiny">Магазин</div>
                         </a>
                     </li>
-                    <li>
-                        <i class="icon-chevron-right"></i>
-                    </li>
-                    <li>
-                        <div class="text-tiny">Добавить товар</div>
-                    </li>
+                    <li><i class="icon-chevron-right"></i></li>
+                    <li><div class="text-tiny">Добавить товар</div></li>
                 </ul>
             </div>
 
-            <!-- form-add-product -->
             <form class="tf-section-2 form-add-product" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
 
                 <div class="wg-box">
-
                     <fieldset class="name">
                         <div class="body-title mb-10">Название товара <span class="tf-color-1">*</span></div>
                         {{ pform.name }}
@@ -97,68 +88,6 @@
                             {% endif %}
                         </fieldset>
                     </div>
-
-                    {# ===== COLORS (ProductColor formset) ===== #}
-                    <div style="margin-top:16px;">
-                        <div class="body-title mb-10">Цвета</div>
-
-                        {{ colors_fs.management_form }}
-
-                        <div id="colors-forms">
-                            {% for f in colors_fs %}
-                                <div class="gap22 cols color-row" style="margin-bottom:10px;">
-                                    <fieldset class="name">
-                                        <div class="body-title mb-10">Название цвета</div>
-                                        {{ f.name }}
-                                        {% if f.name.errors %}
-                                            <div class="text-tiny tf-color-1">{{ f.name.errors }}</div>
-                                        {% endif %}
-                                    </fieldset>
-                                    <fieldset class="name">
-                                        <div class="body-title mb-10">Выбрать цвет</div>
-                                        <input type="color" class="color-picker color-circle"
-                                               value="{{ f.hex.value|default:'#000000' }}"
-                                               data-target-id="{{ f.hex.id_for_label }}">
-                                        {{ f.hex }}
-                                        {% if vf.color_hex.errors %}
-                                            <div class="text-tiny tf-color-1">{{ vf.color_hex.errors }}</div>
-                                        {% endif %}
-                                    </fieldset>
-                                    {% if f.instance.pk %}
-                                        <fieldset class="name">
-                                            <div class="body-title mb-10">Удалить</div>
-                                            {{ f.DELETE }}
-                                        </fieldset>
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
-                        </div>
-
-                        <template id="colors-empty-form">
-                            <div class="gap22 cols color-row" style="margin-bottom:10px;">
-                                <fieldset class="name">
-                                    <div class="body-title mb-10">Название цвета</div>
-                                    {{ colors_fs.empty_form.name }}
-                                </fieldset>
-
-                                <fieldset class="name">
-                                    <div class="body-title mb-10">Выбрать цвет</div>
-                                    <input type="color" class="color-picker color-circle"
-                                           value="#000000"
-                                           data-target-id="{{ colors_fs.empty_form.hex.id_for_label }}">
-                                    {{ colors_fs.empty_form.hex }}
-                                </fieldset>
-
-                                <fieldset class="name">
-                                    <div class="body-title mb-10">Действие</div>
-                                    <button type="button" class="tf-button style-1 color-remove-btn">Удалить</button>
-                                </fieldset>
-                            </div>
-
-                        </template>
-                        <button type="button" class="tf-button style-1" id="add-color-btn">+ Добавить цвет</button>
-                    </div>
-
                 </div>
 
                 <div class="wg-box">
@@ -166,21 +95,15 @@
                         <div class="body-title mb-10">Загрузка изображений</div>
 
                         <div class="upload-image mb-16" id="preview-container">
-
                             <div class="item up-load">
-                                <label class="uploadfile">
-                <span class="icon">
-                    <i class="icon-upload-cloud"></i>
-                </span>
+                                <label class="uploadfile" id="uploadLabel">
+                                    <span class="icon"><i class="icon-upload-cloud"></i></span>
                                     <span class="text-tiny">
-                    Перетащите изображения сюда или выберите
-                    <span class="tf-color">нажмите для выбора</span>
-                </span>
-
+                                        Перетащите изображения сюда или <span class="tf-color">нажмите для выбора</span>
+                                    </span>
                                     <input type="file" id="imageInput" name="images" multiple hidden>
                                 </label>
                             </div>
-
                         </div>
 
                         <div class="body-text">
@@ -201,7 +124,8 @@
                                         <fieldset class="name">
                                             <div class="body-title mb-10">Цвет</div>
                                             <div class="select">
-                                                {{ vf.color_hex }}
+                                                {# ИЗМЕНЕНО: теперь здесь просто поле color (select) #}
+                                                {{ vf.color }}
                                             </div>
                                             {% if vf.color.errors %}
                                                 <div class="text-tiny tf-color-1">{{ vf.color.errors }}</div>
@@ -225,7 +149,8 @@
                                                 <div class="text-tiny tf-color-1">{{ vf.price.errors }}</div>
                                             {% endif %}
                                         </fieldset>
-                                    </div>
+
+                                        </div>
 
                                     {% if vf.instance.pk %}
                                         <div style="margin-top:8px;">
@@ -236,13 +161,15 @@
                             {% endfor %}
                         </div>
 
+                        {# Empty Form Template #}
                         <template id="variants-empty-form">
                             <div class="wg-box variant-row" style="margin-bottom:14px;">
                                 <div class="cols gap22">
                                     <fieldset class="name">
                                         <div class="body-title mb-10">Цвет</div>
                                         <div class="select">
-                                            {{ variants_fs.empty_form.color_hex }}
+                                            {# ИЗМЕНЕНО: empty_form.color #}
+                                            {{ variants_fs.empty_form.color }}
                                         </div>
                                     </fieldset>
 
@@ -257,12 +184,13 @@
                                         <div class="body-title mb-10">Цена <span class="tf-color-1">*</span></div>
                                         {{ variants_fs.empty_form.price }}
                                     </fieldset>
+
                                     <div style="margin-top:10px;">
-                                        <button type="button" class="tf-button style-1 js-remove-variant" style="margin-top:19px !important;">Удалить
+                                        <button type="button" class="tf-button style-1 js-remove-variant" style="margin-top:19px !important;">
+                                            Удалить
                                         </button>
                                     </div>
                                 </div>
-
                             </div>
                         </template>
 
@@ -274,135 +202,18 @@
                     </div>
                 </div>
             </form>
-            <!-- /form-add-product -->
+            </div>
         </div>
-        <!-- /main-content-wrap -->
-    </div>
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
 
             // =========================
-            // 1) COLORS: picker + add/remove + renumber + update variant selects
-            // =========================
-
-            function bindPicker(picker) {
-                if (picker.dataset.bound) return;
-                picker.dataset.bound = "1";
-
-                picker.addEventListener("input", () => {
-                    const hidden = document.getElementById(picker.dataset.targetId);
-                    if (hidden) hidden.value = picker.value;
-                    refreshVariantColorSelects();
-                });
-            }
-
-            function syncPickers(scope = document) {
-                scope.querySelectorAll(".color-picker").forEach(bindPicker);
-            }
-
-            function refreshVariantColorSelects() {
-                const colors = [];
-                const seen = new Set();
-
-                document.querySelectorAll("#colors-forms .color-row").forEach(row => {
-                    if (row.style.display === "none") return;
-
-                    const nameInput = row.querySelector('input[name$="-name"]');
-                    const hexInput = row.querySelector('input[name$="-hex"]');
-                    if (!hexInput) return;
-
-                    const hex = (hexInput.value || "").trim();
-                    const name = (nameInput?.value || "").trim();
-                    if (!hex || seen.has(hex)) return;
-
-                    seen.add(hex);
-                    colors.push({hex, label: name || hex});
-                });
-
-                document.querySelectorAll('#variants-forms select[name$="-color_hex"]').forEach(sel => {
-                    const current = sel.value;
-                    sel.innerHTML =
-                        '<option value="">Выберите цвет</option>' +
-                        colors.map(c => `<option value="${c.hex}">${c.label}</option>`).join("");
-
-                    if (colors.some(c => c.hex === current)) sel.value = current;
-                });
-            }
-
-            function renumberColorForms() {
-                const container = document.getElementById("colors-forms");
-                if (!container) return;
-
-                const rows = Array.from(container.querySelectorAll(".color-row"));
-
-                rows.forEach((row, index) => {
-                    row.querySelectorAll("[name]").forEach(el => {
-                        el.name = el.name.replace(/colors-\d+-/g, `colors-${index}-`);
-                    });
-                    row.querySelectorAll("[id]").forEach(el => {
-                        el.id = el.id.replace(/colors-\d+-/g, `colors-${index}-`);
-                    });
-                    row.querySelectorAll("label[for]").forEach(el => {
-                        el.htmlFor = el.htmlFor.replace(/colors-\d+-/g, `colors-${index}-`);
-                    });
-
-                    const picker = row.querySelector(".color-picker");
-                    const hidden = row.querySelector('input[name$="-hex"]');
-                    if (picker && hidden) picker.dataset.targetId = hidden.id;
-                });
-
-                const total = document.querySelector('input[name="colors-TOTAL_FORMS"]');
-                if (total) total.value = String(rows.length);
-
-                syncPickers(container);
-            }
-
-            function bindRemoveButtons(scope = document) {
-                scope.querySelectorAll(".color-remove-btn").forEach(btn => {
-                    if (btn.dataset.bound) return;
-                    btn.dataset.bound = "1";
-
-                    btn.addEventListener("click", () => {
-                        const row = btn.closest(".color-row");
-                        if (!row) return;
-
-                        row.remove();
-                        renumberColorForms();
-                        refreshVariantColorSelects();
-                    });
-                });
-            }
-
-            const addColorBtn = document.getElementById("add-color-btn");
-            if (addColorBtn) {
-                addColorBtn.addEventListener("click", () => {
-                    const total = document.querySelector('input[name="colors-TOTAL_FORMS"]');
-                    const idx = parseInt(total?.value || "0", 10);
-
-                    const tpl = document.getElementById("colors-empty-form");
-                    const container = document.getElementById("colors-forms");
-                    if (!tpl || !container || !total) return;
-
-                    const html = tpl.innerHTML.replaceAll("__prefix__", String(idx)).trim();
-                    container.insertAdjacentHTML("beforeend", html);
-
-                    total.value = String(idx + 1);
-
-                    const lastRow = container.lastElementChild;
-                    syncPickers(lastRow);
-                    bindRemoveButtons(lastRow);
-                    refreshVariantColorSelects();
-                });
-            }
-
-            // изменение названия цвета (для label в select)
-            document.addEventListener("input", (e) => {
-                if (e.target?.name?.endsWith("-name")) refreshVariantColorSelects();
-            });
-
-
-            // =========================
-            // 2) VARIANTS: add/remove new + renumber + refresh selects
+            // VARIANTS: add/remove new + renumber
             // =========================
 
             const variantsContainer = document.getElementById("variants-forms");
@@ -437,9 +248,6 @@
                     variantsContainer.insertAdjacentHTML("beforeend", html);
 
                     variantsTotal.value = String(index + 1);
-
-                    // ✅ важно: сразу заполнить options цветами в новом select
-                    refreshVariantColorSelects();
                 });
 
                 variantsContainer.addEventListener("click", (e) => {
@@ -451,19 +259,17 @@
 
                     row.remove();
                     renumberVariants();
-
-                    // ✅ обновить selects после удаления
-                    refreshVariantColorSelects();
                 });
             }
 
 
             // =========================
-            // 3) IMAGES: previews + remove + drag/drop + keep list
+            // IMAGES: previews + remove + drag/drop + keep list
             // =========================
 
             const input = document.getElementById("imageInput");
             const previewContainer = document.getElementById("preview-container");
+            const uploadLabel = document.getElementById("uploadLabel"); // Получаем label для Drag&Drop
 
             if (input && previewContainer) {
                 const dt = new DataTransfer();
@@ -483,14 +289,14 @@
                         const item = document.createElement("div");
                         item.className = "item image-preview";
                         item.innerHTML = `
-          <div class="thumb-wrap">
-            ${index === 0 ? `<span class="main-badge">Главное</span>` : ""}
-            <img class="thumb" src="${url}" alt="">
-            <div class="item trash remove-preview" title="Удалить">
-              <i class="icon-trash-2"></i>
-            </div>
-          </div>
-        `;
+                            <div class="thumb-wrap">
+                                ${index === 0 ? `<span class="main-badge">Главное</span>` : ""}
+                                <img class="thumb" src="${url}" alt="">
+                                <div class="item trash remove-preview" title="Удалить">
+                                <i class="icon-trash-2"></i>
+                                </div>
+                            </div>
+                        `;
 
                         item.querySelector(".remove-preview").addEventListener("click", () => {
                             const newDT = new DataTransfer();
@@ -522,30 +328,19 @@
 
                 input.addEventListener("change", () => addFiles(input.files));
 
-
-                const dropZone = uploadLabel;
-                if (dropZone) {
-                    dropZone.addEventListener("dragover", e => {
+                if (uploadLabel) {
+                    uploadLabel.addEventListener("dragover", e => {
                         e.preventDefault();
-                        dropZone.classList.add("drag");
+                        uploadLabel.classList.add("drag");
                     });
-                    dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag"));
-                    dropZone.addEventListener("drop", e => {
+                    uploadLabel.addEventListener("dragleave", () => uploadLabel.classList.remove("drag"));
+                    uploadLabel.addEventListener("drop", e => {
                         e.preventDefault();
-                        dropZone.classList.remove("drag");
+                        uploadLabel.classList.remove("drag");
                         addFiles(e.dataTransfer.files);
                     });
                 }
             }
-
-
-            // =========================
-            // INIT
-            // =========================
-            syncPickers();
-            bindRemoveButtons();
-            refreshVariantColorSelects();
-
         });
     </script>
 
@@ -572,6 +367,9 @@
             right: 8px;
             cursor: pointer;
             z-index: 3;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 4px;
+            padding: 4px;
         }
 
         .main-badge {
@@ -589,6 +387,7 @@
         .uploadfile.drag {
             outline: 2px dashed #2f80ed;
             border-radius: 12px;
+            background-color: rgba(47, 128, 237, 0.05);
         }
     </style>
 

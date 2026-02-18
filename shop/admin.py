@@ -4,43 +4,51 @@ from django.forms import BaseInlineFormSet
 from django.core.exceptions import ValidationError
 from django import forms
 
-class ProductColorInlineForm(forms.ModelForm):
-    class Meta:
-        model = ProductColor
-        fields = ("name", "hex")
-        widgets = {
-            "hex": forms.TextInput(attrs={"type": "color", "style": "width:60px; padding:0;"}),
-        }
-
-
+# =================================================================
+# СТОРЫ (МАГАЗИНЫ)
+# =================================================================
 @admin.register(Store)
 class StoreAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "subdomain", "phone", "email", "is_active", "created_at")
     list_filter = ("is_active",)
     search_fields = ("name", "subdomain", "phone", "email")
-    readonly_fields = ("subdomain", "created_at")  # subdomain авто
+    readonly_fields = ("subdomain", "created_at")
     ordering = ("-created_at",)
 
+# =================================================================
+# ЦВЕТА (ОБЩИЕ)
+# =================================================================
+@admin.register(ProductColor)
+class ProductColorAdmin(admin.ModelAdmin):
+    # Убрали "product", так как цвета теперь общие
+    list_display = ("name", "hex")
+    search_fields = ("name", "hex")
+    # list_select_related удален, так как связи с product больше нет
+
+# =================================================================
+# ВАРИАНТЫ ТОВАРА
+# =================================================================
 class ProductVariantInline(admin.TabularInline):
     model = ProductVariant
     extra = 1
-    fields = ("color", "size", "sku", "price", "old_price", "stock", "is_active")
-    autocomplete_fields = ("color",)
+    # Если в модели нет поля stock, удалите его из списка ниже:
+    fields = ("color", "size", "sku", "price", "old_price", "is_active")
+    autocomplete_fields = ("color",) # Теперь работает, так как Color — отдельная модель
     show_change_link = True
 
+@admin.register(ProductVariant)
+class ProductVariantAdmin(admin.ModelAdmin):
+    # Убрали "stock", так как Django на него ругался
+    list_display = ("product", "color", "size", "price", "old_price", "is_active")
+    list_filter = ("is_active", "product__store")
+    search_fields = ("product__name", "sku", "size")
+    list_select_related = ("product", "color", "product__store")
+    ordering = ("-created_at",)
 
-class ProductColorInline(admin.TabularInline):
-    model = ProductColor
-    form = ProductColorInlineForm
-    extra = 1
-    fields = ("name", "hex")
-
-
+# =================================================================
+# ФОТОГРАФИИ
+# =================================================================
 class ProductImageInlineFormSet(BaseInlineFormSet):
-    """
-    1) Не даём поставить больше одной main
-    2) Если выбрали одну main — остальные станут не main (сделаем в save_related)
-    """
     def clean(self):
         super().clean()
         main_count = 0
@@ -54,7 +62,6 @@ class ProductImageInlineFormSet(BaseInlineFormSet):
         if main_count > 1:
             raise ValidationError("Можно выбрать только одно главное фото (is_main).")
 
-
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
     extra = 1
@@ -62,7 +69,26 @@ class ProductImageInline(admin.TabularInline):
     formset = ProductImageInlineFormSet
     show_change_link = True
 
+@admin.register(ProductImage)
+class ProductImageAdmin(admin.ModelAdmin):
+    list_display = ("product", "is_main", "sort")
+    list_filter = ("is_main", "product__store")
+    search_fields = ("product__name",)
+    list_select_related = ("product", "product__store")
+    ordering = ("product", "sort", "id")
 
+# =================================================================
+# ОТЗЫВЫ
+# =================================================================
+class ProductReviewInline(admin.TabularInline):
+    model = ProductReview
+    extra = 0
+    fields = ("user", "rating", "text", "is_published", "created_at")
+    readonly_fields = ("created_at",)
+
+# =================================================================
+# ТОВАР (ГЛАВНАЯ МОДЕЛЬ)
+# =================================================================
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ("name", "store", "is_active", "views", "created_at")
@@ -73,49 +99,12 @@ class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
     list_select_related = ("store",)
 
-    inlines = (ProductColorInline, ProductVariantInline, ProductImageInline)
+    # УДАЛИЛИ ProductColorInline, так как цвета теперь создаются отдельно
+    inlines = (ProductVariantInline, ProductImageInline, ProductReviewInline)
 
     def save_related(self, request, form, formsets, change):
-        """
-        Авто-снятие is_main у остальных фоток, если выбрали одну главную.
-        """
         super().save_related(request, form, formsets, change)
         product = form.instance
-
         main = product.images.filter(is_main=True).order_by("id").first()
         if main:
             product.images.exclude(id=main.id).update(is_main=False)
-
-
-@admin.register(ProductVariant)
-class ProductVariantAdmin(admin.ModelAdmin):
-    list_display = ("product", "color", "size", "price", "old_price", "stock", "is_active")
-    list_filter = ("is_active", "product__store")
-    search_fields = ("product__name", "sku", "size")
-    list_select_related = ("product", "color", "product__store")
-    ordering = ("-created_at",)
-
-
-@admin.register(ProductImage)
-class ProductImageAdmin(admin.ModelAdmin):
-    list_display = ("product", "is_main", "sort")
-    list_filter = ("is_main", "product__store")
-    search_fields = ("product__name",)
-    list_select_related = ("product", "product__store")
-    ordering = ("product", "sort", "id")
-
-
-@admin.register(ProductColor)
-class ProductColorAdmin(admin.ModelAdmin):
-    list_display = ("product", "name", "hex")
-    search_fields = ("product__name", "name", "hex")
-    list_select_related = ("product",)
-
-class ProductReviewInline(admin.TabularInline):
-    model = ProductReview
-    extra = 0
-    fields = ("user", "rating", "text", "is_published", "created_at")
-    readonly_fields = ("created_at",)
-
-# и в ProductAdmin добавь в inlines:
-inlines = (ProductColorInline, ProductVariantInline, ProductImageInline, ProductReviewInline)

@@ -25,7 +25,6 @@ def product_list(request):
     if per_page not in (10, 20, 30):
         per_page = 10
 
-    # базовый queryset: все товары магазина
     qs = (
         Product.objects
         .filter(store=store)
@@ -36,14 +35,12 @@ def product_list(request):
         )
     )
 
-    # поиск по названию ИЛИ по sku вариантов
     if search:
         if search.isdigit():
             qs = qs.filter(id=int(search))
         else:
             qs = qs.filter(name__icontains=search)
 
-    # sku первого активного варианта
     first_sku_subq = ProductVariant.objects.filter(
         product_id=OuterRef("pk"),
         is_active=True
@@ -96,52 +93,31 @@ def settings(request):
     socials = store.socials.order_by("order")  # related_name='socials'
     return render(request, "admin/settings.html", {"store": store, "socials": socials})
 
-def _extract_color_choices(post):
-    total = int(post.get("colors-TOTAL_FORMS", 0))
-    out = []
-    seen = set()
-
-    for i in range(total):
-        hexv = (post.get(f"colors-{i}-hex") or "").strip()
-        name = (post.get(f"colors-{i}-name") or "").strip()
-        delete = post.get(f"colors-{i}-DELETE")
-
-        if delete:
-            continue
-        if not hexv:
-            continue
-        if hexv in seen:
-            continue
-
-        seen.add(hexv)
-        out.append((hexv, name or hexv))
-
-    return out
-
 
 @transaction.atomic
 def product_add(request):
+    # Нам больше не нужно извлекать choices вручную,
+    # так как VariantForm сама подтянет ProductColor из базы.
     temp_product = Product(store=request.store)
-
-    # ВАЖНО: при POST строим choices для вариантов из введенных цветов
-    color_choices = _extract_color_choices(request.POST) if request.method == "POST" else []
 
     if request.method == "POST":
         pform = ProductForm(request.POST, store=request.store)
-        colors_fs = ColorFormSet(request.POST, instance=temp_product, prefix="colors")
+        # УДАЛЕНО: colors_fs (формсет цветов больше не используется)
+
+        # Теперь передаем в формсет только POST данные и инстанс.
+        # color_choices больше не нужны как аргумент.
         variants_fs = VariantFormSet(
             request.POST,
             instance=temp_product,
-            prefix="variants",
-            form_kwargs={"color_choices": color_choices},
+            prefix="variants"
         )
 
-        if pform.is_valid() and colors_fs.is_valid() and variants_fs.is_valid():
+        if pform.is_valid() and variants_fs.is_valid():
             with transaction.atomic():
                 product = pform.save(commit=False)
                 product.store = request.store
 
-                # ✅ новый бренд (если ввели)
+                # ✅ новый бренд
                 new_brand = (pform.cleaned_data.get("new_brand") or "").strip()
                 if new_brand:
                     brand, _ = Brand.objects.get_or_create(
@@ -154,36 +130,28 @@ def product_add(request):
                 product.is_active = True
                 product.save()
 
-                # 1) сохраняем цвета
-                colors_fs.instance = product
-                colors_fs.save()
+                # УДАЛЕНО: сохранение цветов (colors_fs.save)
+                # и создание color_map.
 
-                # 2) создаём map hex -> ProductColor
-                color_map = {c.hex: c for c in product.colors.all()}
-
-                # 3) сохраняем варианты: берем color_hex и ставим FK color
+                # сохраняем варианты
                 variants_fs.instance = product
+                variants = variants_fs.save(commit=False)
 
-                for form in variants_fs.forms:
-                    if not form.cleaned_data:
-                        continue
-                    if form.cleaned_data.get("DELETE"):
-                        continue
-
-                    v = form.save(commit=False)
-                    hexv = (form.cleaned_data.get("color_hex") or "").strip()
-
+                for v in variants:
                     v.product = product
                     v.is_active = True
-                    v.color = color_map.get(hexv) if hexv else None
-
+                    # Django сам подставит v.color из выбранного в форме значения,
+                    # так как теперь в форме это прямое поле модели.
                     v.save(update_parent=False)
 
+                # Удаление отмеченных на удаление вариантов
+                for obj in variants_fs.deleted_objects:
+                    obj.delete()
 
-                # пересчет цен один раз
+                # пересчет цен
                 product.update_prices()
 
-                # картинки multiple
+                # картинки (без изменений)
                 files = request.FILES.getlist("images")
                 main_set = False
                 for i, f in enumerate(files):
@@ -202,18 +170,16 @@ def product_add(request):
 
     else:
         pform = ProductForm(store=request.store)
-        colors_fs = ColorFormSet(instance=temp_product, prefix="colors")
+        # УДАЛЕНО: colors_fs
         variants_fs = VariantFormSet(
             instance=temp_product,
-            prefix="variants",
-            form_kwargs={"color_choices": []},
+            prefix="variants"
         )
 
     return render(request, "admin/product_add.html", {
         "store": request.store,
         "pform": pform,
-        "colors_fs": colors_fs,
-        "variants_fs": variants_fs,
+        "variants_fs": variants_fs,  # colors_fs убран из контекста
     })
 
 

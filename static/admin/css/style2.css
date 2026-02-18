@@ -3104,23 +3104,6 @@ fieldset {
 .select {
   position: relative;
 }
-.select::after {
-  position: absolute;
-  content: "\e934";
-  right: 22px;
-  top: 50%;
-  font-family: "icomoon";
-  font-size: 18px;
-  color: var(--Body-Text);
-  pointer-events: none;
-  -webkit-transition: 0.25s all ease;
-  -o-transition: 0.25s all ease;
-  transition: 0.25s all ease;
-  -webkit-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  -o-transform: translateY(-50%);
-  transform: translateY(-50%);
-}
 .select.w200 {
   width: 100%;
   min-width: 100px;

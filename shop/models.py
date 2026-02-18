@@ -214,16 +214,12 @@ class Product(models.Model):
 
 
 class ProductColor(models.Model):
-    product = models.ForeignKey(Product, related_name="colors", on_delete=models.CASCADE)
     name = models.CharField("Название цвета", max_length=50, blank=True)
     hex = models.CharField("HEX", max_length=7, validators=[hex_validator])
 
     class Meta:
         verbose_name = "Цвет товара"
         verbose_name_plural = "Цвета товаров"
-        constraints = [
-            models.UniqueConstraint(fields=["product", "hex"], name="uniq_hex_per_product"),
-        ]
 
     def __str__(self):
         return self.name or self.hex
@@ -231,14 +227,13 @@ class ProductColor(models.Model):
 
 class ProductVariant(models.Model):
     product = models.ForeignKey(Product, related_name="variants", on_delete=models.CASCADE)
-    color = models.ForeignKey(ProductColor, related_name="variants", on_delete=models.SET_NULL, null=True, blank=True)
+    color = models.ForeignKey(ProductColor, related_name="variants", on_delete=models.PROTECT, null=True, blank=True)
 
     size = models.CharField("Размер", max_length=20, blank=True)
     sku = models.CharField("SKU / Артикул", max_length=64, blank=True, db_index=True)
 
     price = models.DecimalField("Цена", max_digits=10, decimal_places=2)
     old_price = models.DecimalField("Старая цена", max_digits=10, decimal_places=2, null=True, blank=True)
-    stock = models.PositiveIntegerField("Остаток", default=0)
 
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -255,15 +250,13 @@ class ProductVariant(models.Model):
         ]
 
     def save(self, *args, update_parent: bool = True, **kwargs):
-        # SKU auto (если не задан)
         if not self.sku and self.product_id:
             color_part = "nocolor"
-            if self.color_id and self.color and self.color.hex:
+            if self.color:
                 color_part = self.color.hex.replace("#", "").lower()
             size_part = _norm(self.size) or "nosize"
             self.sku = f"{self.product.slug}-{color_part}-{size_part}"[:64]
 
-        # change detection (чтобы не дёргать Product.update_prices без нужды)
         need_parent_update = False
         if self.pk:
             old = ProductVariant.objects.filter(pk=self.pk).values("price", "is_active").first()
@@ -299,8 +292,6 @@ class ProductVariant(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name="images", on_delete=models.CASCADE)
-    color = models.ForeignKey(ProductColor, related_name="images", on_delete=models.SET_NULL, null=True, blank=True)
-
     image = models.ImageField("Фото", upload_to="products/%Y/%m/")
     is_main = models.BooleanField("Главное фото", default=False)
     sort = models.PositiveIntegerField("Порядок", default=0)
