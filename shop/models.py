@@ -46,7 +46,6 @@ def _norm(s: str) -> str:
 class Category(models.Model):
     store = models.ForeignKey("Store", related_name="categories", on_delete=models.CASCADE)
     name = models.CharField("Название", max_length=100)
-    image = models.ImageField("Фото категории", upload_to="categories/", blank=True, null=True)
     slug = models.SlugField(max_length=120, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField("Дата добавления", auto_now_add=True)

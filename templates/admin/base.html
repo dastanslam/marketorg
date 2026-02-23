@@ -4,8 +4,7 @@
 <head>
     <meta charset="utf-8">
 
-    
-    <meta name="author" content="themesflat.com">
+    <link rel="stylesheet" href="{% static 'admin/css/select2.css' %}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="{% static 'admin/css/animate.min.css' %}">
     <link rel="stylesheet" href="{% static 'admin/css/animation.css' %}">
@@ -551,6 +550,17 @@
     <script src="{% static 'admin/js/apexcharts/line-chart-8.js' %}"></script>
     <script src="{% static 'admin/js/apexcharts/line-chart-9.js' %}"></script>
     <script src="{% static 'admin/js/apexcharts/line-chart-10.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.select2-enable').select2({
+                tags: true,               // Позволяет вводить свой текст
+                placeholder: "Выберите или введите новое",
+                width: '100%',            // Чтобы селект занимал всю ширину контейнера
+                tokenSeparators: [',']    // Позволяет создавать тег нажатием запятой или Enter
+            });
+        });
+    </script>
 </body>
 </html>
 

@@ -4,6 +4,7 @@
 {% block title %}{{ store.name }} - Новая категория{% endblock %}
 
 {% block content %}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <!-- main-content-wrap -->
     <div class="main-content-inner">
         <!-- main-content-wrap -->
@@ -90,6 +91,8 @@
         <!-- /main-content-wrap -->
     </div>
     <!-- /main-content-wrap -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         function previewCategoryImage(input) {
             const file = input.files[0];

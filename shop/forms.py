@@ -27,13 +27,17 @@ class ProductForm(forms.ModelForm):
         ]
         widgets = {
             "name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Название товара"}),
-            "category": forms.Select(attrs={"class": "select"}),
             "gender": forms.Select(attrs={"class": "select"}),
             "brand": forms.Select(attrs={"class": "select"}),
             "description": forms.Textarea(attrs={"class": "form-control", "rows": 4, "placeholder": "Напишите описание товара..."}),
             "country": forms.TextInput(attrs={"class": "form-control", "placeholder": "Напр. Казахстан"}),
             "material": forms.TextInput(attrs={"class": "form-control", "placeholder": "Напр. хлопок"}),
         }
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            # Принудительно назначаем класс для category
+            self.fields['category'].widget.attrs.update({'class': 'select2-enable'})
 
     def __init__(self, *args, store=None, **kwargs):
         self.store = store

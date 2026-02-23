@@ -344,12 +344,10 @@ def category_list(request):
 def category_add(request):
     if request.method == "POST":
         name = request.POST.get("name")
-        image = request.FILES.get("image")
 
         Category.objects.create(
             store=request.store,  # как у тебя уже используется
             name=name,
-            image=image
         )
 
         return redirect("category_list")  # куда нужно после сохранения
