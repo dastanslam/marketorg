@@ -40,8 +40,12 @@
                     <div class="gap22 cols">
                         <fieldset class="category">
                             <div class="body-title mb-10">Категория</div>
-                            <div class="select2-enable">
-                                {{ pform.category }}
+                            <div class="select-wrapper">
+                                <select name="category" id="id_category" class="select2-enable">
+                                    {% for value, label in pform.category.field.choices %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                         </fieldset>
                         <fieldset class="male">
@@ -203,7 +207,16 @@
             </form>
             </div>
         </div>
-
+    <script>
+        $(document).ready(function() {
+            $('.select2-enable').select2({
+                tags: true,               // Позволяет вводить свой текст
+                placeholder: "Выберите или введите новое",
+                width: '100%',            // Чтобы селект занимал всю ширину контейнера
+                tokenSeparators: [',']    // Позволяет создавать тег нажатием запятой или Enter
+            });
+        });
+    </script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
 

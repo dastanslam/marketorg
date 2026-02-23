@@ -96,6 +96,11 @@ def settings(request):
 
 @transaction.atomic
 def product_add(request):
+    pform = ProductForm(request.POST or None, store=request.store)
+
+    print("FORM STORE:", request.store.id)
+    print("FORM QS COUNT:", pform.fields["category"].queryset.count())
+    print("FORM QS:", list(pform.fields["category"].queryset.values_list("id", "name")))
     # Нам больше не нужно извлекать choices вручную,
     # так как VariantForm сама подтянет ProductColor из базы.
     temp_product = Product(store=request.store)

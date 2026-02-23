@@ -34,42 +34,25 @@ class ProductForm(forms.ModelForm):
             "material": forms.TextInput(attrs={"class": "form-control", "placeholder": "Напр. хлопок"}),
         }
 
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            # Принудительно назначаем класс для category
-            self.fields['category'].widget.attrs.update({'class': 'select2-enable'})
-
     def __init__(self, *args, store=None, **kwargs):
-        self.store = store
         super().__init__(*args, **kwargs)
 
+        # класс для select2
+        self.fields["category"].widget.attrs.update({"class": "select2-enable"})
+
         if store is not None:
-            self.fields["category"].queryset = Category.objects.filter(
-                store=store, is_active=True
-            )
-            self.fields["brand"].queryset = Brand.objects.filter(
-                store=store, is_active=True
-            )
+            self.fields["category"].queryset = Category.objects.filter(store=store, is_active=True)
+            self.fields["brand"].queryset = Brand.objects.filter(store=store, is_active=True)
+        else:
+            # чтобы не показывало чужие категории, если store не передали
+            self.fields["category"].queryset = Category.objects.none()
+            self.fields["brand"].queryset = Brand.objects.none()
 
         self.fields["gender"].queryset = Gender.objects.all()
 
-        # Кастомные подписи
         self.fields["category"].empty_label = "Выберите категорию"
         self.fields["gender"].empty_label = "Выберите пол"
         self.fields["brand"].empty_label = "Выберите бренд"
-
-    def clean(self):
-        cleaned = super().clean()
-        brand = cleaned.get("brand")
-        new_brand = (cleaned.get("new_brand") or "").strip()
-
-        if not brand and not new_brand:
-            raise forms.ValidationError(
-                "Выберите бренд из списка или введите новый."
-            )
-        return cleaned
-
-
 # =========================
 # VARIANTS
 # =========================
