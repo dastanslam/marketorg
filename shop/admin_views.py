@@ -8,6 +8,7 @@ from django.utils.dateparse import parse_datetime
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.db.models import Count, Min, Max, Q, OuterRef, Subquery
+from django.utils.text import slugify
 
 def dashboard(request):
     return render(request, "admin/index.html", {"store": request.store})
@@ -94,97 +95,112 @@ def settings(request):
     return render(request, "admin/settings.html", {"store": store, "socials": socials})
 
 
+from django.shortcuts import render, redirect
+from django.db import transaction
+from django.contrib import messages
+from .models import Product, Category, Brand, ProductImage
+from .forms import ProductForm # Убедитесь, что импорт правильный
+
+from django.contrib import messages
+from django.db import transaction
+from django.shortcuts import render, redirect
+
+from .forms import ProductForm, VariantFormSet
+from .models import Product, Brand, Category, ProductImage
+
+
 @transaction.atomic
 def product_add(request):
-    pform = ProductForm(request.POST or None, store=request.store)
-
-    print("FORM STORE:", request.store.id)
-    print("FORM QS COUNT:", pform.fields["category"].queryset.count())
-    print("FORM QS:", list(pform.fields["category"].queryset.values_list("id", "name")))
-    # Нам больше не нужно извлекать choices вручную,
-    # так как VariantForm сама подтянет ProductColor из базы.
     temp_product = Product(store=request.store)
 
     if request.method == "POST":
         pform = ProductForm(request.POST, store=request.store)
-        # УДАЛЕНО: colors_fs (формсет цветов больше не используется)
+        variants_fs = VariantFormSet(request.POST, instance=temp_product, prefix="variants")
 
-        # Теперь передаем в формсет только POST данные и инстанс.
-        # color_choices больше не нужны как аргумент.
-        variants_fs = VariantFormSet(
-            request.POST,
-            instance=temp_product,
-            prefix="variants"
-        )
-
+        # Ваши логи подтвердили, что это True
         if pform.is_valid() and variants_fs.is_valid():
-            with transaction.atomic():
-                product = pform.save(commit=False)
-                product.store = request.store
+            try:
+                with transaction.atomic():
+                    # 1. Подготовка товара
+                    product = pform.save(commit=False)
+                    product.store = request.store
 
-                # ✅ новый бренд
-                new_brand = (pform.cleaned_data.get("new_brand") or "").strip()
-                if new_brand:
-                    brand, _ = Brand.objects.get_or_create(
-                        store=request.store,
-                        name=new_brand,
-                        defaults={"is_active": True},
-                    )
-                    product.brand = brand
+                    # 2. Обработка КАТЕГОРИИ из Select2 (по вашим логам: "дастан тесть")
+                    cat_raw = request.POST.get("category")
+                    if cat_raw:
+                        if cat_raw.isdigit():
+                            product.category_id = int(cat_raw)
+                        else:
+                            cat, _ = Category.objects.get_or_create(
+                                store=request.store,
+                                name=cat_raw.strip(),
+                                defaults={'is_active': True}
+                            )
+                            product.category = cat
 
-                product.is_active = True
-                product.save()
+                    # 3. Обработка БРЕНДА из Select2
+                    brand_raw = (pform.cleaned_data.get("brand") or "").strip()
+                    if brand_raw:
+                        if brand_raw.isdigit():
+                            product.brand_id = int(brand_raw)
+                        else:
+                            name = brand_raw
+                            slug = slugify(name) or "brand"
 
-                # УДАЛЕНО: сохранение цветов (colors_fs.save)
-                # и создание color_map.
+                            # если такой slug уже есть в этом store — берём существующий бренд
+                            brand = Brand.objects.filter(store=request.store, slug=slug).first()
+                            if not brand:
+                                brand = Brand.objects.create(store=request.store, name=name, is_active=True)
+                            product.brand = brand
 
-                # сохраняем варианты
-                variants_fs.instance = product
-                variants = variants_fs.save(commit=False)
+                    product.is_active = True
+                    product.save() # СОХРАНЯЕМ ТОВАР
 
-                for v in variants:
-                    v.product = product
-                    v.is_active = True
-                    # Django сам подставит v.color из выбранного в форме значения,
-                    # так как теперь в форме это прямое поле модели.
-                    v.save(update_parent=False)
+                    # 4. Сохранение вариантов (размеры, цвета)
+                    variants_fs.instance = product
+                    variants = variants_fs.save(commit=False)
+                    for v in variants:
+                        v.product = product
+                        v.is_active = True
+                        v.save(update_parent=False)
 
-                # Удаление отмеченных на удаление вариантов
-                for obj in variants_fs.deleted_objects:
-                    obj.delete()
+                    # Удаление помеченных
+                    for obj in variants_fs.deleted_objects:
+                        obj.delete()
 
-                # пересчет цен
-                product.update_prices()
+                    # 5. Цены и картинки
+                    product.update_prices()
 
-                # картинки (без изменений)
-                files = request.FILES.getlist("images")
-                main_set = False
-                for i, f in enumerate(files):
-                    ProductImage.objects.create(
-                        product=product,
-                        image=f,
-                        sort=i,
-                        is_main=(not main_set),
-                    )
-                    main_set = True
+                    files = request.FILES.getlist("images")
+                    for i, f in enumerate(files):
+                        ProductImage.objects.create(
+                            product=product,
+                            image=f,
+                            sort=i,
+                            is_main=(i == 0),
+                        )
 
-            messages.success(request, "Товар добавлен")
-            return redirect("product_list")
+                messages.success(request, f"Товар '{product.name}' успешно добавлен")
+                return redirect("product_list")
 
-        messages.error(request, "Проверь поля — есть ошибки")
+            except Exception as e:
+                # Если упадет здесь (например, на картинках), мы увидим ошибку
+                print(f"ОШИБКА СОХРАНЕНИЯ: {e}")
+                messages.error(request, f"Ошибка при сохранении в базу: {e}")
+        else:
+            # На всякий случай выводим ошибки, если валидация вдруг упадет
+            print(f"PFORM ERRORS: {pform.errors}")
+            print(f"VARIANTS ERRORS: {variants_fs.errors}")
+            messages.error(request, "Проверьте поля формы")
 
     else:
         pform = ProductForm(store=request.store)
-        # УДАЛЕНО: colors_fs
-        variants_fs = VariantFormSet(
-            instance=temp_product,
-            prefix="variants"
-        )
+        variants_fs = VariantFormSet(instance=temp_product, prefix="variants")
 
     return render(request, "admin/product_add.html", {
         "store": request.store,
         "pform": pform,
-        "variants_fs": variants_fs,  # colors_fs убран из контекста
+        "variants_fs": variants_fs,
     })
 
 

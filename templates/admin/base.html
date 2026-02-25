@@ -84,7 +84,7 @@
                                     </li>
 
                                     {# ================== КАТЕГОРИИ ================== #}
-                                    <li class="menu-item has-children {% if rn in 'category_list category_add category_edit' %}active{% endif %}">
+                                    <li class="menu-item has-children {% if rn in 'category_list category_add category_edit category_show' %}active{% endif %}">
                                         <a href="javascript:void(0);" class="menu-item-button">
                                             <div class="icon"><i class="icon-layers"></i></div>
                                             <div class="text">Категории</div>
@@ -97,12 +97,22 @@
                                                     <div class="text">Список категорий</div>
                                                 </a>
                                             </li>
-                                            <li class="sub-menu-item">
-                                                <a href="{% url 'category_add' %}"
-                                                   class="{% if rn == 'category_add' %}active{% endif %}">
-                                                    <div class="text">Новая категория</div>
-                                                </a>
-                                            </li>
+                                            {% if rn == 'category_edit' %}
+                                                <li class="sub-menu-item">
+                                                    <a href="{{ request.path }}"
+                                                       class="{% if rn == 'category_edit' %}active{% endif %}">
+                                                        <div class="text">Редактирование категорий</div>
+                                                    </a>
+                                                </li>
+                                            {% endif %}
+                                            {% if rn == 'category_show' %}
+                                                <li class="sub-menu-item">
+                                                    <a href="{{ request.path }}"
+                                                       class="{% if rn == 'category_show' %}active{% endif %}">
+                                                        <div class="text">Товары в категорий</div>
+                                                    </a>
+                                                </li>
+                                            {% endif %}
                                         </ul>
                                     </li>
 

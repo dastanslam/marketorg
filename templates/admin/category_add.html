@@ -40,17 +40,18 @@
                       enctype="multipart/form-data">
 
                     {% csrf_token %}
-
-                    <fieldset class="name">
-                        <div class="body-title">
-                            Название категории
-                        </div>
-                        <input class="flex-grow"
-                               type="text"
-                               placeholder="Введите название категории"
-                               name="name"
-                               required>
-                    </fieldset>
+                    <div class="gap22 cols">
+                        <fieldset class="name">
+                            <div class="body-title mb-10">
+                                Название категории
+                            </div>
+                            <input class="flex-grow"
+                                   type="text"
+                                   placeholder="Введите название категории"
+                                   name="name"
+                                   required>
+                        </fieldset>
+                    </div>
                     <div class="bot">
                         <div></div>
                         <button class="tf-button w208" type="submit">Сохранить</button>

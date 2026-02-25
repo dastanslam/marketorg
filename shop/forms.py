@@ -5,31 +5,23 @@ from .models import (
     Category, Brand, Gender
 )
 
-# =========================
-# PRODUCT
-# =========================
-
 class ProductForm(forms.ModelForm):
-    new_brand = forms.CharField(
-        required=False,
-        label="Новый бренд",
-        widget=forms.TextInput(attrs={
-            "class": "form-control",
-            "placeholder": "Если нет в списке — напишите новый бренд"
-        })
-    )
+    # НЕ модельные поля, принимают и id, и текст
+    category = forms.CharField(required=False)
+    brand = forms.CharField(required=False)
 
     class Meta:
         model = Product
-        fields = [
-            "name", "category", "gender", "brand",
-            "new_brand", "description", "country", "material"
-        ]
+        # ВАЖНО: category/brand тут НЕТ
+        fields = ["name", "gender", "description", "country", "material"]
         widgets = {
             "name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Название товара"}),
             "gender": forms.Select(attrs={"class": "select"}),
-            "brand": forms.Select(attrs={"class": "select"}),
-            "description": forms.Textarea(attrs={"class": "form-control", "rows": 4, "placeholder": "Напишите описание товара..."}),
+            "description": forms.Textarea(attrs={
+                "class": "form-control",
+                "rows": 4,
+                "placeholder": "Напишите описание товара..."
+            }),
             "country": forms.TextInput(attrs={"class": "form-control", "placeholder": "Напр. Казахстан"}),
             "material": forms.TextInput(attrs={"class": "form-control", "placeholder": "Напр. хлопок"}),
         }
@@ -37,22 +29,17 @@ class ProductForm(forms.ModelForm):
     def __init__(self, *args, store=None, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # класс для select2
+        # для select2
         self.fields["category"].widget.attrs.update({"class": "select2-enable"})
-
-        if store is not None:
-            self.fields["category"].queryset = Category.objects.filter(store=store, is_active=True)
-            self.fields["brand"].queryset = Brand.objects.filter(store=store, is_active=True)
-        else:
-            # чтобы не показывало чужие категории, если store не передали
-            self.fields["category"].queryset = Category.objects.none()
-            self.fields["brand"].queryset = Brand.objects.none()
+        self.fields["brand"].widget.attrs.update({"class": "select2-enable"})
 
         self.fields["gender"].queryset = Gender.objects.all()
 
-        self.fields["category"].empty_label = "Выберите категорию"
-        self.fields["gender"].empty_label = "Выберите пол"
-        self.fields["brand"].empty_label = "Выберите бренд"
+        # queryset'ы для шаблона (список опций)
+        self.category_qs = Category.objects.filter(store=store, is_active=True) if store else Category.objects.none()
+        self.brand_qs = Brand.objects.filter(store=store, is_active=True) if store else Brand.objects.none()
+
+
 # =========================
 # VARIANTS
 # =========================
@@ -60,27 +47,24 @@ class ProductForm(forms.ModelForm):
 class VariantForm(forms.ModelForm):
     class Meta:
         model = ProductVariant
-        # Теперь выбираем 'color' (это ForeignKey к ProductColor)
         fields = ["color", "size", "price", "sku"]
         widgets = {
             "color": forms.Select(attrs={"class": "select"}),
             "size": forms.TextInput(attrs={"class": "form-control", "placeholder": "Напр. XL / 42"}),
-            "price": forms.NumberInput(attrs={"class": "form-control", "placeholder": "Цена"}),
+            "price": forms.NumberInput(attrs={
+                "class": "form-control",
+                "placeholder": "Цена",
+                "min": "0",
+                "oninput": "this.value = this.value.replace(/[^0-9]/g, '');"
+            }),
             "sku": forms.TextInput(attrs={"class": "form-control", "placeholder": "Артикул (авто)"}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Загружаем все цвета, которые вы создали сами
         self.fields["color"].queryset = ProductColor.objects.all()
         self.fields["color"].empty_label = "Выберите цвет"
 
-
-# =========================
-# FORMSETS
-# =========================
-
-# ColorFormSet УДАЛЕН, так как ProductColor больше не связан с Product напрямую.
 
 VariantFormSet = inlineformset_factory(
     Product,

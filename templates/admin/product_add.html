@@ -30,7 +30,7 @@
 
                 <div class="wg-box">
                     <fieldset class="name">
-                        <div class="body-title mb-10">Название товара <span class="tf-color-1">*</span></div>
+                        <div class="body-title mb-10">Название товара</div>
                         {{ pform.name }}
                         {% if pform.name.errors %}
                             <div class="text-tiny tf-color-1">{{ pform.name.errors }}</div>
@@ -42,8 +42,9 @@
                             <div class="body-title mb-10">Категория</div>
                             <div class="select-wrapper">
                                 <select name="category" id="id_category" class="select2-enable">
-                                    {% for value, label in pform.category.field.choices %}
-                                    <option value="{{ value }}">{{ label }}</option>
+                                    <option value="">Выберите категорию</option>
+                                    {% for cat in pform.category_qs %}
+                                    <option value="{{ cat.id }}">{{ cat.name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -58,11 +59,13 @@
 
                     <fieldset class="brand">
                         <div class="body-title mb-10">Бренд</div>
-                        <div class="select mb-10">
-                            {{ pform.brand }}
-                        </div>
-                        <div class="mb-10">
-                            {{ pform.new_brand }}
+                        <div class="select-wrapper">
+                            <select name="brand" id="id_brand" class="select2-enable">
+                                <option value="">Выберите бренд</option>
+                                {% for br in pform.brand_qs %}
+                                <option value="{{ br.id }}">{{ br.name }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </fieldset>
 
@@ -146,7 +149,7 @@
 
                                     <div class="cols gap22">
                                         <fieldset class="name">
-                                            <div class="body-title mb-10">Цена <span class="tf-color-1">*</span></div>
+                                            <div class="body-title mb-10">Цена</div>
                                             {{ vf.price }}
                                             {% if vf.price.errors %}
                                                 <div class="text-tiny tf-color-1">{{ vf.price.errors }}</div>
@@ -184,7 +187,7 @@
 
                                 <div class="cols gap22">
                                     <fieldset class="name">
-                                        <div class="body-title mb-10">Цена <span class="tf-color-1">*</span></div>
+                                        <div class="body-title mb-10">Цена</div>
                                         {{ variants_fs.empty_form.price }}
                                     </fieldset>
 
@@ -207,16 +210,6 @@
             </form>
             </div>
         </div>
-    <script>
-        $(document).ready(function() {
-            $('.select2-enable').select2({
-                tags: true,               // Позволяет вводить свой текст
-                placeholder: "Выберите или введите новое",
-                width: '100%',            // Чтобы селект занимал всю ширину контейнера
-                tokenSeparators: [',']    // Позволяет создавать тег нажатием запятой или Enter
-            });
-        });
-    </script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
 
@@ -356,8 +349,8 @@
     <style>
         .image-preview .thumb-wrap {
             position: relative;
-            width: 160px;
-            height: 160px;
+            width: 100%;
+            height: 100%;
             border-radius: 12px;
             overflow: hidden;
             background: #f3f3f3;
@@ -374,11 +367,34 @@
             position: absolute;
             top: 8px;
             right: 8px;
+
+            /* Задаем четкие размеры кнопки */
+            width: 28px;
+            height: 28px;
+
+            /* Центрируем иконку внутри */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(255, 255, 255, 0.9); /* Чуть плотнее белый цвет */
+            color: #ff2e63; /* Сделаем саму иконку красной под цвет бейджа */
+            border-radius: 6px;
             cursor: pointer;
-            z-index: 3;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 4px;
-            padding: 4px;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Добавим легкую тень для объема */
+            transition: all 0.2s ease;
+        }
+
+        .image-preview .trash:hover {
+            background: #ff2e63;
+            color: #fff;
+        }
+
+    /* Ограничим размер самой иконки внутри */
+        .image-preview .trash i {
+            font-size: 16px;
+            line-height: 1;
         }
 
         .main-badge {
