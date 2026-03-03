@@ -4,6 +4,7 @@
 {% block title %}Главная{% endblock %}
 
 {% block content %}
+    {% csrf_token %}
     <div class="main-content-inner">
         <!-- main-content-wrap -->
         <div class="main-content-wrap">
@@ -73,10 +74,10 @@
                                 <div class="body-title">Товар</div>
                             </li>
                             <li>
-                                <div class="body-title">ID товара</div>
+                                <div class="body-title">Категория</div>
                             </li>
                             <li>
-                                <div class="body-title">Варианты товара</div>
+                                <div class="body-title">Бренд</div>
                             </li>
                             <li>
                                 <div class="body-title">Цена (max-min)</div>
@@ -103,11 +104,11 @@
                                         </div>
                                         <!-- SKU -->
                                         <div class="body-text">
-                                            {{ product.id|default:"—" }}
+                                            {{ product.category }}
                                         </div>
                                         <!-- Количество вариантов -->
                                         <div class="body-text">
-                                            {{ product.variants_count }}
+                                            {{ product.brand }}
                                         </div>
                                         <!-- Цена диапазон -->
                                         <div class="body-text">
@@ -127,7 +128,12 @@
                                         <div class="list-icon-function">
                                             <div class="item eye"><i class="icon-eye"></i></div>
                                             <div class="item edit"><i class="icon-edit-3"></i></div>
-                                            <div class="item trash"><i class="icon-trash-2"></i></div>
+                                            <div class="item trash delete-product"
+                                                 data-id="{{ product.id }}"
+                                                 data-name="{{ product.name }}"
+                                                 data-url="{% url 'product_delete_api' product.id %}"><i
+                                                    class="icon-trash-2"></i>
+                                            </div>
                                         </div>
                                     </div>
                                 </li>
@@ -174,4 +180,97 @@
         </div>
         <!-- /main-content-wrap -->
     </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        document.querySelectorAll('.delete-product').forEach(button => {
+
+            button.addEventListener('click', function () {
+
+                const productId = this.getAttribute('data-id');
+                const productName = this.getAttribute('data-name');
+                const url = this.getAttribute('data-url');
+                const productItem = this.closest('.product-item');
+
+                Swal.fire({
+                    title: 'Удаление товара',
+                    text: `Вы уверены, что хотите удалить "${productName}"?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Да, удалить',
+                    cancelButtonText: 'Отмена',
+                    confirmButtonColor: '#e74c3c',
+                    cancelButtonColor: '#6c757d',
+                    reverseButtons: true
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+
+                        fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': getCookie('csrftoken'),
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+
+                            if (data.status === 'success') {
+
+                                Swal.fire({
+                                    title: 'Удалено!',
+                                    text: 'Товар успешно удалён.',
+                                    icon: 'success',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+
+                                if (productItem) {
+                                    productItem.style.transition = '0.3s';
+                                    productItem.style.opacity = '0';
+                                    setTimeout(() => productItem.remove(), 300);
+                                }
+
+                            } else {
+                                Swal.fire('Ошибка', data.message || 'Ошибка удаления.', 'error');
+                            }
+
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire('Ошибка', 'Что-то пошло не так.', 'error');
+                        });
+
+                    }
+
+                });
+
+            });
+
+        });
+
+    });
+
+
+    // Функция получения CSRF токена (для Django)
+    function getCookie(name) {
+        let cookieValue = null;
+
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+
+        return cookieValue;
+    }
+    </script>
 {% endblock %}

@@ -95,20 +95,6 @@ def settings(request):
     return render(request, "admin/settings.html", {"store": store, "socials": socials})
 
 
-from django.shortcuts import render, redirect
-from django.db import transaction
-from django.contrib import messages
-from .models import Product, Category, Brand, ProductImage
-from .forms import ProductForm # Убедитесь, что импорт правильный
-
-from django.contrib import messages
-from django.db import transaction
-from django.shortcuts import render, redirect
-
-from .forms import ProductForm, VariantFormSet
-from .models import Product, Brand, Category, ProductImage
-
-
 @transaction.atomic
 def product_add(request):
     temp_product = Product(store=request.store)
@@ -139,18 +125,30 @@ def product_add(request):
                             product.category = cat
 
                     # 3. Обработка БРЕНДА из Select2
-                    brand_raw = (pform.cleaned_data.get("brand") or "").strip()
+                    brand_raw = request.POST.get("brand", "").strip()
+
                     if brand_raw:
                         if brand_raw.isdigit():
+                            # Если пришел ID существующего бренда
                             product.brand_id = int(brand_raw)
                         else:
+                            # Если пришел текст (новое название)
                             name = brand_raw
+
+                            # ВАЖНО: используйте slugify с поддержкой кириллицы,
+                            # иначе для русских названий slug будет пустым!
+                            from slugify import slugify
                             slug = slugify(name) or "brand"
 
-                            # если такой slug уже есть в этом store — берём существующий бренд
+                            # Ищем по слагу в рамках текущего магазина
                             brand = Brand.objects.filter(store=request.store, slug=slug).first()
+
                             if not brand:
-                                brand = Brand.objects.create(store=request.store, name=name, is_active=True)
+                                brand = Brand.objects.create(
+                                    store=request.store,
+                                    name=name,
+                                    is_active=True
+                                )
                             product.brand = brand
 
                     product.is_active = True
@@ -321,6 +319,25 @@ def product_edit(request, pk):
         "colors_fs": colors_fs,
         "variants_fs": variants_fs,
     })
+
+
+@require_POST  # Удаление должно быть только через POST/DELETE для безопасности
+def product_delete_api(request, pk):
+    # Ищем товар, который принадлежит именно текущему магазину из request
+    product = get_object_or_404(Product, pk=pk, store=request.store)
+
+    product_name = product.name
+    try:
+        product.delete()
+        return JsonResponse({
+            "status": "success",
+            "message": f"Товар '{product_name}' успешно удален"
+        })
+    except Exception as e:
+        return JsonResponse({
+            "status": "error",
+            "message": f"Не удалось удалить товар: {str(e)}"
+        }, status=400)
 
 
 # ===== CATEGORIES =====

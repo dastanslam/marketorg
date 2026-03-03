@@ -16,7 +16,7 @@ class ProductForm(forms.ModelForm):
         fields = ["name", "gender", "description", "country", "material"]
         widgets = {
             "name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Название товара"}),
-            "gender": forms.Select(attrs={"class": "select"}),
+            "gender": forms.Select(attrs={"class": "select", "placeholder": "Выберите пол"}),
             "description": forms.Textarea(attrs={
                 "class": "form-control",
                 "rows": 4,
@@ -32,6 +32,7 @@ class ProductForm(forms.ModelForm):
         # для select2
         self.fields["category"].widget.attrs.update({"class": "select2-enable"})
         self.fields["brand"].widget.attrs.update({"class": "select2-enable"})
+        self.fields['gender'].empty_label = "Выберите пол"
 
         self.fields["gender"].queryset = Gender.objects.all()
 
