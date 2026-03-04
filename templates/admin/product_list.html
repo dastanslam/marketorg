@@ -12,9 +12,7 @@
                 <h3>Список товаров</h3>
                 <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
                     <li>
-                        <a href="index.html">
-                            <div class="text-tiny">Dashboard</div>
-                        </a>
+                        <div class="text-tiny">Панель управления</div>
                     </li>
                     <li>
                         <i class="icon-chevron-right"></i>
@@ -66,6 +64,7 @@
                             </div>
                         </form>
                     </div>
+                    <a class="tf-button style-1 w208" href="{% url 'product_add' %}"><i class="icon-plus"></i>Новый товар</a>
                 </div>
                 <div class="wg-table table-product-list">
                     <div class="table-scroll">
@@ -127,7 +126,9 @@
                                         <!-- Действия -->
                                         <div class="list-icon-function">
                                             <div class="item eye"><i class="icon-eye"></i></div>
-                                            <div class="item edit"><i class="icon-edit-3"></i></div>
+                                            <a href="{% url 'product_edit' pk=product.id %}" class="item edit">
+                                                <i class="icon-edit-3"></i>
+                                            </a>
                                             <div class="item trash delete-product"
                                                  data-id="{{ product.id }}"
                                                  data-name="{{ product.name }}"

@@ -4,6 +4,7 @@ from .models import (
     Product, ProductColor, ProductVariant,
     Category, Brand, Gender
 )
+from django.contrib.humanize.templatetags.humanize import intcomma
 
 class ProductForm(forms.ModelForm):
     # НЕ модельные поля, принимают и id, и текст
@@ -13,7 +14,8 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         # ВАЖНО: category/brand тут НЕТ
-        fields = ["name", "gender", "description", "country", "material"]
+        fields = ["name", "gender", "description", "country", "material", "discount_percent", "discount_start",
+            "discount_end",]
         widgets = {
             "name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Название товара"}),
             "gender": forms.Select(attrs={"class": "select", "placeholder": "Выберите пол"}),
@@ -24,6 +26,22 @@ class ProductForm(forms.ModelForm):
             }),
             "country": forms.TextInput(attrs={"class": "form-control", "placeholder": "Напр. Казахстан"}),
             "material": forms.TextInput(attrs={"class": "form-control", "placeholder": "Напр. хлопок"}),
+            "discount_percent": forms.NumberInput(attrs={
+                "class": "form-control",
+                "placeholder": "Напр. 10",
+                "min": "0",
+                "max": "100",
+                "step": "1"
+            }),
+            "discount_start": forms.TextInput(attrs={
+                "class": "form-control datetimepicker",
+                "placeholder": "Начало скидки"
+            }),
+
+            "discount_end": forms.TextInput(attrs={
+                "class": "form-control datetimepicker",
+                "placeholder": "Конец скидки"
+            }),
         }
 
     def __init__(self, *args, store=None, **kwargs):
@@ -52,11 +70,10 @@ class VariantForm(forms.ModelForm):
         widgets = {
             "color": forms.Select(attrs={"class": "select"}),
             "size": forms.TextInput(attrs={"class": "form-control", "placeholder": "Напр. XL / 42"}),
-            "price": forms.NumberInput(attrs={
-                "class": "form-control",
+            "price": forms.TextInput(attrs={
+                "class": "form-control price-input",
                 "placeholder": "Цена",
-                "min": "0",
-                "oninput": "this.value = this.value.replace(/[^0-9]/g, '');"
+                "inputmode": "numeric"
             }),
             "sku": forms.TextInput(attrs={"class": "form-control", "placeholder": "Артикул (авто)"}),
         }

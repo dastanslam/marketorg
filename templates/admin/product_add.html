@@ -10,15 +10,11 @@
                 <h3>Добавить товар</h3>
                 <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
                     <li>
-                        <a href="{% url 'dashboard' %}">
-                            <div class="text-tiny">Панель управления</div>
-                        </a>
+                        <div class="text-tiny">Панель управления</div>
                     </li>
                     <li><i class="icon-chevron-right"></i></li>
                     <li>
-                        <a href="#">
-                            <div class="text-tiny">Магазин</div>
-                        </a>
+                        <div class="text-tiny">Магазин</div>
                     </li>
                     <li><i class="icon-chevron-right"></i></li>
                     <li><div class="text-tiny">Добавить товар</div></li>
@@ -92,6 +88,24 @@
                             {% if pform.material.errors %}
                                 <div class="text-tiny tf-color-1">{{ pform.material.errors }}</div>
                             {% endif %}
+                        </fieldset>
+                    </div>
+                    <fieldset class="percent">
+                        <div class="body-title mb-10">Скидка (%)</div>
+                        {{ pform.discount_percent }}
+                        {% if pform.discount_percent.errors %}
+                            <div class="text-tiny tf-color-1">{{ pform.discount_percent.errors }}</div>
+                        {% endif %}
+                    </fieldset>
+                    <div class="gap22 cols">
+                        <fieldset>
+                            <div class="body-title mb-10">Начало скидки</div>
+                            {{ pform.discount_start }}
+                        </fieldset>
+
+                        <fieldset>
+                            <div class="body-title mb-10">Конец скидки</div>
+                            {{ pform.discount_end }}
                         </fieldset>
                     </div>
                 </div>
@@ -344,7 +358,67 @@
             }
         });
     </script>
+<script>
+    function formatPrice(value){
+      value = String(value || '').replace(/[^\d]/g,'');
+      if(!value) return '';
+      return value.replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " ₸";
+    }
 
+    function formatAllPrices(){
+      document.querySelectorAll(".price-input").forEach(function(input){
+        input.value = formatPrice(input.value);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", function(){
+      formatAllPrices();
+    });
+
+    document.addEventListener("input", function(e){
+      if(e.target.classList.contains("price-input")){
+        e.target.value = formatPrice(e.target.value);
+      }
+    });
+
+    document.querySelector("form").addEventListener("submit", function(){
+      document.querySelectorAll(".price-input").forEach(function(input){
+        input.value = input.value.replace(/[^\d]/g,''); // в базу уйдет число
+      });
+    });
+</script>
+<script>
+    document.addEventListener("click", function(e){
+        if(!e.target.classList.contains("price-input")) return;
+
+        let input = e.target;
+
+        // если курсор оказался после ₸ — возвращаем его назад
+        if(input.value.endsWith("₸")){
+            let pos = input.selectionStart;
+            let last = input.value.length - 1;
+
+            if(pos > last){
+                input.setSelectionRange(last, last);
+            }
+        }
+    });
+
+    document.addEventListener("keyup", function(e){
+        if(!e.target.classList.contains("price-input")) return;
+
+        let input = e.target;
+
+        if(input.value.endsWith("₸")){
+            let pos = input.selectionStart;
+            let last = input.value.length - 1;
+
+            if(pos > last){
+                input.setSelectionRange(last, last);
+            }
+        }
+    });
+</script>
 
     <style>
         .image-preview .thumb-wrap {

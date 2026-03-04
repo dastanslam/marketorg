@@ -4,10 +4,11 @@
 {% block title %}Редактировать товар{% endblock %}
 
 {% block content %}
+{% load humanize %}
 <div class="main-content-inner">
   <div class="main-content-wrap">
     <div class="flex items-center flex-wrap justify-between gap20 mb-27">
-      <h3>Редактировать товар</h3>
+      <h3>Редактирование товара {{ pform.instance.name }}</h3>
       <ul class="breadcrumbs flex items-center flex-wrap justify-start gap10">
         <li>
           <a href="{% url 'dashboard' %}">
@@ -21,7 +22,7 @@
           </a>
         </li>
         <li><i class="icon-chevron-right"></i></li>
-        <li><div class="text-tiny">Редактировать товар</div></li>
+        <li><div class="text-tiny">Редактирование товара</div></li>
       </ul>
     </div>
 
@@ -184,12 +185,10 @@
                 <div class="cols gap22">
                   <fieldset class="name">
                     <div class="body-title mb-10">Цена</div>
-                    {{ vf.price }}
-                    {% if vf.price.errors %}
-                      <div class="text-tiny tf-color-1">{{ vf.price.errors }}</div>
-                    {% endif %}
-                  </fieldset>
 
+                    {{ vf.price }}
+
+                  </fieldset>
                   <div style="margin-top:10px;">
                     {% if vf.instance.pk %}
                       {# существующий вариант: удаляем через DELETE #}
@@ -433,7 +432,67 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 </script>
+<script>
+function formatPrice(value){
+  value = String(value || '').replace(/[^\d]/g,'');
+  if(!value) return '';
+  return value.replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " ₸";
+}
 
+function formatAllPrices(){
+  document.querySelectorAll(".price-input").forEach(function(input){
+    input.value = formatPrice(input.value);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+  formatAllPrices();
+});
+
+document.addEventListener("input", function(e){
+  if(e.target.classList.contains("price-input")){
+    e.target.value = formatPrice(e.target.value);
+  }
+});
+
+document.querySelector("form").addEventListener("submit", function(){
+  document.querySelectorAll(".price-input").forEach(function(input){
+    input.value = input.value.replace(/[^\d]/g,''); // в базу уйдет число
+  });
+});
+</script>
+<script>
+document.addEventListener("click", function(e){
+    if(!e.target.classList.contains("price-input")) return;
+
+    let input = e.target;
+
+    // если курсор оказался после ₸ — возвращаем его назад
+    if(input.value.endsWith("₸")){
+        let pos = input.selectionStart;
+        let last = input.value.length - 1;
+
+        if(pos > last){
+            input.setSelectionRange(last, last);
+        }
+    }
+});
+
+document.addEventListener("keyup", function(e){
+    if(!e.target.classList.contains("price-input")) return;
+
+    let input = e.target;
+
+    if(input.value.endsWith("₸")){
+        let pos = input.selectionStart;
+        let last = input.value.length - 1;
+
+        if(pos > last){
+            input.setSelectionRange(last, last);
+        }
+    }
+});
+</script>
 <style>
 .image-preview .thumb-wrap{
   position: relative;
@@ -485,5 +544,4 @@ document.addEventListener("DOMContentLoaded", () => {
   background-color:rgba(47,128,237,.05);
 }
 </style>
-
 {% endblock %}

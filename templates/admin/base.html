@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{% static 'admin/icon/style.css' %}">
     <link rel="shortcut icon" href="{% static 'admin/images/favicon.png' %}">
     <link rel="apple-touch-icon-precomposed" href="{% static 'admin/images/favicon.png' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body class="body">
     <!-- #wrapper -->
@@ -562,6 +563,8 @@
     <script src="{% static 'admin/js/apexcharts/line-chart-10.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
     <script>
         $(document).ready(function() {
             $('.select2-enable').select2({
@@ -570,6 +573,13 @@
                 width: '100%',            // Чтобы селект занимал всю ширину контейнера
                 tokenSeparators: [',']    // Позволяет создавать тег нажатием запятой или Enter
             });
+        });
+    </script>
+    <script>
+        flatpickr(".datetimepicker", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        locale: "ru",
         });
     </script>
 </body>
