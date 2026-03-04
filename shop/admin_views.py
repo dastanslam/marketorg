@@ -203,121 +203,69 @@ def product_add(request):
 
 
 def product_edit(request, pk):
-    product = get_object_or_404(Product, pk=pk, store=request.store)
-
-    # choices для вариантов:
-    # POST -> из введённых цветов (чтобы сразу обновлялось)
-    # GET  -> из текущих цветов товара
-    if request.method == "POST":
-        color_choices = _extract_color_choices(request.POST)
-    else:
-        color_choices = [(c.hex, c.name) for c in product.colors.all()]
+    product = get_object_or_404(Product, pk=pk)
 
     if request.method == "POST":
         pform = ProductForm(request.POST, instance=product, store=request.store)
-        colors_fs = ColorFormSet(request.POST, instance=product, prefix="colors")
-        variants_fs = VariantFormSet(
-            request.POST,
-            instance=product,
-            prefix="variants",
-            form_kwargs={"color_choices": color_choices},
-        )
+        variants_fs = VariantFormSet(request.POST, instance=product)
 
-        if pform.is_valid() and colors_fs.is_valid() and variants_fs.is_valid():
-            with transaction.atomic():
-                # -------- PRODUCT --------
-                product = pform.save(commit=False)
-                product.store = request.store
+        if pform.is_valid() and variants_fs.is_valid():
+            product = pform.save(commit=False)
 
-                # новый бренд (если ввели)
-                new_brand = (pform.cleaned_data.get("new_brand") or "").strip()
-                if new_brand:
-                    brand, _ = Brand.objects.get_or_create(
-                        store=request.store,
-                        name=new_brand,
-                        defaults={"is_active": True},
-                    )
-                    product.brand = brand
+            # ===== category =====
+            cat_raw = (pform.cleaned_data.get("category") or "").strip()
+            if cat_raw:
+                if cat_raw.isdigit():
+                    product.category_id = int(cat_raw)
+                else:
+                    # если вводишь текстом через select2 tag
+                    name = cat_raw
+                    slug = slugify(name) or "category"
+                    cat = Category.objects.filter(store=request.store, slug=slug).first()
+                    if not cat:
+                        cat = Category.objects.create(store=request.store, name=name, slug=slug, is_active=True)
+                    product.category = cat
 
-                product.save()
+            # ===== brand =====
+            brand_raw = (pform.cleaned_data.get("brand") or "").strip()
+            if brand_raw:
+                if brand_raw.isdigit():
+                    product.brand_id = int(brand_raw)
+                else:
+                    name = brand_raw
+                    slug = slugify(name) or "brand"
+                    br = Brand.objects.filter(store=request.store, slug=slug).first()
+                    if not br:
+                        br = Brand.objects.create(store=request.store, name=name, slug=slug, is_active=True)
+                    product.brand = br
 
-                # -------- COLORS --------
-                colors_fs.save()
-                color_map = {c.hex: c for c in product.colors.all()}
+            product.save()
+            variants_fs.save()
 
-                # -------- VARIANTS --------
-                for form in variants_fs.forms:
-                    if not form.cleaned_data:
-                        continue
+            # удалить старые фото (только этого товара!)
+            delete_ids = request.POST.getlist("delete_images")
+            if delete_ids:
+                ProductImage.objects.filter(product=product, id__in=delete_ids).delete()
 
-                    # удаление существующего варианта
-                    if form.cleaned_data.get("DELETE") and form.instance.pk:
-                        form.instance.delete()
-                        continue
+            # добавить новые
+            for f in request.FILES.getlist("images"):
+                ProductImage.objects.create(product=product, image=f)
 
-                    v = form.save(commit=False)
-                    hexv = (form.cleaned_data.get("color_hex") or "").strip()
-
-                    v.product = product
-                    v.is_active = True
-                    v.color = color_map.get(hexv) if hexv else None
-                    v.save(update_parent=False)
-
-                # пересчёт цен один раз
-                product.update_prices()
-
-                # -------- IMAGES: delete + set main + add new --------
-                delete_ids = request.POST.getlist("delete_images")  # checkbox
-                main_id = request.POST.get("main_image")            # radio
-
-                # 1) удалить выбранные
-                if delete_ids:
-                    product.images.filter(id__in=delete_ids).delete()
-
-                # 2) добавить новые
-                files = request.FILES.getlist("images")
-                if files:
-                    start_sort = (product.images.aggregate(m=Max("sort")).get("m") or 0) + 1
-                    for i, f in enumerate(files):
-                        ProductImage.objects.create(
-                            product=product,
-                            image=f,
-                            sort=start_sort + i,
-                            is_main=False,
-                        )
-
-                # 3) назначить главную (если выбрали и её не удалили)
-                if main_id and not (delete_ids and str(main_id) in delete_ids):
-                    product.images.update(is_main=False)
-                    product.images.filter(id=main_id).update(is_main=True)
-
-                # 4) если главной нет — поставить первую
-                if not product.images.filter(is_main=True).exists():
-                    first_img = product.images.order_by("sort", "id").first()
-                    if first_img:
-                        first_img.is_main = True
-                        first_img.save(update_fields=["is_main"])
-
-            messages.success(request, "Товар обновлён")
             return redirect("product_list")
-
-        messages.error(request, "Проверь поля — есть ошибки")
-
     else:
-        pform = ProductForm(instance=product, store=request.store)
-        colors_fs = ColorFormSet(instance=product, prefix="colors")
-        variants_fs = VariantFormSet(
-            instance=product,
-            prefix="variants",
-            form_kwargs={"color_choices": color_choices},
-        )
+        pform = ProductForm(instance=product, store=request.store, initial={
+            "category": str(product.category_id) if product.category_id else "",
+            "brand": str(product.brand_id) if product.brand_id else "",
+        })
+        variants_fs = VariantFormSet(instance=product)
+
+    images = ProductImage.objects.filter(product=product).order_by("id")
 
     return render(request, "admin/product_edit.html", {
-        "store": request.store,
-        "product": product,
         "pform": pform,
-        "colors_fs": colors_fs,
         "variants_fs": variants_fs,
+        "product": product,
+        "images": images,
     })
 
 

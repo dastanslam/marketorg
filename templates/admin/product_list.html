@@ -182,16 +182,12 @@
     </div>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-
         document.querySelectorAll('.delete-product').forEach(button => {
-
             button.addEventListener('click', function () {
-
                 const productId = this.getAttribute('data-id');
                 const productName = this.getAttribute('data-name');
                 const url = this.getAttribute('data-url');
                 const productItem = this.closest('.product-item');
-
                 Swal.fire({
                     title: 'Удаление товара',
                     text: `Вы уверены, что хотите удалить "${productName}"?`,
@@ -203,7 +199,6 @@
                     cancelButtonColor: '#6c757d',
                     reverseButtons: true
                 }).then((result) => {
-
                     if (result.isConfirmed) {
 
                         fetch(url, {
