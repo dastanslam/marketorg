@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% load query_tags %}
+{% load humanize %}
 {% block title %}Товары{% endblock %}
 
 {% block content %}
@@ -24,17 +25,71 @@
               <div class="box-filter-top">
                 <div class="show-sm"> <a class="btn-open-filter" href="#">Филтры </a></div>
                 <div class="number-product">
-                  <p class="body-p2 neutral-medium-dark">Showing 9 of 18 products</p>
+                  <p class="body-p2 neutral-medium-dark">
+                    Найдено товаров: {{ products.count }}
+                  </p>
                 </div>
                 <div class="box-sort">
                   <div class="box-sortby d-flex align-items-center">
                     <div class="dropdown dropdown-sort">
-                      <button class="btn dropdown-toggle" id="dropdownSort" type="button" data-bs-toggle="dropdown" aria-expanded="false">По умолчанию</button>
-                      <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="dropdownSort" style="margin: 0px;">
-                        <li><a class="dropdown-item active" href="#">По умолчанию</a></li>
-                        <li><a class="dropdown-item" href="#">Сначала старые</a></li>
-                        <li><a class="dropdown-item" href="#">По количеству отзывов </a></li>
+
+                      <button class="btn dropdown-toggle"
+                              data-bs-toggle="dropdown">
+
+                        {% if sort == "old" %}
+                        Сначала старые
+                        {% elif sort == "reviews" %}
+                        По количеству отзывов
+                        {% elif sort == "price_asc" %}
+                        Сначала дешевые
+                        {% elif sort == "price_desc" %}
+                        Сначала дорогие
+                        {% else %}
+                        По умолчанию
+                        {% endif %}
+
+                      </button>
+
+
+                      <ul class="dropdown-menu dropdown-menu-light">
+
+                        <li>
+                          <a class="dropdown-item {% if not sort %}active{% endif %}"
+                             href="{% qs_set request 'sort' '' %}">
+                            По умолчанию
+                          </a>
+                        </li>
+
+                        <li>
+                          <a class="dropdown-item {% if sort == 'old' %}active{% endif %}"
+                             href="{% qs_set request 'sort' 'old' %}">
+                            Сначала старые
+                          </a>
+                        </li>
+
+                        <li>
+                          <a class="dropdown-item {% if sort == 'reviews' %}active{% endif %}"
+                             href="{% qs_set request 'sort' 'reviews' %}">
+                            По количеству отзывов
+                          </a>
+                        </li>
+
+                        <li>
+                          <a class="dropdown-item {% if sort == 'price_asc' %}active{% endif %}"
+                             href="{% qs_set request 'sort' 'price_asc' %}">
+                            Сначала дешевые
+                          </a>
+                        </li>
+
+                        <li>
+                          <a class="dropdown-item {% if sort == 'price_desc' %}active{% endif %}"
+                             href="{% qs_set request 'sort' 'price_desc' %}">
+                            Сначала дорогие
+                          </a>
+                        </li>
+
                       </ul>
+
                     </div>
                   </div>
                   <div class="box-view-style"> <a class="view-type view-2" href="#" data-col="2"></a><a class="view-type view-3 active" href="#" data-col="3"></a><a class="view-type view-4" href="#" data-col="4"></a><a class="view-type view-5" href="#" data-col="5"></a></div>
@@ -48,74 +103,220 @@
           <div class="container">
             <div class="box-filters-sidebar">
               <h5 class="title-filter">Филтры</h5>
-              <div class="block-filter">
-                <h6 class="item-collapse">Категория</h6>
-                <div class="box-collapse scrollFilter">
-                  <ul class="list-filter-checkbox">
-                    <li>
-                      <label class="cb-container">
-                        <input type="checkbox"><span class="text-small">Womens <span class="neutral-medium">(12)</span></span><span class="checkmark"></span>
-                      </label>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div class="block-filter">
-                <h6 class="item-collapse">Цветы </h6>
-                <div class="box-collapse scrollFilter">
-                  <ul class="list-colors">
-                    <li class="active">
-                      <div class="box-colors">
-                        <div class="item-color color-4"></div>
-                        <label>Blue</label>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div class="block-filter">
-                <h6 class="item-collapse">Размеры </h6>
-                <div class="box-collapse scrollFilter">
-                  <div class="block-size">
-                    <div class="list-sizes"><span class="item-size">XS </span><span class="item-size active">S </span><span class="item-size">M </span><span class="item-size">XL </span></div>
+
+              <form method="get" id="filtersForm">
+
+                <!-- Категория -->
+                <div class="block-filter">
+                  <h6 class="item-collapse">Категория</h6>
+                  <div class="box-collapse scrollFilter">
+                    <ul class="list-filter-checkbox">
+                      {% for cat in categories %}
+                      <li>
+                        <label class="cb-container">
+                          <input type="checkbox" name="category" value="{{ cat.id }}"
+                                 {% if cat.id|stringformat:"s" in selected.category %}checked{% endif %}>
+                          <span class="text-small">
+                {{ cat.name }} <span class="neutral-medium">({{ cat.cnt }})</span>
+              </span>
+                          <span class="checkmark"></span>
+                        </label>
+                      </li>
+                      {% endfor %}
+                    </ul>
                   </div>
                 </div>
-              </div>
-              <div class="block-filter">
-                <h6 class="item-collapse">Бренд </h6>
-                <div class="box-collapse scrollFilter">
-                  <ul class="list-filter-checkbox">
-                    <li>
-                      <label class="cb-container">
-                        <input type="checkbox"><span class="text-small">Adidas</span><span class="checkmark"></span>
-                      </label>
-                    </li>
-                  </ul>
+
+                <!-- Цвета -->
+                <div class="block-filter">
+                  <h6 class="item-collapse">Цветы</h6>
+                  <div class="box-collapse scrollFilter">
+                    <ul class="list-filter-checkbox">
+                      {% for c in colors %}
+                      <li>
+                        <label class="cb-container">
+                          <input type="checkbox" name="color" value="{{ c.id }}"
+                                 {% if c.id|stringformat:"s" in selected.color %}checked{% endif %}>
+                          <span class="text-small">
+                <span style="display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:middle;margin-right:8px;background:{{ c.hex }};"></span>
+                {{ c.name|default:c.hex }} <span class="neutral-medium">({{ c.cnt }})</span>
+              </span>
+                          <span class="checkmark"></span>
+                        </label>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
                 </div>
-              </div>
+
+                <!-- Размеры -->
+                <div class="block-filter">
+                  <h6 class="item-collapse">Размеры</h6>
+                  <div class="box-collapse scrollFilter">
+                    <div class="block-size">
+                      <div class="list-sizes">
+                        {% for s in sizes %}
+                        <label class="item-size {% if s in selected.size %}active{% endif %}" style="cursor:pointer;">
+                          <input type="checkbox" name="size" value="{{ s }}"
+                                 {% if s in selected.size %}checked{% endif %}
+                                 style="display:none;">
+                          {{ s }}
+                        </label>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Бренд -->
+                <div class="block-filter">
+                  <h6 class="item-collapse">Бренд</h6>
+                  <div class="box-collapse scrollFilter">
+                    <ul class="list-filter-checkbox">
+                      {% for b in brands %}
+                      <li>
+                        <label class="cb-container">
+                          <input type="checkbox" name="brand" value="{{ b.id }}"
+                                 {% if b.id|stringformat:"s" in selected.brand %}checked{% endif %}>
+                          <span class="text-small">
+                {{ b.name }} <span class="neutral-medium">({{ b.cnt }})</span>
+              </span>
+                          <span class="checkmark"></span>
+                        </label>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Пол -->
+                <div class="block-filter">
+                  <h6 class="item-collapse">Пол</h6>
+                  <div class="box-collapse scrollFilter">
+                    <ul class="list-filter-checkbox">
+                      {% for g in genders %}
+                      <li>
+                        <label class="cb-container">
+                          <input type="checkbox" name="gender" value="{{ g.id }}"
+                                 {% if g.id|stringformat:"s" in selected.gender %}checked{% endif %}>
+                          <span class="text-small">
+                {{ g.name }} <span class="neutral-medium">({{ g.cnt }})</span>
+              </span>
+                          <span class="checkmark"></span>
+                        </label>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
         <div class="container">
+          {% if selected.category or selected.brand or selected.color or selected.gender or selected.size %}
+
           <div class="box-your-filter box-your-filter-shop2">
-            <div class="block-text-filter"><span class="body-p2 neutral-medium-dark">Фильтры</span></div>
-            <div class="block-ele-filter"><a class="btn btn-tag-filter" href="#">XS<span class="close-tag"></span></a><a class="btn btn-tag-filter" href="#">Women<span class="close-tag"></span></a><a class="clear-filter link-underline" href="#">Сбросить всё</a></div>
+            <div class="block-text-filter">
+              <span class="body-p2 neutral-medium-dark">Фильтры</span>
+            </div>
+
+            <div class="block-ele-filter">
+
+              {# Категории #}
+              {% for cat in categories %}
+              {% if cat.id|stringformat:"s" in selected.category %}
+              <a class="btn btn-tag-filter" href="{% qs_remove request 'category' cat.id %}">
+                {{ cat.name }}<span class="close-tag"></span>
+              </a>
+              {% endif %}
+              {% endfor %}
+
+              {# Бренды #}
+              {% for b in brands %}
+              {% if b.id|stringformat:"s" in selected.brand %}
+              <a class="btn btn-tag-filter" href="{% qs_remove request 'brand' b.id %}">
+                {{ b.name }}<span class="close-tag"></span>
+              </a>
+              {% endif %}
+              {% endfor %}
+
+              {# Цвета #}
+              {% for c in colors %}
+              {% if c.id|stringformat:"s" in selected.color %}
+              <a class="btn btn-tag-filter" href="{% qs_remove request 'color' c.id %}">
+                {{ c.name|default:c.hex }}<span class="close-tag"></span>
+              </a>
+              {% endif %}
+              {% endfor %}
+
+              {# Пол #}
+              {% for g in genders %}
+              {% if g.id|stringformat:"s" in selected.gender %}
+              <a class="btn btn-tag-filter" href="{% qs_remove request 'gender' g.id %}">
+                {{ g.name }}<span class="close-tag"></span>
+              </a>
+              {% endif %}
+              {% endfor %}
+
+              {# Размеры #}
+              {% for s in selected.size %}
+              <a class="btn btn-tag-filter" href="{% qs_remove request 'size' s %}">
+                {{ s }}<span class="close-tag"></span>
+              </a>
+              {% endfor %}
+
+              <a class="clear-filter link-underline" href="{% url 'shop' %}">Сбросить всё</a>
+
+            </div>
           </div>
+
+          {% endif %}
           <div class="box-list-products box-list-products-4 box-list-products-shop-2">
+            {% for p in products %}
             <div class="product-item">
               <div class="cardProduct wow fadeInUp">
-                <div class="cardImage"><a href="#"><img class="imageMain" src="{% static 'imgs/page/homepage1/product8.png' %}" alt="guza"></a>
+
+                <div class="cardImage">
+                  <a href="#">
+                    {# если у тебя есть поле image — поставь сюда, пока оставим заглушку #}
+                    <img class="imageMain" src="{% static 'imgs/page/homepage1/product8.png' %}" alt="{{ p.name }}">
+                  </a>
                 </div>
-                <div class="cardInfo"><a href="#">
-                    <h6 class="text-16-medium cardTitle">Lace Shirt Cut II</h6></a>
-                  <p class="body-p2 cardDesc">$16.00</p>
+
+                <div class="cardInfo">
+                  <a href="#">
+                    <h6 class="text-16-medium cardTitle">{{ p.name }}</h6>
+                  </a>
+
+                  <p class="body-p2 cardDesc">
+                    {% if p.min_price and p.max_price and p.min_price != p.max_price %}
+                    {{ p.min_price|floatformat:0|intcomma }} ₸ – {{ p.max_price|floatformat:0|intcomma }} ₸
+                    {% else %}
+                    {{ p.min_price|floatformat:0|intcomma }} ₸
+                    {% endif %}
+                  </p>
+
                   <div class="box-colors">
-                    <div class="item-color color-1"></div>
-                    <div class="item-color color-2"></div>
-                    <div class="item-color color-3"></div>
+                    {# уникальные цвета из вариантов #}
+                    {% with seen="" %}
+                    {% for v in p.active_variants %}
+                    {% if v.color %}
+                    {% if v.color.hex not in seen %}
+                    <div class="item-color" style="--c: {{ v.color.hex }};"></div>
+                    {% with seen=seen|add:v.color.hex|add:"|" %}{% endwith %}
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                    {% endwith %}
                   </div>
+
                 </div>
               </div>
+            </div>
+            {% empty %}
+            <p>Товары не найдены</p>
+            {% endfor %}
             </div>
           </div>
           <div class="text-center mt-50">
@@ -140,4 +341,60 @@
         </div>
       </section>
     </main>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("filtersForm");
+  const overlay = document.querySelector(".wrapper-overlay");
+  if (!form || !overlay) return;
+
+  let dirty = false;
+  form.addEventListener("change", () => { dirty = true; });
+
+  function goWithFilters() {
+    const params = new URLSearchParams(new FormData(form));
+    const url = `${window.location.pathname}?${params.toString()}`;
+    window.location.href = url;
+  }
+
+  overlay.addEventListener("click", function (e) {
+    // если ничего не меняли — НЕ мешаем закрытию
+    if (!dirty) return;
+
+    // если меняли — применяем фильтры
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    goWithFilters();
+  }, true);
+});
+</script>
+<script>
+document.addEventListener("click", function(e){
+  const a = e.target.closest("a.btn-tag-filter, a.clear-filter");
+  if (!a) return;
+
+  const href = a.getAttribute("href");
+  if (!href || href === "#") return;
+
+  // если тема пытается отменить переход — мы принудительно переходим
+  e.preventDefault();
+  e.stopPropagation();
+  e.stopImmediatePropagation();
+  window.location.href = a.href;
+}, true); // capture = раньше скриптов темы
+</script>
+<script>
+document.addEventListener("click", function(e){
+  const a = e.target.closest(".dropdown-menu a.dropdown-item");
+  if (!a) return;
+
+  const href = a.getAttribute("href");
+  if (!href || href === "#") return;
+
+  e.preventDefault();
+  e.stopPropagation();
+  e.stopImmediatePropagation();
+  window.location.href = a.href;
+}, true); // capture
+</script>
 {% endblock %}

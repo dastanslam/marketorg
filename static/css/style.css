@@ -13799,3 +13799,6 @@ fieldset.photo-field > .body-text{
     text-align: left; /* или center */
 }
 
+.box-colors .item-color::before{
+  background-color: var(--c) !important;
+}
