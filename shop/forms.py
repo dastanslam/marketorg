@@ -4,7 +4,7 @@ from .models import (
     Product, ProductColor, ProductVariant,
     Category, Brand, Gender
 )
-from django.contrib.humanize.templatetags.humanize import intcomma
+import re
 
 class ProductForm(forms.ModelForm):
     # НЕ модельные поля, принимают и id, и текст
@@ -64,19 +64,28 @@ class ProductForm(forms.ModelForm):
 # =========================
 
 class VariantForm(forms.ModelForm):
+    price = forms.CharField(
+        widget=forms.TextInput(attrs={
+            "class": "form-control price-input",
+            "placeholder": "Цена",
+            "inputmode": "numeric"
+        })
+    )
     class Meta:
         model = ProductVariant
         fields = ["color", "size", "price", "sku"]
         widgets = {
             "color": forms.Select(attrs={"class": "select"}),
             "size": forms.TextInput(attrs={"class": "form-control", "placeholder": "Напр. XL / 42"}),
-            "price": forms.TextInput(attrs={
-                "class": "form-control price-input",
-                "placeholder": "Цена",
-                "inputmode": "numeric"
-            }),
             "sku": forms.TextInput(attrs={"class": "form-control", "placeholder": "Артикул (авто)"}),
         }
+
+    def clean_price(self):
+        price = self.cleaned_data.get('price')
+        if isinstance(price, str):
+            # Убираем всё, кроме цифр (пробелы, символ тенге и т.д.)
+            price = re.sub(r'[^\d]', '', price)
+        return price
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
