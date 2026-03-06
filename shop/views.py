@@ -3,6 +3,7 @@ from django.db.models import Count, Q, Exists, OuterRef
 from .models import *
 from django.db.models import Prefetch
 from django.core.paginator import Paginator
+import json
 
 def index(request):
     return render(request, "index.html", {"store": request.store})
@@ -137,19 +138,33 @@ def product(request, slug):
         is_active=True
     )
 
-    # похожие товары
-    related = Product.objects.filter(
-        store=request.store,
-        category=product.category,
-        is_active=True
-    ).exclude(id=product.id)[:4]
+    variants = list(
+        product.variants.filter(is_active=True).select_related("color")
+    )
+
+    current_variant = sorted(variants, key=lambda v: v.price)[0] if variants else None
+
+    variants_data = [
+        {
+            "id": v.id,
+            "color_id": v.color.id if v.color else None,
+            "color_name": v.color.name if v.color else "",
+            "color_hex": v.color.hex if v.color else "",
+            "size": v.size or "",
+            "sku": v.sku or "",
+            "price": str(v.price_final),
+            "old_price": str(v.old_price_effective) if v.old_price_effective else "",
+        }
+        for v in variants
+    ]
 
     return render(request, "product.html", {
-        "store": request.store,
         "product": product,
         "images": product.images.all(),
-        "variants": product.variants.filter(is_active=True),
-        "related": related
+        "variants": variants,
+        "current_variant": current_variant,
+        "variants_json": json.dumps(variants_data, ensure_ascii=False),
+        "store": request.store,
     })
 
 def cart(request):

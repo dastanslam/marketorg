@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% load humanize %}
 {% block title %}Товары{% endblock %}
 
 {% block content %}
@@ -31,7 +31,7 @@
                   </div>
                   {% endfor %}
                 </div>
-                <div class="box-main-gallery"><a class="zoom-image glightbox" href="{% static 'imgs/page/product/img.png' %}"></a>
+                <div class="box-main-gallery">
                   <div class="product-image-slider product-image-slider-1">
                     {% for img in images %}
                     <figure class="border-radius-10">
@@ -50,9 +50,14 @@
                 <h3 class="mb-5">{{ product.name }}</h3>
                 <div class="block-rating"><img src="{% static 'imgs/template/icons/star-fill.svg' %}" alt="Guza"><img src="{% static 'imgs/template/icons/star-fill.svg' %}" alt="Guza"><img src="{% static 'imgs/template/icons/star-fill.svg' %}" alt="Guza"><img src="{% static 'imgs/template/icons/star-fill.svg' %}" alt="Guza"><img src="{% static 'imgs/template/icons/star-none.svg' %}" alt="Guza"><span class="text-17 neutral-medium-dark">(5)</span></div>
                 <div class="block-price">
-                  <span class="price-main">{{ product.min_price }} ₸</span>
-                  {% if product.max_price != product.min_price %}
-                  <span class="price-line">{{ product.max_price }} ₸</span>
+                  {% if current_variant %}
+                  <span class="price-main" id="product-price-main">{{ current_variant.price_final|floatformat:0|intcomma }} ₸</span>
+
+                  {% if current_variant.old_price_effective %}
+                  <span class="price-line" id="product-price-old">{{ current_variant.old_price_effective|floatformat:0|intcomma }} ₸</span>
+                  {% else %}
+                  <span class="price-line" id="product-price-old" style="display:none;"></span>
+                  {% endif %}
                   {% endif %}
                 </div>
                 <div class="block-description">
@@ -60,20 +65,47 @@
                     {{ product.description }}
                   </p>
                 </div>
-                <div class="block-color"><span>Цвет:</span>
-                  <label>Navy</label>
+                <div class="block-color">
+                  <span>Цвет:</span>
+                  <label id="selected-color-label">
+                    {% if current_variant and current_variant.color %}{{ current_variant.color.name }}{% endif %}
+                  </label>
+
                   <div class="list-colors">
                     <div class="box-colors">
-                      <div class="item-color color-1"></div>
-                      <div class="item-color color-2 active"></div>
-                      <div class="item-color color-3"></div>
+                      {% regroup variants by color as color_groups %}
+                      {% for group in color_groups %}
+                      {% if group.grouper %}
+                      <div
+                              class="item-color {% if current_variant.color and current_variant.color.id == group.grouper.id %}active{% endif %}"
+                              data-color-id="{{ group.grouper.id }}"
+                              data-color-name="{{ group.grouper.name }}"
+                              style="background: {{ group.grouper.hex }}; cursor:pointer;"
+                      ></div>
+                      {% endif %}
+                      {% endfor %}
                     </div>
                   </div>
                 </div>
-                <div class="block-size"><span>Размер:</span>
-                  <label>S</label>
+                <div class="block-size">
+                  <span>Размер:</span>
+                  <label id="selected-size-label">
+                    {% if current_variant %}{{ current_variant.size }}{% endif %}
+                  </label>
+
                   <div class="box-list-sizes">
-                    <div class="list-sizes"><span class="item-size out-stock">XS</span><span class="item-size active">S</span><span class="item-size">M</span><span class="item-size">XL</span></div>
+                    <div class="list-sizes">
+                      {% regroup variants by size as size_groups %}
+                      {% for group in size_groups %}
+                      <span
+                              class="item-size {% if current_variant and current_variant.size == group.grouper %}active{% endif %}"
+                              data-size="{{ group.grouper }}"
+                              style="cursor:pointer;"
+                      >
+          {{ group.grouper }}
+        </span>
+                      {% endfor %}
+                    </div>
                   </div>
                 </div>
                 <div class="block-quantity">
@@ -259,4 +291,130 @@
         </div>
       </section>
     </main>
+<script>
+  const variants = JSON.parse('{{ variants_json|escapejs }}');
+
+  let selectedColorId = {% if current_variant and current_variant.color %}{{ current_variant.color.id }}{% else %}null{% endif %};
+  let selectedSize = `{% if current_variant %}{{ current_variant.size|default:'' }}{% endif %}`;
+
+  const priceMain = document.getElementById("product-price-main");
+  const priceOld = document.getElementById("product-price-old");
+  const skuEl = document.getElementById("product-sku");
+  const colorLabel = document.getElementById("selected-color-label");
+  const sizeLabel = document.getElementById("selected-size-label");
+
+  function getAvailableSizesByColor(colorId) {
+    return variants
+      .filter(v => String(v.color_id) === String(colorId))
+      .map(v => String(v.size));
+  }
+
+  function findExactVariant(colorId, size) {
+    return variants.find(v =>
+      String(v.color_id) === String(colorId) &&
+      String(v.size) === String(size)
+    );
+  }
+
+  function findFirstVariantByColor(colorId) {
+    return variants.find(v => String(v.color_id) === String(colorId));
+  }
+
+  function updateSizesState() {
+    const availableSizes = getAvailableSizesByColor(selectedColorId);
+
+    document.querySelectorAll(".item-size").forEach(el => {
+      const size = String(el.dataset.size);
+      const isAvailable = availableSizes.includes(size);
+
+      el.classList.toggle("out-stock", !isAvailable);
+
+      if (!isAvailable) {
+        el.classList.remove("active");
+      }
+    });
+
+    if (!availableSizes.includes(String(selectedSize))) {
+      selectedSize = availableSizes.length ? availableSizes[0] : "";
+    }
+
+    document.querySelectorAll(".item-size").forEach(el => {
+      el.classList.toggle("active", String(el.dataset.size) === String(selectedSize) && !el.classList.contains("out-stock"));
+    });
+  }
+
+  function updateVariantUI() {
+    updateSizesState();
+
+    let variant = findExactVariant(selectedColorId, selectedSize);
+
+    if (!variant) {
+      variant = findFirstVariantByColor(selectedColorId);
+    }
+
+    if (!variant && variants.length) {
+      variant = variants[0];
+      selectedColorId = variant.color_id;
+      selectedSize = variant.size;
+      updateSizesState();
+    }
+
+    if (!variant) return;
+
+    if (priceMain) {
+      priceMain.textContent = `${variant.price} ₸`;
+    }
+
+    if (priceOld) {
+      if (variant.old_price && variant.old_price !== variant.price) {
+        priceOld.textContent = `${variant.old_price} ₸`;
+        priceOld.style.display = "";
+      } else {
+        priceOld.textContent = "";
+        priceOld.style.display = "none";
+      }
+    }
+
+    if (skuEl) {
+      skuEl.textContent = variant.sku || "";
+    }
+
+    if (colorLabel) {
+      colorLabel.textContent = variant.color_name || "";
+    }
+
+    if (sizeLabel) {
+      sizeLabel.textContent = variant.size || "";
+    }
+
+    selectedColorId = variant.color_id;
+    selectedSize = variant.size;
+
+    document.querySelectorAll(".item-color").forEach(el => {
+      el.classList.toggle("active", String(el.dataset.colorId) === String(selectedColorId));
+    });
+
+    document.querySelectorAll(".item-size").forEach(el => {
+      const disabled = el.classList.contains("out-stock");
+      el.classList.toggle("active", !disabled && String(el.dataset.size) === String(selectedSize));
+    });
+  }
+
+  document.querySelectorAll(".item-color").forEach(el => {
+    el.addEventListener("click", function () {
+      selectedColorId = this.dataset.colorId;
+      updateVariantUI();
+    });
+  });
+
+  document.querySelectorAll(".item-size").forEach(el => {
+    el.addEventListener("click", function () {
+      if (this.classList.contains("out-stock")) return;
+      selectedSize = this.dataset.size;
+      updateVariantUI();
+    });
+  });
+
+  updateVariantUI();
+</script>
 {% endblock %}
