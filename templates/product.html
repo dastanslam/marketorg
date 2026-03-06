@@ -9,10 +9,10 @@
         <div class="container">
           <div class="breadcrumbs">
             <ul>
-              <li> <a href="#">Главная </a></li>
-              <li> <a href="#">Товары</a></li>
+              <li> <a href="{% url 'index' %}">Главная </a></li>
+              <li> <a href="{% url 'shop' %}">Товары</a></li>
               <li> <a href="#">Категория </a></li>
-              <li> <a href="#">Название</a></li>
+              <li> <a href="">Название</a></li>
             </ul>
           </div>
         </div>
@@ -23,37 +23,23 @@
             <div class="col-lg-6">
               <div class="detail-gallery">
                 <div class="slider-nav-thumbnails slider-nav-thumbnails-1">
+                  {% for img in images %}
                   <div>
-                    <div class="item-thumb"><img src="{% static 'imgs/page/product/thumnb.png' %}" alt="kidify"></div>
+                    <div class="item-thumb">
+                      <img src="{{ img.image.url }}" alt="{{ product.name }}">
+                    </div>
                   </div>
-                  <div>
-                    <div class="item-thumb"><img src="{% static 'imgs/page/product/thumnb2.png' %}" alt="kidify"></div>
-                  </div>
-                  <div>
-                    <div class="item-thumb"><img src="{% static 'imgs/page/product/thumnb3.png' %}" alt="kidify"></div>
-                  </div>
-                  <div>
-                    <div class="item-thumb"><img src="{% static 'imgs/page/product/thumnb4.png' %}" alt="kidify"></div>
-                  </div>
-                  <div>
-                    <div class="item-thumb"><img src="{% static 'imgs/page/product/thumnb5.png' %}" alt="kidify"></div>
-                  </div>
-                  <div>
-                    <div class="item-thumb"><img src="{% static 'imgs/page/product/thumnb4.png' %}" alt="kidify"></div>
-                  </div>
-                  <div>
-                    <div class="item-thumb"><img src="{% static 'imgs/page/product/thumnb5.png' %}" alt="kidify"></div>
-                  </div>
+                  {% endfor %}
                 </div>
                 <div class="box-main-gallery"><a class="zoom-image glightbox" href="{% static 'imgs/page/product/img.png' %}"></a>
                   <div class="product-image-slider product-image-slider-1">
-                    <figure class="border-radius-10"><a class="glightbox" href="{% static 'imgs/page/product/img.png' %}"><img src="{% static 'imgs/page/product/img.png' %}" alt="kidify"></a></figure>
-                    <figure class="border-radius-10"><a class="glightbox" href="{% static 'imgs/page/product/img.png' %}"><img src="{% static 'imgs/page/product/img.png' %}" alt="kidify"></a></figure>
-                    <figure class="border-radius-10"><a class="glightbox" href="{% static 'imgs/page/product/img.png' %}"><img src="{% static 'imgs/page/product/img.png' %}" alt="kidify"></a></figure>
-                    <figure class="border-radius-10"><a class="glightbox" href="{% static 'imgs/page/product/img.png' %}"><img src="{% static 'imgs/page/product/img.png' %}" alt="kidify"></a></figure>
-                    <figure class="border-radius-10"><a class="glightbox" href="{% static 'imgs/page/product/img.png' %}"><img src="{% static 'imgs/page/product/img.png' %}" alt="kidify"></a></figure>
-                    <figure class="border-radius-10"><a class="glightbox" href="{% static 'imgs/page/product/img.png' %}"><img src="{% static 'imgs/page/product/img.png' %}" alt="kidify"></a></figure>
-                    <figure class="border-radius-10"><a class="glightbox" href="{% static 'imgs/page/product/img.png' %}"><img src="{% static 'imgs/page/product/img.png' %}" alt="kidify"></a></figure>
+                    {% for img in images %}
+                    <figure class="border-radius-10">
+                      <a class="glightbox" href="{{ img.image.url }}">
+                        <img src="{{ img.image.url }}" alt="{{ product.name }}">
+                      </a>
+                    </figure>
+                    {% endfor %}
                   </div>
                 </div>
               </div>
@@ -61,11 +47,18 @@
             <div class="col-lg-6">
               <div class="box-product-info">
                 <p class="body-p2 viewed-guest"><span class="text-17-medium tone-red">24 человек</span>сейчас смотрят этот товар</p>
-                <h3 class="mb-5">Summer Stripes Shorts</h3>
+                <h3 class="mb-5">{{ product.name }}</h3>
                 <div class="block-rating"><img src="{% static 'imgs/template/icons/star-fill.svg' %}" alt="Guza"><img src="{% static 'imgs/template/icons/star-fill.svg' %}" alt="Guza"><img src="{% static 'imgs/template/icons/star-fill.svg' %}" alt="Guza"><img src="{% static 'imgs/template/icons/star-fill.svg' %}" alt="Guza"><img src="{% static 'imgs/template/icons/star-none.svg' %}" alt="Guza"><span class="text-17 neutral-medium-dark">(5)</span></div>
-                <div class="block-price"><span class="price-main">$15.00</span><span class="price-line">$25.00</span></div>
+                <div class="block-price">
+                  <span class="price-main">{{ product.min_price }} ₸</span>
+                  {% if product.max_price != product.min_price %}
+                  <span class="price-line">{{ product.max_price }} ₸</span>
+                  {% endif %}
+                </div>
                 <div class="block-description">
-                  <p class="body-p2 neutral-medium-dark">The shorts are made from soft organic cotton. They have an elasticated waistband with an internal drawstring and side pockets.</p>
+                  <p class="body-p2 neutral-medium-dark">
+                    {{ product.description }}
+                  </p>
                 </div>
                 <div class="block-color"><span>Цвет:</span>
                   <label>Navy</label>

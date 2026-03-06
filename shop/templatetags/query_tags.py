@@ -40,3 +40,10 @@ def qs_set(request, key, value):
 
     base = request.path
     return f"{base}?{query}" if query else base
+
+@register.simple_tag
+def qs_page(request, page_number):
+    q = request.GET.copy()
+    q["page"] = page_number
+    query = q.urlencode()
+    return f"{request.path}?{query}" if query else request.path

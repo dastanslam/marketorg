@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count, Q, Exists, OuterRef
 from .models import *
 from django.db.models import Prefetch
+from django.core.paginator import Paginator
 
 def index(request):
     return render(request, "index.html", {"store": request.store})
@@ -47,7 +48,30 @@ def shop(request):
     elif sort == "price_desc":
         products = products.order_by("-min_price")
     else:
-        products = products.order_by("-created_at")  # по умолчанию
+        products = products.order_by("-created_at")
+
+    # ---- оптимизация ----
+    products = products.select_related(
+        "category", "brand", "gender"
+    ).prefetch_related(
+        Prefetch(
+            "variants",
+            queryset=ProductVariant.objects.filter(is_active=True)
+            .select_related("color")
+            .order_by("price"),
+            to_attr="active_variants"
+        ),
+        Prefetch(
+            "images",
+            queryset=ProductImage.objects.order_by("-is_main", "sort"),
+            to_attr="product_images"
+        )
+    )
+
+    # ---- пагинация ----
+    paginator = Paginator(products, 12)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
 
     # ---- списки фильтров + счетчики ----
     categories = (
@@ -76,25 +100,17 @@ def shop(request):
     sizes_qs = (
         ProductVariant.objects
         .filter(product__store=store, is_active=True)
-        .exclude(size__isnull=True).exclude(size__exact="")
+        .exclude(size__isnull=True)
+        .exclude(size__exact="")
         .values_list("size", flat=True)
         .distinct()
         .order_by("size")
     )
 
-    products = products.prefetch_related(
-        Prefetch(
-            "variants",
-            queryset=ProductVariant.objects.filter(is_active=True)
-            .select_related("color")
-            .order_by("price"),
-            to_attr="active_variants"
-        )
-    ).select_related("category", "brand", "gender")
-
     return render(request, "shop.html", {
         "store": store,
-        "products": products,
+        "products": page_obj.object_list,
+        "page_obj": page_obj,
 
         "categories": categories,
         "brands": brands,
@@ -102,7 +118,7 @@ def shop(request):
         "colors": colors,
         "sizes": sizes_qs,
 
-        "sort": sort,  # <-- важно для активного пункта в dropdown
+        "sort": sort,
 
         "selected": {
             "category": set(map(str, cat_ids)),
@@ -113,8 +129,28 @@ def shop(request):
         }
     })
 
-def product(request):
-    return render(request, "product.html", {"store": request.store})
+def product(request, slug):
+    product = get_object_or_404(
+        Product.objects.prefetch_related("images", "variants__color"),
+        slug=slug,
+        store=request.store,
+        is_active=True
+    )
+
+    # похожие товары
+    related = Product.objects.filter(
+        store=request.store,
+        category=product.category,
+        is_active=True
+    ).exclude(id=product.id)[:4]
+
+    return render(request, "product.html", {
+        "store": request.store,
+        "product": product,
+        "images": product.images.all(),
+        "variants": product.variants.filter(is_active=True),
+        "related": related
+    })
 
 def cart(request):
     return render(request, "cart.html", {"store": request.store})

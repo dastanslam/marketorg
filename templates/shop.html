@@ -278,14 +278,18 @@
               <div class="cardProduct wow fadeInUp">
 
                 <div class="cardImage">
-                  <a href="#">
+                  <a href="{% url 'product' p.slug %}">
                     {# если у тебя есть поле image — поставь сюда, пока оставим заглушку #}
-                    <img class="imageMain" src="{% static 'imgs/page/homepage1/product8.png' %}" alt="{{ p.name }}">
+                      {% if p.product_images %}
+                      <img class="imageMain" src="{{ p.product_images.0.image.url }}" alt="{{ p.name }}">
+                      {% else %}
+                      <img class="imageMain" src="{% static 'imgs/page/homepage1/product8.png' %}" alt="{{ p.name }}">
+                      {% endif %}
                   </a>
                 </div>
 
                 <div class="cardInfo">
-                  <a href="#">
+                  <a href="{% url 'product' p.slug %}">
                     <h6 class="text-16-medium cardTitle">{{ p.name }}</h6>
                   </a>
 
@@ -322,19 +326,82 @@
           <div class="text-center mt-50">
             <nav class="box-pagination">
               <ul class="pagination">
-                <li class="page-item"><a class="page-link page-prev" href="#">
-                    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"></path>
-                    </svg></a></li>
-                <li class="page-item"><a class="page-link active" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">...</a></li>
-                <li class="page-item"><a class="page-link" href="#">10</a></li>
-                <li class="page-item"><a class="page-link page-next" href="#">
-                    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"></path>
-                    </svg></a></li>
+
+                {# Назад #}
+                <li class="page-item">
+                  {% if page_obj.has_previous %}
+                  <a class="page-link page-prev" href="{% qs_page request page_obj.previous_page_number %}">
+                    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+                         xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"></path>
+                    </svg>
+                  </a>
+                  {% else %}
+                  <span class="page-link page-prev">
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+               xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"></path>
+          </svg>
+        </span>
+                  {% endif %}
+                </li>
+
+                {# Первая страница #}
+                {% if page_obj.number > 3 %}
+                <li class="page-item">
+                  <a class="page-link" href="{% qs_page request 1 %}">1</a>
+                </li>
+                {% if page_obj.number > 4 %}
+                <li class="page-item"><span class="page-link">...</span></li>
+                {% endif %}
+                {% endif %}
+
+                {# Страницы вокруг текущей #}
+                {% for num in page_obj.paginator.page_range %}
+                {% if num >= page_obj.number|add:-2 and num <= page_obj.number|add:2 %}
+                <li class="page-item">
+                  <a class="page-link {% if page_obj.number == num %}active{% endif %}"
+                     href="{% qs_page request num %}">
+                    {{ num }}
+                  </a>
+                </li>
+                {% endif %}
+                {% endfor %}
+
+                {# Последняя страница #}
+                {% if page_obj.number < page_obj.paginator.num_pages|add:-2 %}
+                {% if page_obj.number < page_obj.paginator.num_pages|add:-3 %}
+                <li class="page-item"><span class="page-link">...</span></li>
+                {% endif %}
+                <li class="page-item">
+                  <a class="page-link" href="{% qs_page request page_obj.paginator.num_pages %}">
+                    {{ page_obj.paginator.num_pages }}
+                  </a>
+                </li>
+                {% endif %}
+
+                {# Вперед #}
+                <li class="page-item">
+                  {% if page_obj.has_next %}
+                  <a class="page-link page-next" href="{% qs_page request page_obj.next_page_number %}">
+                    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+                         xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"></path>
+                    </svg>
+                  </a>
+                  {% else %}
+                  <span class="page-link page-next">
+          <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+               xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"></path>
+          </svg>
+        </span>
+                  {% endif %}
+                </li>
+
               </ul>
             </nav>
           </div>
