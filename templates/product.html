@@ -4,6 +4,33 @@
 {% load humanize %}
 {% block title %}Товары{% endblock %}
 
+{% block meta %}
+
+<!-- Основное SEO -->
+<meta name="description" content="{{ product.description|truncatechars:160 }}">
+<meta name="keywords" content="{{ product.name }}, {{ product.category.name }}, {{ product.brand.name }}">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+<!-- OpenGraph (Facebook, WhatsApp, Telegram) -->
+<meta property="og:title" content="{{ product.name }}">
+<meta property="og:description" content="{{ product.description|truncatechars:150 }}">
+<meta property="og:image" content="{{ images.0.image.url }}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:type" content="product">
+<meta property="og:site_name" content="HokoMarket">
+<meta property="og:locale" content="ru_RU">
+
+<!-- Product данные -->
+<meta property="product:price:amount" content="{{ product.min_price }}">
+<meta property="product:price:currency" content="KZT">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ product.name }}">
+<meta name="twitter:description" content="{{ product.description|truncatechars:150 }}">
+<meta name="twitter:image" content="{{ images.0.image.url }}">
+
+{% endblock %}
 {% block content %}
   <meta property="og:title" content="{{ product.name }}">
   <meta property="og:description" content="{{ product.description|truncatechars:150 }}">
@@ -18,7 +45,7 @@
               <li> <a href="{% url 'index' %}">Главная </a></li>
               <li> <a href="{% url 'shop' %}">Товары</a></li>
               <li> <a href="#">Категория </a></li>
-              <li> <a href="">Название</a></li>
+              <li> <a href="">{{ product.name }}</a></li>
             </ul>
           </div>
         </div>
@@ -150,8 +177,16 @@
                 </div>
                 <div class="block-tags-product">
                   <p class="body-p2"><span class="neutral-medium-dark">Артикул: </span><span class="neutral-dark" id="product-sku">{{ current_variant.sku|default:'' }}</span></p>
-                  <p class="body-p2"><span class="neutral-medium-dark">Категории: </span><a class="neutral-dark" href="">{{ product.category.name }}</a></p>
-                  <p class="body-p2"><span class="neutral-medium-dark">Брэнд: </span><a class="neutral-dark" href="">{{ product.brand.name }}</a></p>
+                  <p class="body-p2"><span class="neutral-medium-dark">Категории: </span>{{ product.category.name }}</p>
+                  <p class="body-p2"><span class="neutral-medium-dark">Брэнд: </span>{{ product.brand.name }}</p>
+                  <p class="body-p2">
+                    <span class="neutral-medium-dark">Размеры: </span>
+                    {% for v in variants %}
+                    {{ v.size }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                  </p>
+                  <p class="body-p2"><span class="neutral-medium-dark">Страна производства: </span>{{ product.country }}</p>
+                  <p class="body-p2"><span class="neutral-medium-dark">Материал: </span>{{ product.material }}</p>
                 </div>
                 <div class="block-socials-product"><span class="body-p2 neutral-medium-dark">Поделиться:</span><a
                         class="social-neutral-dark"
@@ -188,22 +223,6 @@
             <div class="tab-content">
               <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
                 <p>{{ product.description }}</p>
-                <div class="row mt-40">
-                  <div class="col-lg-6">
-                    <p>
-                        <strong>Размер на модели:</strong> UK 10 / EU 38 / US 6<br>
-                        <strong>Назначение:</strong> Повседневное, спорт<br>
-                        <strong>Страна производства:</strong> Италия
-                    </p>
-                </div>
-                <div class="col-lg-6">
-                    <p>
-                        <strong>Верх:</strong> Кожа 100%, Полиамид 100%<br>
-                        <strong>Подкладка:</strong> Полиэстер 100%<br>
-                        <strong>Подошва:</strong> Резина 100%
-                    </p>
-                </div>
-                </div>
               </div>
               <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
                 <div class="comments-area">

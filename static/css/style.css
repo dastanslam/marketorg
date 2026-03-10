@@ -8216,7 +8216,7 @@ footer a {
 }
 
 .block-price {
-  margin-bottom: 24px;
+  margin-bottom: 10px;
 }
 .block-price .price-line {
   font-size: 24px;
@@ -8291,6 +8291,8 @@ footer a {
   color: #999999;
   border-color: #EEEEEE;
   text-decoration: line-through;
+  pointer-events: none;
+  cursor: not-allowed;
 }
 .list-sizes .item-size.active, .list-sizes .item-size:hover {
   border-color: #111111;
@@ -10824,7 +10826,7 @@ footer a {
 }
 
 .block-product-single {
-  padding-top: 40px;
+  padding-top: 20px;
 }
 
 .box-product-info {
@@ -10837,10 +10839,10 @@ footer a {
   margin-right: 11px;
 }
 .box-product-info .block-description {
-  margin-bottom: 24px;
+  margin-bottom: 10px;
 }
 .box-product-info .block-size {
-  margin-bottom: 21px;
+  margin-bottom: 10px;
 }
 .box-product-info .box-form-cart .btn {
   max-width: 150px;

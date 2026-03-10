@@ -13,6 +13,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'imgs/template/favicon.svg' %}">
     <link href="{% static 'css/style.css' %}?v=1.0.0" rel="stylesheet">
     <title>{{ store.name }}</title>
+    {% block meta %}{% endblock %}
   </head>
   <body>
     <div id="preloader-active">
