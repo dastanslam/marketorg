@@ -294,11 +294,7 @@
                   </a>
 
                   <p class="body-p2 cardDesc">
-                    {% if p.min_price and p.max_price and p.min_price != p.max_price %}
-                    {{ p.min_price|floatformat:0|intcomma }} ₸ – {{ p.max_price|floatformat:0|intcomma }} ₸
-                    {% else %}
                     {{ p.min_price|floatformat:0|intcomma }} ₸
-                    {% endif %}
                   </p>
 
                   <div class="box-colors">

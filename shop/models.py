@@ -282,10 +282,11 @@ class ProductVariant(models.Model):
     def price_final(self):
         cat = self.product.category
         if not cat or not cat.discount_is_active_now():
-            return self.price
+            return int(self.price)
+
         d = Decimal(cat.discount_percent) / Decimal("100")
         res = self.price * (Decimal("1") - d)
-        return res.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        return int(res)
 
     @property
     def old_price_effective(self):

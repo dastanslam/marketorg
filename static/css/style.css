@@ -8263,7 +8263,6 @@ footer a {
   line-height: 24px;
   font-weight: 400;
   display: inline-block;
-  margin-right: 9px;
 }
 .block-color label, .block-size label {
   color: #111111;
@@ -13802,3 +13801,4 @@ fieldset.photo-field > .body-text{
 .box-colors .item-color::before{
   background-color: var(--c) !important;
 }
+

@@ -132,7 +132,9 @@ def shop(request):
 
 def product(request, slug):
     product = get_object_or_404(
-        Product.objects.prefetch_related("images", "variants__color"),
+        Product.objects
+        .select_related("category", "brand", "gender")
+        .prefetch_related("images", "variants__color"),
         slug=slug,
         store=request.store,
         is_active=True
