@@ -1636,15 +1636,15 @@ body {
   margin-right: 8px;
   margin-top: -4px;
 }
-.btn.btn-black:hover {
+.btn.btn-black:active {
   background-color: #ffffff;
-  color: #111111;
-  border: 1px solid #111111;
+  color: #ff0000;
+  border: 1px solid #ff0000;
 }
 .btn.btn-black:hover svg {
   fill: #111111;
 }
-.btn.btn-navy {
+.btn-navy {
   background-color: #C8815F;
   border-radius: 4px;
   padding: 11px 32px;
@@ -1654,7 +1654,7 @@ body {
   line-height: 24px;
   border: 1px solid #C8815F;
 }
-.btn.btn-navy:hover {
+.btn-navy:hover {
   background-color: #ffffff;
   color: #111111;
   border: 1px solid #111111;
@@ -10845,7 +10845,6 @@ footer a {
   margin-bottom: 10px;
 }
 .box-product-info .box-form-cart .btn {
-  max-width: 150px;
   padding-left: 15px;
   padding-right: 15px;
   width: 100%;
@@ -13497,10 +13496,11 @@ quote {
   }
   .box-form-cart {
     flex-wrap: wrap;
+    justify-content: center;
   }
   .box-form-cart .form-cart {
     margin-bottom: 20px;
-    width: 35%;
+    width: 100%;
     max-width: 100%;
     min-width: auto;
   }

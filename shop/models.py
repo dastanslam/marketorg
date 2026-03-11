@@ -8,7 +8,41 @@ from django.core.validators import MinValueValidator, MaxValueValidator, RegexVa
 from django.conf import settings
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
+
+class User(AbstractUser):
+    phone = models.CharField(max_length=20, blank=True)
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="profile"
+    )
+
+    phone = models.CharField("Телефон", max_length=20, blank=True)
+
+    city = models.CharField("Город", max_length=100, blank=True)
+    address = models.TextField("Адрес", blank=True)
+
+    avatar = models.ImageField(
+        upload_to="users/avatars/",
+        blank=True,
+        null=True
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Profile: {self.user}"
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
 
 class Store(models.Model):
     subdomain = models.SlugField(max_length=63, unique=True, blank=True, db_index=True)
@@ -311,6 +345,7 @@ class ProductImage(models.Model):
         return f"Image for {self.product.name}"
 
 
+
 class ProductReview(models.Model):
     product = models.ForeignKey(Product, related_name="reviews", on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
@@ -334,6 +369,33 @@ class ProductReview(models.Model):
                 name="uniq_review_per_user_product"
             )
         ]
+
+    def update_product_rating(self):
+        stats = self.product.reviews.filter(is_published=True).aggregate(
+            avg=Avg("rating"),
+            count=Count("id")
+        )
+
+        self.product.rating_avg = stats["avg"] or 0
+        self.product.rating_count = stats["count"] or 0
+        self.product.save(update_fields=["rating_avg", "rating_count"])
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.update_product_rating()
+
+    def delete(self, *args, **kwargs):
+        product = self.product
+        super().delete(*args, **kwargs)
+
+        stats = product.reviews.filter(is_published=True).aggregate(
+            avg=Avg("rating"),
+            count=Count("id")
+        )
+
+        product.rating_avg = stats["avg"] or 0
+        product.rating_count = stats["count"] or 0
+        product.save(update_fields=["rating_avg", "rating_count"])
 
     def __str__(self):
         return f"{self.product.name} - {self.rating}"
@@ -365,3 +427,123 @@ class StoreSocial(models.Model):
     def __str__(self):
         return f"{self.store.name} — {self.name}"
 
+
+
+class Cart(models.Model):
+    store = models.ForeignKey(
+        Store,
+        on_delete=models.CASCADE,
+        related_name="carts"
+    )
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="carts"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["store", "user"],
+                name="uniq_cart_per_store_user"
+            )
+        ]
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(
+        Cart,
+        on_delete=models.CASCADE,
+        related_name="items"
+    )
+
+    variant = models.ForeignKey(
+        ProductVariant,
+        on_delete=models.CASCADE,
+        related_name="cart_items"
+    )
+
+    quantity = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["cart", "variant"],
+                name="uniq_variant_per_cart"
+            )
+        ]
+
+class Order(models.Model):
+
+    STATUS = (
+        ("new", "Новый"),
+        ("processing", "В обработке"),
+        ("done", "Завершён"),
+        ("cancelled", "Отменён"),
+    )
+
+    store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name="orders")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="orders")
+
+    full_name = models.CharField(max_length=150)
+    phone = models.CharField(max_length=20)
+    address = models.TextField(blank=True)
+
+    total_price = models.DecimalField(max_digits=12, decimal_places=2)
+
+    status = models.CharField(max_length=20, choices=STATUS, default="new")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="items"
+    )
+
+    product_name = models.CharField(max_length=255)
+
+    variant = models.ForeignKey(
+        ProductVariant,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="order_items"
+    )
+
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    quantity = models.PositiveIntegerField(default=1)
+
+    @property
+    def total_price(self):
+        return self.price * self.quantity
+
+class Favorite(models.Model):
+    store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name="favorites")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="favorites")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="favorited_by")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["store", "user", "product"],
+                name="uniq_favorite_per_store_user_product"
+            )
+        ]
+        indexes = [
+            models.Index(fields=["user", "store"])
+        ]
+
+    def clean(self):
+        if self.product_id and self.store_id and self.product.store_id != self.store_id:
+            raise ValidationError("Store у Favorite и Product должны совпадать.")
+
+    def save(self, *args, **kwargs):
+        if self.product_id and not self.store_id:
+            self.store = self.product.store
+        self.full_clean()
+        super().save(*args, **kwargs)
