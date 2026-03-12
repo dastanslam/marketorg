@@ -164,7 +164,7 @@
 .select2-container--default
   .select2-selection--single
   .select2-selection__rendered {
-  color: #444;
+  color: #111;
   line-height: 20px;
   font-size: 14px;
 }

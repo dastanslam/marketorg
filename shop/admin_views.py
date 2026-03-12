@@ -11,7 +11,7 @@ from django.db.models import Count, Min, Max, Q, OuterRef, Subquery
 from django.utils.text import slugify
 
 def dashboard(request):
-    return render(request, "admin/index.html", {"store": request.store})
+    return render(request, "dashboard/index.html", {"store": request.store})
 
 def product_list(request):
     store = request.store
@@ -51,7 +51,7 @@ def product_list(request):
 
     paginator = Paginator(qs, per_page)
     page_obj = paginator.get_page(request.GET.get("page"))
-    return render(request, "admin/product_list.html", {
+    return render(request, "dashboard/product_list.html", {
         "products": page_obj.object_list,
         "page_obj": page_obj,
         "per_page": per_page,
@@ -92,7 +92,7 @@ def settings(request):
         return redirect("settings")  # поставь свой name из urls.py
 
     socials = store.socials.order_by("order")  # related_name='socials'
-    return render(request, "admin/settings.html", {"store": store, "socials": socials})
+    return render(request, "dashboard/settings.html", {"store": store, "socials": socials})
 
 
 @transaction.atomic
@@ -195,7 +195,7 @@ def product_add(request):
         pform = ProductForm(store=request.store)
         variants_fs = VariantFormSet(instance=temp_product, prefix="variants")
 
-    return render(request, "admin/product_add.html", {
+    return render(request, "dashboard/product_add.html", {
         "store": request.store,
         "pform": pform,
         "variants_fs": variants_fs,
@@ -261,7 +261,7 @@ def product_edit(request, pk):
 
     images = ProductImage.objects.filter(product=product).order_by("id")
 
-    return render(request, "admin/product_edit.html", {
+    return render(request, "dashboard/product_edit.html", {
         "pform": pform,
         "variants_fs": variants_fs,
         "product": product,
@@ -319,7 +319,7 @@ def category_list(request):
     paginator = Paginator(categories_qs, per_page)
     page_obj = paginator.get_page(request.GET.get("page"))
 
-    return render(request, "admin/category_list.html", {
+    return render(request, "dashboard/category_list.html", {
         "store": request.store,
         "page_obj": page_obj,
         "q": q,
@@ -338,7 +338,7 @@ def category_add(request):
 
         return redirect("category_list")  # куда нужно после сохранения
 
-    return render(request, "admin/category_add.html", {"store": request.store})
+    return render(request, "dashboard/category_add.html", {"store": request.store})
 
 
 def category_edit(request, pk):
@@ -363,7 +363,7 @@ def category_edit(request, pk):
         category.save()
         return redirect("category_list")
 
-    return render(request, "admin/category_edit.html", {"category": category})
+    return render(request, "dashboard/category_edit.html", {"category": category})
 
 
 def category_show(request, pk):
@@ -408,7 +408,7 @@ def category_show(request, pk):
     paginator = Paginator(qs, per_page)
     page_obj = paginator.get_page(request.GET.get("page"))
 
-    return render(request, "admin/category_show.html", {
+    return render(request, "dashboard/category_show.html", {
         "category": category,
         "products": page_obj.object_list,
         "page_obj": page_obj,
@@ -447,32 +447,32 @@ def category_delete(request, pk):
 
 # ===== ORDERS =====
 def order_list(request):
-    return render(request, "admin/order_list.html", {"store": request.store})
+    return render(request, "dashboard/order_list.html", {"store": request.store})
 
 
 def order_detail(request, pk):
-    return render(request, "admin/order_detail.html", {
+    return render(request, "dashboard/order_detail.html", {
         "store": request.store,
         "pk": pk
     })
 
 
 def order_tracking(request, pk):
-    return render(request, "admin/order_tracking.html", {
+    return render(request, "dashboard/order_tracking.html", {
         "store": request.store,
         "pk": pk
     })
 
 def help_center(request):
-    return render(request, "admin/help_center.html", {"store": request.store})
+    return render(request, "dashboard/help_center.html", {"store": request.store})
 
 
 def support(request):
-    return render(request, "admin/support.html", {"store": request.store})
+    return render(request, "dashboard/support.html", {"store": request.store})
 
 
 def policy(request):
-    return render(request, "admin/policy.html", {"store": request.store})
+    return render(request, "dashboard/policy.html", {"store": request.store})
 
 
 # ===== SOCIAL (редиректы, чтобы не делать отдельные страницы) =====

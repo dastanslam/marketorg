@@ -7,15 +7,9 @@ from .models import Store
 
 
 class StoreSubdomainMiddleware(MiddlewareMixin):
-    """
-    Определяет магазин по поддомену и кладёт в request.store
-
-    Пример:
-      shop1.example.com -> subdomain = "shop1"
-      example.com       -> subdomain = None (главный сайт)
-    """
 
     def process_request(self, request):
+
         request.store = None
 
         try:
@@ -30,13 +24,12 @@ class StoreSubdomainMiddleware(MiddlewareMixin):
         ignored = set(getattr(settings, "SUBDOMAIN_IGNORED", ["www"]))
         bypass_prefixes = tuple(getattr(settings, "SUBDOMAIN_BYPASS_PREFIXES", ["api", "admin"]))
 
-        # Если admin/api на отдельном поддомене — пропускаем
+        # Если dashboard/api на отдельном поддомене — пропускаем
         if host.split(".")[0] in bypass_prefixes:
             return None
 
         subdomain = None
 
-        # Вариант А (рекомендую): ты задаёшь BASE_DOMAIN
         if base_domain:
             base_domain = base_domain.lower().strip(".")
             if host == base_domain:
@@ -44,10 +37,8 @@ class StoreSubdomainMiddleware(MiddlewareMixin):
             elif host.endswith("." + base_domain):
                 subdomain = host[: -(len(base_domain) + 1)]  # всё слева от .base_domain
             else:
-                # запрос не на наш домен
                 return None
 
-        # Вариант B: без BASE_DOMAIN (менее надёжно) — берём первый лейбл если их >= 3
         else:
             parts = host.split(".")
             if len(parts) >= 3:
@@ -64,7 +55,6 @@ class StoreSubdomainMiddleware(MiddlewareMixin):
         if not store:
             raise Http404("Магазин не найден")
 
-        # по желанию: если есть поле is_blocked
         if hasattr(store, "is_blocked") and store.is_blocked:
             raise Http404("Магазин недоступен")
 

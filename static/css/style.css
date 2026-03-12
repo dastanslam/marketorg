@@ -2491,11 +2491,11 @@ button:focus:not(:focus-visible) {
 .box-colors .item-color {
   height: 20px;
   width: 20px;
-  border: 1px solid #EEEEEE;
+  border: 1px solid #000000;
   display: inline-block;
   margin-right: 8px;
   border-radius: 50%;
-  background-color: #ffffff;
+  background-color: #000000;
   position: relative;
   padding: 1px;
   cursor: pointer;
@@ -10813,7 +10813,6 @@ footer a {
   height: 100%;
   width: auto;
   max-width: -moz-fit-content;
-  max-width: fit-content;
 }
 .product-image-slider .slick-initialized .slick-slide {
   height: 645px;
@@ -13541,7 +13540,7 @@ quote {
     width: 100%;
   }
   .box-main-gallery {
-    height: 550px;
+    height: auto;
   }
   .list-lookbok .item-lookbook {
     width: 100%;
