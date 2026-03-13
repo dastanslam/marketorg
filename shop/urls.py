@@ -9,7 +9,7 @@ urlpatterns = [
     path('whislist/', views.whislist, name='whislist'),
     path('contact/', views.contact, name='contact'),
     path('signin/', views.signin, name='signin'),
-    path('signup/', views.signup, name='signup'),
+    path('signup/', views.register, name='signup'),
     path('about/', views.about, name='about'),
 
 ]

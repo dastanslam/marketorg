@@ -4,6 +4,9 @@ from .models import *
 from django.db.models import Prefetch
 from django.core.paginator import Paginator
 import json
+from django.contrib.auth import login
+from django.contrib.auth.hashers import make_password
+from .forms import *
 
 def index(request):
     return render(request, "index.html", {"store": request.store})
@@ -179,10 +182,26 @@ def contact(request):
     return render(request, "contact.html", {"store": request.store})
 
 def signin(request):
-    return render(request, "signin.html", {"store": request.store})
+    return render(request, "login/auth-login.html", {"store": request.store})
 
-def signup(request):
-    return render(request, "signup.html", {"store": request.store})
+def register(request):
+
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.password = make_password(form.cleaned_data["password"])
+            user.save()
+
+            login(request, user)
+
+            return redirect("index")  # поменяй на свою страницу
+
+    else:
+        form = RegisterForm()
+
+    return render(request, "login/auth-register.html", {"form": form})
 
 def about(request):
     return render(request, "about.html", {"store": request.store})

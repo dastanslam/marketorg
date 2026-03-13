@@ -5,6 +5,17 @@ from .models import (
     Category, Brand, Gender
 )
 import re
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+
+class RegisterForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = User
+        fields = ["username", "email", "phone", "password"]
 
 class ProductForm(forms.ModelForm):
     # НЕ модельные поля, принимают и id, и текст
