@@ -9,7 +9,7 @@ from django.contrib.auth.hashers import make_password
 from .forms import *
 
 def index(request):
-    return render(request, "index.html", {"store": request.store})
+    return render(request, "shop/index.html", {"store": request.store})
 
 def shop(request):
     store = request.store
@@ -111,7 +111,7 @@ def shop(request):
         .order_by("size")
     )
 
-    return render(request, "shop.html", {
+    return render(request, "shop/shop.html", {
         "store": store,
         "products": page_obj.object_list,
         "page_obj": page_obj,
@@ -163,7 +163,7 @@ def product(request, slug):
         for v in variants
     ]
 
-    return render(request, "product.html", {
+    return render(request, "shop/product.html", {
         "product": product,
         "images": product.images.all(),
         "variants": variants,
@@ -173,13 +173,13 @@ def product(request, slug):
     })
 
 def cart(request):
-    return render(request, "cart.html", {"store": request.store})
+    return render(request, "shop/cart.html", {"store": request.store})
 
 def whislist(request):
-    return render(request, "whislist.html", {"store": request.store})
+    return render(request, "shop/whislist.html", {"store": request.store})
 
 def contact(request):
-    return render(request, "contact.html", {"store": request.store})
+    return render(request, "shop/contact.html", {"store": request.store})
 
 def signin(request):
     return render(request, "login/auth-login.html", {"store": request.store})
@@ -204,5 +204,7 @@ def register(request):
     return render(request, "login/auth-register.html", {"form": form})
 
 def about(request):
-    return render(request, "about.html", {"store": request.store})
+    return render(request, "shop/about.html", {"store": request.store})
 
+def profile(request):
+    return render(request, "shop/profile.html", {"store": request.store})

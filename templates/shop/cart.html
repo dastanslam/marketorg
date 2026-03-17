@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "shop/base.html" %}
 {% load static %}
 
 {% block title %}Главная{% endblock %}
@@ -23,7 +23,55 @@
                 <h4>Your Cart</h4>
                 <h6>2 items</h6>
               </div>
+              <div class="list-items-cart">
+                <div class="item-cart">
+                  <div class="item-cart-image"><img src="{% static 'imgs/page/cart/sp.png' %}" alt="Guza"></div>
+                  <div class="item-cart-info">
+                    <div class="item-cart-info-1"><a class="text-16-medium" href="#">Ball Crew Shirt</a>
+                      <div class="box-info-size-color-product">
+                        <p class="box-color"><span class="body-p2 neutral-medium-dark">Color:</span><span class="body-p2 neutral-dark">Navy</span></p>
+                        <p class="box-size"><span class="body-p2 neutral-medium-dark">Size:</span><span class="body-p2 neutral-dark">S</span></p>
+                      </div>
+                      <div class="box-form-cart">
+                        <div class="form-cart detail-qty"><span class="minus"></span>
+                          <input class="qty-val form-control" type="text" name="quantity" value="1" min="1"><span class="plus"></span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="item-cart-info-2">
+                      <p class="body-p2">$24.00</p><a class="btn-remove-cart" href="#"></a>
+                    </div>
+                  </div>
+                </div>
+                <div class="item-cart">
+                  <div class="item-cart-image"><img src="{% static 'imgs/page/cart/sp2.png' %}" alt="Guza"></div>
+                  <div class="item-cart-info">
+                    <div class="item-cart-info-1"><a class="text-16-medium" href="#">Ball Crew Shirt</a>
+                      <div class="box-info-size-color-product">
+                        <p class="box-color"><span class="body-p2 neutral-medium-dark">Color:</span><span class="body-p2 neutral-dark">Navy</span></p>
+                        <p class="box-size"><span class="body-p2 neutral-medium-dark">Size:</span><span class="body-p2 neutral-dark">S</span></p>
+                      </div>
+                      <div class="box-form-cart">
+                        <div class="form-cart detail-qty"><span class="minus"></span>
+                          <input class="qty-val form-control" type="text" name="quantity" value="1" min="1"><span class="plus"></span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="item-cart-info-2">
+                      <p class="body-p2">$24.00</p><a class="btn-remove-cart" href="#"></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="box-coupon">
+                <div class="coupon-left">
+                  <input class="form-control input-coupon" type="text" placeholder="Coupon code">
+                  <button class="btn btn-border">Apply</button>
+                </div>
+                <div class="coupon-right"><a class="btn btn-border" href="#">Update Cart</a></div>
+              </div>
               <div class="box-may-also-like">
+                <h4 class="box-border-bottom mb-20">You May Also Like</h4>
                 <div class="list-items-also-like">
                   <div class="item-also-like">
                     <div class="item-also-like-image"><img src="{% static 'imgs/page/cart/sp3.png' %}" alt="Guza"></div>
@@ -127,6 +175,39 @@
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="box-detail-cart">
+                <h4 class="mb-25">Order Summary</h4>
+                <div class="box-info-cart">
+                  <div class="d-flex align-items-center justify-content-between box-border-bottom">
+                    <h5 class="neutral-medium-dark">Subtotal</h5>
+                    <h5 class="neutral-dark">$59.00</h5>
+                  </div>
+                  <div class="box-info-cart-inner">
+                    <p class="text-17-medium text-uppercase mb-15">Shipping</p>
+                    <div class="list-radio">
+                      <div class="item-radio">
+                        <label>
+                          <input type="radio" name="shipping" checked="checked">Flat rate: $50.00
+                        </label><span class="price-ship">$50.00</span>
+                      </div>
+                      <div class="item-radio">
+                        <label>
+                          <input type="radio" name="shipping">Local pickup: $60.00
+                        </label>
+                      </div>
+                    </div>
+                    <p class="body-p2 neutral-medium-dark mb-12">Shipping options will be updated during checkout.</p><a class="text-17 calculate-shipping" href="#">Calculate shipping</a>
+                  </div>
+                  <div class="d-flex align-items-center justify-content-between box-total-bottom">
+                    <h5 class="neutral-medium-dark">Total</h5>
+                    <h5 class="neutral-dark">$109.00</h5>
+                  </div>
+                  <div class="box-button-cart"><a class="btn btn-black" href="#">Proceed To Checkout</a></div>
+                  <div class="box-other-link"><a class="text-17 link-green" href="#">Free shipping on orders over $200.00</a><a class="text-17" href="#">Continue Shopping</a></div>
                 </div>
               </div>
             </div>
