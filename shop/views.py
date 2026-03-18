@@ -4,10 +4,12 @@ from .models import *
 from django.db.models import Prefetch
 from django.core.paginator import Paginator
 import json
-from django.contrib.auth import login
 from django.contrib.auth.hashers import make_password
 from .forms import *
 from django.contrib import messages
+from django.contrib.auth import logout
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     return render(request, "shop/index.html", {"store": request.store})
@@ -182,8 +184,32 @@ def whislist(request):
 def contact(request):
     return render(request, "shop/contact.html", {"store": request.store})
 
-def signin(request):
-    return render(request, "login/auth-login.html", {"store": request.store})
+def login_view(request):
+    if request.method == "POST":
+        login_input = request.POST.get("login")  # email или username
+        password = request.POST.get("password")
+        remember = request.POST.get("checkbox-signin")
+
+        user = None
+
+        # Проверяем, есть ли пользователь с таким email
+        try:
+            user_obj = User.objects.get(email=login_input)
+            username = user_obj.username
+            user = authenticate(request, username=username, password=password)
+        except User.DoesNotExist:
+            # Если нет, пробуем как username
+            user = authenticate(request, username=login_input, password=password)
+
+        if user is not None:
+            login(request, user)
+            if not remember:
+                request.session.set_expiry(0)  # сессия до закрытия браузера
+            return redirect("index")  # куда перенаправлять после входа
+        else:
+            messages.error(request, "Неверный логин или пароль")
+
+    return render(request, "login/auth-login.html")
 
 def register(request):
 
@@ -208,8 +234,69 @@ def register(request):
 
     return render(request, "login/auth-register.html", {"form": form})
 
+def user_out(request):
+    logout(request)
+    return render(request, "login/user_out.html", {"store": request.store})
+
 def about(request):
     return render(request, "shop/about.html", {"store": request.store})
 
-def profile(request):
-    return render(request, "shop/profile.html", {"store": request.store})
+def order(request):
+    return render(request, "shop/order.html", {"store": request.store})
+
+
+class ProfileForm(forms.ModelForm):
+    # Дополнительные поля из UserProfile
+    phone = forms.CharField(max_length=20, required=False, label="Телефон")
+    city = forms.CharField(max_length=100, required=False, label="Город")
+    address = forms.CharField(widget=forms.Textarea, required=False, label="Адрес")
+    avatar = forms.ImageField(required=False, label="Аватар")
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'username', 'email']
+
+@login_required
+def edit_profile(request):
+    user = request.user
+    profile, created = UserProfile.objects.get_or_create(user=user)
+
+    if request.method == "POST":
+        form = ProfileForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            user = form.save()
+
+            # Синхронизируем phone в User и UserProfile
+            phone = form.cleaned_data.get("phone")
+            user.phone = phone
+            profile.phone = phone
+
+            profile.city = form.cleaned_data.get("city")
+            profile.address = form.cleaned_data.get("address")
+
+            avatar = form.cleaned_data.get("avatar")
+            if avatar:
+                profile.avatar = avatar
+
+            user.save()
+            profile.save()
+
+            messages.success(request, "Профиль успешно обновлён!")
+            return redirect('profile')
+        else:
+            print(form.errors)  # <- добавь это для отладки
+    else:
+        # Берём телефон из User, если есть, иначе из профиля
+
+        phone_value = user.phone or profile.phone
+
+        initial = {
+            'phone': phone_value,
+            'city': profile.city,
+            'address': profile.address,
+            'avatar': profile.avatar,
+        }
+
+        form = ProfileForm(instance=user, initial=initial)
+
+    return render(request, "login/profile.html", {"form": form, "profile": profile})

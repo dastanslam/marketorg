@@ -1,0 +1,169 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Opsoon - | Tailwind CSS Authentications Template</title>
+    <meta name="author" content="DastanTeams"/>
+
+    <!-- favicon -->
+    <link href="{% static 'login/images/favicon.ico' %}" rel="shortcut icon">
+
+    <!-- Main Css -->
+    <link href="{% static 'login/css/style.css' %}" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+    <!-- =========== Main Section Start =========== -->
+    <section class="h-screen w-full">
+        <div class="grid xl:grid-cols-2 grid-cols-1 h-full">
+
+            <div class="max-w-lg mx-auto w-full flex flex-col justify-center md:items-start items-center p-6">
+                <div class="md:text-start text-center mb-7">
+                    <a href="../shop/index.html" class="grow block mb-8">
+                        <img class="h-8 md:mx-0 mx-auto" src="assets/images/light-logo.png" alt="images">
+                    </a>
+
+                    <div class="md:text-start text-center">
+                        <h3 class="text-2xl font-semibold text-dark mb-3">Профиль</h3>
+                        <p class="text-base font-medium text-light">Внесите изменения и сохраните их</p>
+                    </div>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data" class="text-start w-full">
+                    {% csrf_token %}
+
+                    {% if messages %}
+                    <div class="mb-4">
+                        {% for message in messages %}
+                        <p class="text-red-500 text-sm">{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Фамилия -->
+                    <div class="mb-4">
+                        <label class="block text-base font-semibold text-dark mb-2">Фамилия</label>
+                        <input name="last_name" value="{{ form.last_name.value|default:'' }}"
+                               class="block w-full rounded-md py-2.5 px-4 border border-gray-300 {% if form.last_name.errors %} border-red-500 {% endif %}"
+                               type="text">
+                        {% if form.last_name.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.last_name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Имя -->
+                    <div class="mb-4">
+                        <label class="block text-base font-semibold text-dark mb-2">Имя</label>
+                        <input name="first_name" value="{{ form.first_name.value|default:'' }}"
+                               class="block w-full rounded-md py-2.5 px-4 border border-gray-300 {% if form.first_name.errors %} border-red-500 {% endif %}"
+                               type="text">
+                        {% if form.first_name.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.first_name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Логин -->
+                    <div class="mb-4">
+                        <label class="block text-base font-semibold text-dark mb-2">Логин</label>
+                        <input name="username" value="{{ form.username.value|default:'' }}"
+                               class="block w-full rounded-md py-2.5 px-4 border border-gray-300 {% if form.username.errors %} border-red-500 {% endif %}"
+                               type="text">
+                        {% if form.username.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.username.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-4">
+                        <label class="block text-base font-semibold text-dark mb-2">Email</label>
+                        <input name="email" value="{{ form.email.value|default:'' }}"
+                               class="block w-full rounded-md py-2.5 px-4 border border-gray-300 {% if form.email.errors %} border-red-500 {% endif %}"
+                               type="email">
+                        {% if form.email.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.email.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Телефон -->
+                    <div class="mb-4">
+                        <label class="block text-base font-semibold text-dark mb-2">Телефон</label>
+                        <input name="phone" value="{{ form.phone.value|default:'' }}"
+                               class="block w-full rounded-md py-2.5 px-4 border border-gray-300 {% if form.phone.errors %} border-red-500 {% endif %}"
+                               type="tel">
+                        {% if form.phone.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.phone.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Город -->
+                    <div class="mb-4">
+                        <label class="block text-base font-semibold text-dark mb-2">Город</label>
+                        <input name="city" value="{{ form.city.value|default:'' }}"
+                               class="block w-full rounded-md py-2.5 px-4 border border-gray-300 {% if form.city.errors %} border-red-500 {% endif %}"
+                               type="text">
+                        {% if form.city.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.city.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Адрес -->
+                    <div class="mb-4">
+                        <label class="block text-base font-semibold text-dark mb-2">Адрес</label>
+                        <textarea name="address"
+                                  class="block w-full rounded-md py-2.5 px-4 border border-gray-300 {% if form.address.errors %} border-red-500 {% endif %}">{{ form.address.value|default:'' }}</textarea>
+                        {% if form.address.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.address.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Аватар -->
+                    <div class="mb-4">
+                        <label class="block text-base font-semibold text-dark mb-2">Аватар</label>
+                        <input type="file" name="avatar"
+                               class="block w-full rounded-md py-2.5 px-4 border border-gray-300">
+                        {% if profile.avatar %}
+                        <img src="{{ profile.avatar.url }}" alt="Аватар"
+                             class="mt-2 w-20 h-20 object-cover rounded-full">
+                        {% endif %}
+                    </div>
+
+                    <div class="text-center mb-7">
+                        <button type="submit" class="w-full px-6 py-2.5 bg-primary text-white rounded-md">
+                            Сохранить изменения
+                        </button>
+                    </div>
+
+                    <p class="shrink text-light text-center">
+                        Вы хотите выйти из системы?
+                        <a href="{% url 'logout' %}" class="text-dark font-semibold ms-1"><b>Выйти</b></a>
+                    </p>
+                </form>
+
+            </div>
+
+            <div class="hidden xl:block">
+                <div class="relative w-full h-screen bg-[url(../images/img-2.jpg)] bg-center bg-cover">
+                    <!-- <div class="absolute inset-0 bg-black/40"></div>
+                    <img src="assets/images/images.jpg" alt="" class="max-w-full h-full"> -->
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+    <!-- =========== Main Section End =========== -->
+
+    <!-- Preline Js -->
+    <script src="{% static 'login/libs/preline/preline.js' %}" ></script>
+
+    <!-- Lucide Js -->
+    <script src="{% static 'login/libs/lucide/umd/lucide.min.js' %}" ></script>
+
+    <!-- Main App Js -->
+    <script src="{% static 'login/js/app.js' %}" ></script>
+
+    </body>
+</html>

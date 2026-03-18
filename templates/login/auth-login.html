@@ -28,41 +28,88 @@
 
                     <div class="md:text-start text-center">
                         <h3 class="text-2xl font-semibold text-dark mb-3">Добро пожаловать в authea</h3>
-                        <p class="text-base font-medium text-light">С возвращением! Выберите способ регистрации</p>
+                        <p class="text-base font-medium text-light">Войдите, чтобы продолжить</p>
                     </div>
                 </div>
 
-                <form class="text-start w-full">
+                <form method="post" class="text-start w-full">
+                    {% csrf_token %}
 
+                    {% if messages %}
                     <div class="mb-4">
-                        <label for="email-addon" class="block text-base font-semibold text-dark mb-2">Email адрес</label>
-                        <input id="email-addon" class="block w-full rounded-md py-2.5 px-4 text-dark text-base font-medium border-gray-300 focus:gray-300 focus:border-primary focus:outline-0 focus:ring-0 placeholder:text-light placeholder:text-base" type="email" placeholder="Введите ваш email">
+                        {% for message in messages %}
+                        <p class="text-red-500 text-sm">{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Логин или Email -->
+                    <div class="mb-4">
+                        <label for="login-addon" class="block text-base font-semibold text-dark mb-2">Логин или
+                            Email</label>
+                        <input
+                                id="login-addon"
+                                name="login"
+                                type="text"
+                                placeholder="Введите username или email"
+                                class="block w-full rounded-md py-2.5 px-4 text-dark text-base font-medium border border-gray-300 focus:border-primary focus:outline-0 focus:ring-0 placeholder:text-light placeholder:text-base"
+                        >
                     </div>
 
+                    <!-- Пароль -->
                     <div class="mb-4">
                         <label for="password-addon" class="block text-base font-semibold text-dark mb-2">Пароль</label>
                         <div class="flex">
-                            <input type="password" id="password-addon" class="form-password text-dark text-base font-medium block w-full rounded-s-md py-2.5 px-4 border border-gray-300 focus:gray-300 focus:border-primary focus:outline-0 focus:ring-0 placeholder:text-light placeholder:text-base" placeholder="Введите ваш пароль">
-                            <button type="button" data-hs-toggle-password='{"target": "#password-addon"}' class="inline-flex items-center justify-center py-2.5 px-4 border rounded-e-md -ms-px border-gray-300">
+                            <input
+                                    type="password"
+                                    id="password-addon"
+                                    name="password"
+                                    placeholder="Введите ваш пароль"
+                                    class="form-password text-dark text-base font-medium block w-full rounded-s-md py-2.5 px-4 border border-gray-300 focus:border-primary focus:outline-0 focus:ring-0 placeholder:text-light placeholder:text-base"
+                            >
+                            <button
+                                    type="button"
+                                    data-hs-toggle-password='{"target": "#password-addon"}'
+                                    class="inline-flex items-center justify-center py-2.5 px-4 border rounded-e-md -ms-px border-gray-300"
+                            >
                                 <i class="hs-password-active:hidden h-5 w-5 text-dark" data-lucide="eye"></i>
                                 <i data-lucide="eye-off" class="hidden hs-password-active:block h-5 w-5 text-dark"></i>
                             </button>
                         </div>
                     </div>
 
+                    <!-- Запомнить меня и восстановление пароля -->
                     <div class="flex justify-between items-center flex-wrap gap-x-1 gap-y-2 mb-6 mt-3">
                         <div class="inline-flex items-center">
-                            <input type="checkbox" id="checkbox-signin" class="h-4 w-4 text-base rounded border-gray-300 text-dark focus:ring focus:ring-default-950/30 focus:ring-offset-0">
-                            <label class="text-base ms-2 text-light font-medium align-middle select-none" for="checkbox-signin">Запомнить меня</label>
+                            <input
+                                    type="checkbox"
+                                    id="checkbox-signin"
+                                    name="checkbox-signin"
+                                    class="h-4 w-4 text-base rounded border-gray-300 text-dark focus:ring focus:ring-default-950/30 focus:ring-offset-0"
+                            >
+                            <label class="text-base ms-2 text-light font-medium align-middle select-none"
+                                   for="checkbox-signin">
+                                Запомнить меня
+                            </label>
                         </div>
                         <a href="auth-recoverpw.html" class="text-base text-dark"><small>Забыли пароль?</small></a>
                     </div>
 
+                    <!-- Кнопка Войти -->
                     <div class="text-center mb-7">
-                        <button type="submit" class="w-full inline-flex items-center justify-center px-6 py-2.5 bg-primary font-bold text-base text-white rounded-md transition-all duration-500" type="submit">Войти</button>
+                        <button
+                                type="submit"
+                                class="w-full inline-flex items-center justify-center px-6 py-2.5 bg-primary font-bold text-base text-white rounded-md transition-all duration-500"
+                        >
+                            Войти
+                        </button>
                     </div>
 
-                    <p class="shrink text-light text-center">Нет аккаунта? <a href="auth-register.html" class="text-dark font-semibold ms-1"><b>Зарегистрироваться</b></a></p>
+                    <!-- Ссылка на регистрацию -->
+                    <p class="shrink text-light text-center">
+                        Нет аккаунта?
+                        <a href="{% url 'signup' %}" class="text-dark font-semibold ms-1"><b>Зарегистрироваться</b></a>
+                    </p>
                 </form>
             </div>
 
