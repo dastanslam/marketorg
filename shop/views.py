@@ -4,12 +4,12 @@ from .models import *
 from django.db.models import Prefetch
 from django.core.paginator import Paginator
 import json
-from django.contrib.auth.hashers import make_password
 from .forms import *
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 def index(request):
     return render(request, "shop/index.html", {"store": request.store})
@@ -137,6 +137,11 @@ def shop(request):
     })
 
 def product(request, slug):
+    favorites = []
+
+    if request.user.is_authenticated:
+        favorites = Favorite.objects.filter(user=request.user).values_list("product_id", flat=True)
+
     product = get_object_or_404(
         Product.objects
         .select_related("category", "brand", "gender")
@@ -168,6 +173,7 @@ def product(request, slug):
 
     return render(request, "shop/product.html", {
         "product": product,
+        "favorites": favorites,
         "images": product.images.all(),
         "variants": variants,
         "current_variant": current_variant,
@@ -300,3 +306,22 @@ def edit_profile(request):
         form = ProfileForm(instance=user, initial=initial)
 
     return render(request, "login/profile.html", {"form": form, "profile": profile})
+
+@login_required
+def toggle_favorite(request):
+    store = request.store
+    if request.method == "POST":
+        product_id = request.POST.get("product_id")
+        product = Product.objects.get(id=product_id)
+
+        favorite, created = Favorite.objects.get_or_create(
+            user=request.user,
+            product=product,
+            store=store
+        )
+
+        if not created:
+            favorite.delete()
+            return JsonResponse({"status": "removed"})
+
+        return JsonResponse({"status": "added"})

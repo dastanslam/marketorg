@@ -99,8 +99,13 @@
       <div class="mobile-header-wrapper-inner">
         <div class="mobile-header-content-area">
           <div class="mobile-menu-head">
-            <div class="box-head-1"><a class="link-underline mr-20 account-icon account" href="{% url 'signin' %}">Login</a><a class="link-underline account-icon account" href="{% url 'signup' %}">Sign Up</a><a class="close-mobile" href="#"><img src="{% static 'imgs/template/icons/close.svg' %}" alt="Guza"></a></div>
-            <div class="box-head-2"><a class="back-mobile" href="#"><img src="{% static 'imgs/template/icons/back.svg' %}" alt="Guza"></a></div>
+              {% if not request.user.is_authenticated %}
+                  <div class="box-head-1"><a class="link-underline mr-20 account-icon account" href="{% url 'signin' %}">Войти</a><a class="link-underline account-icon account" href="{% url 'signup' %}">Регистрация</a><a class="close-mobile" href="#"><img src="{% static 'imgs/template/icons/close.svg' %}" alt="Guza"></a></div>
+                  <div class="box-head-2"><a class="back-mobile" href="#"><img src="{% static 'imgs/template/icons/back.svg' %}" alt="Guza"></a></div>
+              {% else %}
+                  <div class="box-head-1"><a class="link-underline mr-20 account-icon account">{{ request.user.first_name }} {{ request.user.last_name }}</a><a class="close-mobile" href="#"><img src="{% static 'imgs/template/icons/close.svg' %}" alt="Guza"></a></div>
+                  <div class="box-head-2"><a class="back-mobile" href="#"><img src="{% static 'imgs/template/icons/back.svg' %}" alt="Guza"></a></div>
+              {% endif %}
           </div>
           <div class="perfect-scroll">
             <div class="mobile-menu-wrap mobile-header-border">

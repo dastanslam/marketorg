@@ -163,7 +163,12 @@
                     <div class="form-cart detail-qty"><span class="minus"></span>
                       <input class="qty-val form-control" type="text" name="quantity" value="1" min="1"><span class="plus"></span>
                     </div>
-                      <button class="btn btn-black add-favorite">В избранное</button>
+                      <button
+                              class="btn btn-black add-favorite {% if product.id in favorites %}active{% endif %}"
+                              data-id="{{ product.id }}"
+                      >
+                          В избранное
+                      </button>
                       <button class="btn btn-black add-cart">В корзину</button>
                       <a class="btn btn-navy buy-now" href="/checkout/">Купить сейчас</a>
                     </div>
@@ -522,4 +527,28 @@ function copyProductLink(){
     alert("Ссылка на товар скопирована. Вставьте её в Instagram.");
 }
 </script>
+    <script>
+        document.querySelectorAll('.add-favorite').forEach(button => {
+            button.addEventListener('click', function () {
+                const productId = this.dataset.id;
+
+                fetch("{% url 'toggle_favorite' %}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: `product_id=${productId}`
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === "added") {
+                            this.classList.add("active");
+                        } else {
+                            this.classList.remove("active");
+                        }
+                    });
+            });
+        });
+    </script>
 {% endblock %}
