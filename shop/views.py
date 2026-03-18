@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Count, Q, Exists, OuterRef
+from django.db.models import Exists, OuterRef
 from .models import *
 from django.db.models import Prefetch
 from django.core.paginator import Paginator
@@ -7,6 +7,7 @@ import json
 from django.contrib.auth import login
 from django.contrib.auth.hashers import make_password
 from .forms import *
+from django.contrib import messages
 
 def index(request):
     return render(request, "shop/index.html", {"store": request.store})
@@ -191,12 +192,16 @@ def register(request):
 
         if form.is_valid():
             user = form.save(commit=False)
-            user.password = make_password(form.cleaned_data["password"])
+            user.set_password(form.cleaned_data["password"])
             user.save()
 
-            login(request, user)
+            messages.success(request, "Регистрация прошла успешно ✅")
 
-            return redirect("index")  # поменяй на свою страницу
+            login(request, user)
+            return redirect("index")
+
+        else:
+            messages.error(request, "Ошибка регистрации ❌ Проверь данные")
 
     else:
         form = RegisterForm()

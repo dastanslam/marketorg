@@ -1,10 +1,161 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Opsoon - | Tailwind CSS Authentications Template</title>
+    <meta name="description" content="Tailwind CSS Saas HTML Template Is A Multi Purpose Landing Page Template, Corporate, Authentication, Launching Web, Agency or Business Startup, Clean, Modern, Creative, Multipurpose and Tailwind CSS Tailwind v3 etc."/>
+    <meta name="author" content="Zoyothemes"/>
 
-</body>
+    <!-- favicon -->
+    <link href="{% static 'login/images/favicon.ico' %}" rel="shortcut icon">
+
+    <!-- Main Css -->
+    <link href="{% static 'login/css/style.css' %}" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+    <!-- =========== Main Section Start =========== -->
+    <section class="h-screen w-full">
+        <div class="grid xl:grid-cols-2 grid-cols-1 h-full">
+
+            <div class="max-w-lg mx-auto w-full flex flex-col justify-center md:items-start items-center p-6">
+                <div class="md:text-start text-center mb-7">
+                    <a href="index.html" class="grow block mb-8">
+                        <img class="h-8 md:mx-0 mx-auto" src="assets/images/light-logo.png" alt="images">
+                    </a>
+
+                    <div class="md:text-start text-center">
+                        <h3 class="text-2xl font-semibold text-dark mb-3">Профиль</h3>
+                        <p class="text-base font-medium text-light">Редактируйте свой данны</p>
+                    </div>
+                </div>
+
+                <form method="POST" class="text-start w-full">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="bg-red-100 text-red-600 p-3 mb-4 rounded">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-4">
+                        <label class="block text-base font-semibold text-dark mb-2">Фамилия</label>
+                        <input name="last_name" required value="{{ form.last_name.value|default:'' }}"
+                               class="block w-full rounded-md py-2.5 px-4 text-dark text-base font-medium border-gray-300
+        {% if form.last_name.errors %} border-red-500 {% endif %}"
+                               type="text" placeholder="Фамилия">
+
+                        {% if form.last_name.errors %}
+                        <div class="text-red-500 text-sm mt-1">
+                            {{ form.last_name.errors.0 }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-base font-semibold text-dark mb-2">Имя</label>
+                        <input name="first_name" required value="{{ form.first_name.value|default:'' }}"
+                               class="block w-full rounded-md py-2.5 px-4 text-dark border-gray-300
+        {% if form.first_name.errors %} border-red-500 {% endif %}"
+                               type="text" placeholder="Имя">
+
+                        {% if form.first_name.errors %}
+                        <div class="text-red-500 text-sm mt-1">
+                            {{ form.first_name.errors.0 }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-base font-semibold text-dark mb-2">Логин</label>
+                        <input name="username" required value="{{ form.username.value|default:'' }}"
+                               class="block w-full rounded-md py-2.5 px-4 text-dark text-base font-medium border-gray-300 {% if form.username.errors %} border-red-500 {% endif %}" type="text" placeholder="Логин">
+                        {% if form.username.errors %}
+                        <div class="text-red-500 text-sm">{{ form.username.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-base font-semibold text-dark mb-2">Телефон</label>
+                        <input name="phone" required value="{{ form.phone.value|default:'' }}"
+                               class="block w-full rounded-md py-2.5 px-4 text-dark text-base font-medium border-gray-300 {% if form.phone.errors %} border-red-500 {% endif %}" type="tel" placeholder="Введите номер телефона">
+                        {% if form.phone.errors %}
+                        <div class="text-red-500 text-sm">{{ form.phone.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-base font-semibold text-dark mb-2">Email адрес</label>
+                        <input name="email" required value="{{ form.email.value|default:'' }}"
+                               class="block w-full rounded-md py-2.5 px-4 text-dark text-base font-medium border-gray-300 {% if form.email.errors %} border-red-500 {% endif %}" type="email" placeholder="Введите ваш email">
+                        {% if form.email.errors %}
+                        <div class="text-red-500 text-sm">{{ form.email.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-base font-semibold text-dark mb-2">Пароль</label>
+
+                        <div class="flex">
+                            <input id="password" name="password" class="form-password text-dark text-base font-medium block w-full rounded-s-md py-2.5 px-4 border border-gray-300 focus:gray-300 focus:border-primary focus:outline-0 focus:ring-0 placeholder:text-light placeholder:text-base {% if form.password.errors %} border-red-500 {% endif %}" type="password" placeholder="Введите ваш пароль">
+
+                            <button type="button"
+                                    data-hs-toggle-password='{"target": "#password"}'
+                                    class="inline-flex items-center justify-center py-2.5 px-4 border rounded-e-md -ms-px border-gray-300">
+
+                                <i class="hs-password-active:hidden h-5 w-5 text-dark" data-lucide="eye"></i>
+                                <i class="hidden hs-password-active:block h-5 w-5 text-dark" data-lucide="eye-off"></i>
+                            </button>
+                        </div>
+
+                        {% if form.password.errors %}
+                        <div class="text-red-500 text-sm mt-1">
+                            {{ form.password.errors.0 }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="flex justify-between items-center flex-wrap gap-x-1 gap-y-2 mb-6 mt-3">
+                        <div class="inline-flex items-center">
+                            <input type="checkbox" id="checkbox-signup" class="h-4 w-4 text-base rounded border-gray-300 text-dark focus:ring focus:ring-default-950/30 focus:ring-offset-0">
+                            <label class="text-base ms-2 text-light font-medium align-middle select-none" for="checkbox-signup">Я принимаю <a class="font-semibold text-dark"> Условия и положения </a></label>
+                        </div>
+                    </div>
+
+                    <div class="text-center mb-7">
+                        <button type="submit" class="w-full px-6 py-2.5 bg-primary text-white rounded-md">
+                            Создать аккаунт
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+
+            <div class="hidden xl:block">
+                <div class="relative w-full h-screen bg-[url(../images/img-2.jpg)] bg-center bg-cover">
+                    <!-- <div class="absolute inset-0 bg-black/40"></div>
+                    <img src="assets/images/images.jpg" alt="" class="max-w-full h-full"> -->
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+    <!-- =========== Main Section End =========== -->
+
+    <!-- Preline Js -->
+    <script src="{% static 'login/libs/preline/preline.js' %}" ></script>
+
+    <!-- Lucide Js -->
+    <script src="{% static 'login/libs/lucide/umd/lucide.min.js' %}" ></script>
+
+    <!-- Main App Js -->
+    <script src="{% static 'login/js/app.js' %}" ></script>
+
+    </body>
 </html>

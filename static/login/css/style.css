@@ -1,11 +1,4 @@
-/* Template Name: Authea - Tailwind CSS Authentication Pages Template
-   Author: Zoyothemes
-   Email: zoyothemes@gmail.com
-   Website: http://zoyothemes.com/
-   Version: 1.0.0
-   Created: January 2024
-   File: Main Css File
-*/
+
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
 /* ! tailwindcss v3.4.1 | MIT License | https://tailwindcss.com
 */
@@ -341,6 +334,8 @@ object {
 /*
 Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
 */
+
+
 img,
 video {
   max-width: 100%;

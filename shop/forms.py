@@ -15,8 +15,14 @@ class RegisterForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ["username", "email", "phone", "password"]
+        fields = ["username", "email", "phone", "first_name", "last_name", "password"]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # 👉 делаем ВСЕ поля обязательными
+        for field in self.fields.values():
+            field.required = True
 class ProductForm(forms.ModelForm):
     # НЕ модельные поля, принимают и id, и текст
     category = forms.CharField(required=False)

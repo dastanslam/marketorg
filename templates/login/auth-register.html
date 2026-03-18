@@ -36,35 +36,92 @@
                 <form method="POST" class="text-start w-full">
                     {% csrf_token %}
 
+                    {% if form.non_field_errors %}
+                    <div class="bg-red-100 text-red-600 p-3 mb-4 rounded">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
                     <div class="mb-4">
-                        <label class="block text-base font-semibold text-dark mb-2">Полное имя</label>
-                        <input name="username" class="block w-full rounded-md py-2.5 px-4 text-dark text-base font-medium border-gray-300 focus:gray-300 focus:border-primary focus:outline-0 focus:ring-0 placeholder:text-light placeholder:text-base" type="text" placeholder="Введите ваше полное имя">
+                        <label class="block text-base font-semibold text-dark mb-2">Фамилия</label>
+                        <input name="last_name" required value="{{ form.last_name.value|default:'' }}"
+                               class="block w-full rounded-md py-2.5 px-4 text-dark text-base font-medium border-gray-300
+        {% if form.last_name.errors %} border-red-500 {% endif %}"
+                               type="text" placeholder="Фамилия">
+
+                        {% if form.last_name.errors %}
+                        <div class="text-red-500 text-sm mt-1">
+                            {{ form.last_name.errors.0 }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-base font-semibold text-dark mb-2">Имя</label>
+                        <input name="first_name" required value="{{ form.first_name.value|default:'' }}"
+                               class="block w-full rounded-md py-2.5 px-4 text-dark border-gray-300
+        {% if form.first_name.errors %} border-red-500 {% endif %}"
+                               type="text" placeholder="Имя">
+
+                        {% if form.first_name.errors %}
+                        <div class="text-red-500 text-sm mt-1">
+                            {{ form.first_name.errors.0 }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-base font-semibold text-dark mb-2">Логин</label>
+                        <input name="username" required value="{{ form.username.value|default:'' }}"
+                               class="block w-full rounded-md py-2.5 px-4 text-dark text-base font-medium border-gray-300 {% if form.username.errors %} border-red-500 {% endif %}" type="text" placeholder="Логин">
+                        {% if form.username.errors %}
+                        <div class="text-red-500 text-sm">{{ form.username.errors.0 }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="mb-4">
                         <label class="block text-base font-semibold text-dark mb-2">Телефон</label>
-                        <input name="phone" class="block w-full rounded-md py-2.5 px-4 text-dark text-base font-medium border-gray-300 focus:gray-300 focus:border-primary focus:outline-0 focus:ring-0 placeholder:text-light placeholder:text-base" type="text" placeholder="Введите номер телефона">
+                        <input name="phone" required value="{{ form.phone.value|default:'' }}"
+                               class="block w-full rounded-md py-2.5 px-4 text-dark text-base font-medium border-gray-300 {% if form.phone.errors %} border-red-500 {% endif %}" type="tel" placeholder="Введите номер телефона">
+                        {% if form.phone.errors %}
+                        <div class="text-red-500 text-sm">{{ form.phone.errors.0 }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="mb-4">
                         <label class="block text-base font-semibold text-dark mb-2">Email адрес</label>
-                        <input name="email" class="block w-full rounded-md py-2.5 px-4 text-dark text-base font-medium border-gray-300 focus:gray-300 focus:border-primary focus:outline-0 focus:ring-0 placeholder:text-light placeholder:text-base" type="email" placeholder="Введите ваш email">
+                        <input name="email" required value="{{ form.email.value|default:'' }}"
+                               class="block w-full rounded-md py-2.5 px-4 text-dark text-base font-medium border-gray-300 {% if form.email.errors %} border-red-500 {% endif %}" type="email" placeholder="Введите ваш email">
+                        {% if form.email.errors %}
+                        <div class="text-red-500 text-sm">{{ form.email.errors.0 }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="mb-4">
                         <label class="block text-base font-semibold text-dark mb-2">Пароль</label>
+
                         <div class="flex">
-                            <input type="password" name="password" class="form-password text-dark text-base font-medium block w-full rounded-s-md py-2.5 px-4 border border-gray-300 focus:gray-300 focus:border-primary focus:outline-0 focus:ring-0 placeholder:text-light placeholder:text-base" placeholder="Введите ваш пароль">
-                            <button type="button" data-hs-toggle-password='{"target": "#password-addon"}' class="inline-flex items-center justify-center py-2.5 px-4 border rounded-e-md -ms-px border-gray-300">
+                            <input id="password" name="password" class="form-password text-dark text-base font-medium block w-full rounded-s-md py-2.5 px-4 border border-gray-300 focus:gray-300 focus:border-primary focus:outline-0 focus:ring-0 placeholder:text-light placeholder:text-base {% if form.password.errors %} border-red-500 {% endif %}" type="password" placeholder="Введите ваш пароль">
+
+                            <button type="button"
+                                    data-hs-toggle-password='{"target": "#password"}'
+                                    class="inline-flex items-center justify-center py-2.5 px-4 border rounded-e-md -ms-px border-gray-300">
+
                                 <i class="hs-password-active:hidden h-5 w-5 text-dark" data-lucide="eye"></i>
-                                <i data-lucide="eye-off" class="hidden hs-password-active:block h-5 w-5 text-dark"></i>
+                                <i class="hidden hs-password-active:block h-5 w-5 text-dark" data-lucide="eye-off"></i>
                             </button>
                         </div>
+
+                        {% if form.password.errors %}
+                        <div class="text-red-500 text-sm mt-1">
+                            {{ form.password.errors.0 }}
+                        </div>
+                        {% endif %}
                     </div>
 
                     <div class="flex justify-between items-center flex-wrap gap-x-1 gap-y-2 mb-6 mt-3">
                         <div class="inline-flex items-center">
-                            <input type="checkbox" id="checkbox-signup" class="h-4 w-4 text-base rounded border-gray-300 text-dark focus:ring focus:ring-default-950/30 focus:ring-offset-0">
+                            <input type="checkbox" id="checkbox-signup" required class="h-4 w-4 text-base rounded border-gray-300 text-dark focus:ring focus:ring-default-950/30 focus:ring-offset-0">
                             <label class="text-base ms-2 text-light font-medium align-middle select-none" for="checkbox-signup">Я принимаю <a class="font-semibold text-dark"> Условия и положения </a></label>
                         </div>
                     </div>
