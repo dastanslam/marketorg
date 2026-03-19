@@ -527,28 +527,4 @@ function copyProductLink(){
     alert("Ссылка на товар скопирована. Вставьте её в Instagram.");
 }
 </script>
-    <script>
-        document.querySelectorAll('.add-favorite').forEach(button => {
-            button.addEventListener('click', function () {
-                const productId = this.dataset.id;
-
-                fetch("{% url 'toggle_favorite' %}", {
-                    method: "POST",
-                    headers: {
-                        "X-CSRFToken": "{{ csrf_token }}",
-                        "Content-Type": "application/x-www-form-urlencoded"
-                    },
-                    body: `product_id=${productId}`
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === "added") {
-                            this.classList.add("active");
-                        } else {
-                            this.classList.remove("active");
-                        }
-                    });
-            });
-        });
-    </script>
 {% endblock %}

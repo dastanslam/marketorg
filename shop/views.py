@@ -310,6 +310,7 @@ def edit_profile(request):
 @login_required
 def toggle_favorite(request):
     store = request.store
+
     if request.method == "POST":
         product_id = request.POST.get("product_id")
         product = Product.objects.get(id=product_id)
@@ -322,6 +323,20 @@ def toggle_favorite(request):
 
         if not created:
             favorite.delete()
-            return JsonResponse({"status": "removed"})
+            count = Favorite.objects.filter(user=request.user, store=store).count()
+            return JsonResponse({"status": "removed", "count": count})
 
-        return JsonResponse({"status": "added"})
+        count = Favorite.objects.filter(user=request.user, store=store).count()
+        return JsonResponse({"status": "added", "count": count})
+
+def favorite_count(request):
+    if request.user.is_authenticated:
+        count = Favorite.objects.filter(
+            user=request.user,
+            store=request.store
+        ).count()
+    else:
+        count = 0
+
+    return JsonResponse({"count": count})
+
