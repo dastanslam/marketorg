@@ -182,10 +182,29 @@ def product(request, slug):
     })
 
 def cart(request):
-    return render(request, "shop/cart.html", {"store": request.store})
+    cart = Cart.objects.filter(user=request.user).first()
 
+    if cart:
+        # Используем select_related для оптимизации запросов к БД
+        items = cart.items.select_related(
+            'variant__product',
+            'variant__color'
+        ).prefetch_related('variant__product__images')
+    else:
+        items = []
+    return render(request, "shop/cart.html", {"store": request.store, 'cart_items': items})
+
+@login_required
 def whislist(request):
-    return render(request, "shop/whislist.html", {"store": request.store})
+    favorites = Favorite.objects.filter(
+        user=request.user,
+        store=request.store
+    ).select_related('product').prefetch_related(
+        'product__variants__color',
+        'product__images'
+    )
+    favorites_count = favorites.count()
+    return render(request, "shop/whislist.html", {"store": request.store, 'favorites': favorites, "favorites_count": favorites_count})
 
 def contact(request):
     return render(request, "shop/contact.html", {"store": request.store})

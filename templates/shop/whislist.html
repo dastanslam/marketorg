@@ -1,5 +1,6 @@
 {% extends "shop/base.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}Главная{% endblock %}
 
@@ -9,8 +10,8 @@
         <div class="container">
           <div class="breadcrumbs">
             <ul>
-              <li> <a href="#">Home </a></li>
-              <li> <a href="#">Cart Items</a></li>
+              <li> <a href="#">Главная </a></li>
+              <li> <a href="#">Избранное</a></li>
             </ul>
           </div>
         </div>
@@ -20,113 +21,67 @@
           <div class="row mt-20">
             <div class="col-lg-7">
               <div class="box-title-cart">
-                <h4>Your Cart</h4>
-                <h6>2 items</h6>
+                <h4>Моё избранное</h4>
+                <h6>{{ favorites_count }} товара</h6>
               </div>
               <div class="box-may-also-like">
                 <div class="list-items-also-like">
-                  <div class="item-also-like">
-                    <div class="item-also-like-image"><img src="{% static 'imgs/page/cart/sp3.png' %}" alt="Guza"></div>
+                  {% for fav in favorites %}
+                  {% with product=fav.product %}
+                  <div class="item-also-like product-card"
+                       id="product-{{ product.id }}"
+                       data-variants='[
+        {% for v in product.variants.all %}
+        {"id": "{{ v.id }}", "color_id": "{{ v.color.id }}", "color_name": "{{ v.color.name }}", "size": "{{ v.size }}"}{% if not forloop.last %},{% endif %}
+        {% endfor %}
+     ]'>
+
+                    <div class="item-also-like-image">
+                      <img src="{{ product.images.all.0.image.url }}" alt="{{ product.name }}">
+                    </div>
+
                     <div class="item-also-like-info">
-                      <div class="item-also-like-info-1"><a class="text-16-medium" href="#">Ball Crew Shirt</a>
-                        <p class="body-2 neutral-medium-dark mb-8">$35.00</p>
-                        <div class="box-color box-size mb-8"><span class="body-p2 neutral-medium-dark">Color:</span>
+                      <div class="item-also-like-info-1">
+                        <a class="text-16-medium" href="#">{{ product.name }}</a>
+                        <p class="body-2 neutral-medium-dark mb-8">{{ product.min_price|floatformat:0|intcomma }} ₸</p>
+
+                        <div class="box-color box-size mb-8">
+                          <span class="body-p2 neutral-medium-dark">Цвет:</span>
                           <div class="dropdown">
-                            <button class="btn dropdown-toggle" id="dropdownColor" type="button" data-bs-toggle="dropdown" aria-expanded="false"><span>Black</span></button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownColor">
-                              <li><a class="dropdown-item" href="#">Black</a></li>
-                              <li><a class="dropdown-item" href="#">Navy</a></li>
+                            <button class="btn dropdown-toggle color-btn" type="button" data-bs-toggle="dropdown">
+                              <span>Выберите цвет</span>
+                            </button>
+                            <ul class="dropdown-menu color-list">
+                              {% for color in product.get_unique_colors %} {% endfor %}
                             </ul>
                           </div>
                         </div>
-                        <div class="box-size mb-8"><span class="body-p2 neutral-medium-dark">Size:</span>
+
+                        <div class="box-size mb-8">
+                          <span class="body-p2 neutral-medium-dark">Размер:</span>
                           <div class="dropdown">
-                            <button class="btn dropdown-toggle" id="dropdownSize" type="button" data-bs-toggle="dropdown" aria-expanded="false"><span>M</span></button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownSize">
-                              <li><a class="dropdown-item" href="#">S</a></li>
-                              <li><a class="dropdown-item" href="#">M</a></li>
-                              <li><a class="dropdown-item" href="#">XL</a></li>
+                            <button class="btn dropdown-toggle size-btn" type="button" data-bs-toggle="dropdown"><span>Выберите размер</span></button>
+                            <ul class="dropdown-menu size-list">
                             </ul>
                           </div>
                         </div>
                       </div>
+
                       <div class="item-also-like-info-2">
                         <div class="box-form-cart">
-                          <div class="form-cart detail-qty"><span class="minus"></span>
-                            <input class="qty-val form-control" type="text" name="quantity" value="1" min="1"><span class="plus"></span>
-                          </div><a class="btn btn-black-medium" href="#">Add to Cart</a>
+                          <div class="form-cart detail-qty">
+                            <span class="minus"></span>
+                            <input class="qty-val form-control" type="text" value="1" readonly>
+                            <span class="plus"></span>
+                          </div>
+                          <input type="hidden" class="variant-id-input">
+                          <button class="btn btn-black-medium btn-add-cart" disabled>В корзину</button>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="item-also-like">
-                    <div class="item-also-like-image"><img src="{% static 'imgs/page/cart/sp4.png' %}" alt="Guza"></div>
-                    <div class="item-also-like-info">
-                      <div class="item-also-like-info-1"><a class="text-16-medium" href="#">Ball Crew Shirt</a>
-                        <p class="body-2 neutral-medium-dark mb-8">$35.00</p>
-                        <div class="box-color box-size mb-8"><span class="body-p2 neutral-medium-dark">Color:</span>
-                          <div class="dropdown">
-                            <button class="btn dropdown-toggle" id="dropdownColor" type="button" data-bs-toggle="dropdown" aria-expanded="false"><span>Black</span></button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownColor">
-                              <li><a class="dropdown-item" href="#">Black</a></li>
-                              <li><a class="dropdown-item" href="#">Navy</a></li>
-                            </ul>
-                          </div>
-                        </div>
-                        <div class="box-size mb-8"><span class="body-p2 neutral-medium-dark">Size:</span>
-                          <div class="dropdown">
-                            <button class="btn dropdown-toggle" id="dropdownSize" type="button" data-bs-toggle="dropdown" aria-expanded="false"><span>M</span></button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownSize">
-                              <li><a class="dropdown-item" href="#">S</a></li>
-                              <li><a class="dropdown-item" href="#">M</a></li>
-                              <li><a class="dropdown-item" href="#">XL</a></li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="item-also-like-info-2">
-                        <div class="box-form-cart">
-                          <div class="form-cart detail-qty"><span class="minus"></span>
-                            <input class="qty-val form-control" type="text" name="quantity" value="1" min="1"><span class="plus"></span>
-                          </div><a class="btn btn-black-medium" href="#">Add to Cart</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="item-also-like">
-                    <div class="item-also-like-image"><img src="{% static 'imgs/page/cart/sp5.png' %}" alt="Guza"></div>
-                    <div class="item-also-like-info">
-                      <div class="item-also-like-info-1"><a class="text-16-medium" href="#">Ball Crew Shirt</a>
-                        <p class="body-2 neutral-medium-dark mb-8">$35.00</p>
-                        <div class="box-color box-size mb-8"><span class="body-p2 neutral-medium-dark">Color:</span>
-                          <div class="dropdown">
-                            <button class="btn dropdown-toggle" id="dropdownColor" type="button" data-bs-toggle="dropdown" aria-expanded="false"><span>Black</span></button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownColor">
-                              <li><a class="dropdown-item" href="#">Black</a></li>
-                              <li><a class="dropdown-item" href="#">Navy</a></li>
-                            </ul>
-                          </div>
-                        </div>
-                        <div class="box-size mb-8"><span class="body-p2 neutral-medium-dark">Size:</span>
-                          <div class="dropdown">
-                            <button class="btn dropdown-toggle" id="dropdownSize" type="button" data-bs-toggle="dropdown" aria-expanded="false"><span>M</span></button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownSize">
-                              <li><a class="dropdown-item" href="#">S</a></li>
-                              <li><a class="dropdown-item" href="#">M</a></li>
-                              <li><a class="dropdown-item" href="#">XL</a></li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="item-also-like-info-2">
-                        <div class="box-form-cart">
-                          <div class="form-cart detail-qty"><span class="minus"></span>
-                            <input class="qty-val form-control" type="text" name="quantity" value="1" min="1"><span class="plus"></span>
-                          </div><a class="btn btn-black-medium" href="#">Add to Cart</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  {% endwith %}
+                  {% endfor %}
                 </div>
               </div>
             </div>
@@ -134,4 +89,93 @@
         </div>
       </section>
     </main>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const productCards = document.querySelectorAll('.product-card');
+
+    productCards.forEach(card => {
+        const variants = JSON.parse(card.dataset.variants);
+        const colorBtn = card.querySelector('.color-btn span');
+        const sizeBtn = card.querySelector('.size-btn span');
+        const colorList = card.querySelector('.color-list');
+        const sizeList = card.querySelector('.size-list');
+        const addToCartBtn = card.querySelector('.btn-add-cart');
+        const variantInput = card.querySelector('.variant-id-input');
+
+        let selectedColor = null;
+        let selectedSize = null;
+
+        // Функция рендеринга списка цветов
+        function renderColors() {
+            const uniqueColors = [...new Map(variants.map(v => [v.color_id, v])).values()];
+            colorList.innerHTML = uniqueColors.map(v => `
+                <li><a class="dropdown-item color-opt" data-id="${v.color_id}" href="#">${v.color_name}</a></li>
+            `).join('');
+        }
+
+        // Функция рендеринга размеров (зависит от выбранного цвета)
+        function renderSizes() {
+            let availableSizes = variants;
+            if (selectedColor) {
+                availableSizes = variants.filter(v => v.color_id === selectedColor);
+            }
+
+            const uniqueSizes = [...new Set(availableSizes.map(v => v.size))];
+            sizeList.innerHTML = uniqueSizes.map(s => `
+                <li><a class="dropdown-item size-opt" data-value="${s}" href="#">${s}</a></li>
+            `).join('');
+        }
+
+        // Проверка: собран ли вариант полностью?
+        function checkCompletion() {
+            const match = variants.find(v => v.color_id === selectedColor && v.size === selectedSize);
+            if (match) {
+                variantInput.value = match.id;
+                addToCartBtn.disabled = false;
+            } else {
+                addToCartBtn.disabled = true;
+            }
+        }
+
+        // Инициализация
+        renderColors();
+        renderSizes();
+
+        // Слушатель кликов по дропдаунам
+        card.addEventListener('click', function(e) {
+            if (e.target.classList.contains('color-opt')) {
+                e.preventDefault();
+                selectedColor = e.target.dataset.id;
+                colorBtn.innerText = e.target.innerText;
+                renderSizes(); // Пересчитываем доступные размеры
+                checkCompletion();
+            }
+
+            if (e.target.classList.contains('size-opt')) {
+                e.preventDefault();
+                selectedSize = e.target.dataset.value;
+                sizeBtn.innerText = selectedSize;
+                checkCompletion();
+            }
+        });
+    });
+
+    // AJAX добавление (используем ваш вью)
+    document.querySelectorAll('.btn-add-cart').forEach(btn => {
+        btn.onclick = function() {
+            const card = this.closest('.product-card');
+            const data = new FormData();
+            data.append('variant_id', card.querySelector('.variant-id-input').value);
+            data.append('quantity', card.querySelector('.qty-val').value);
+            data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+            fetch("{% url 'add_to_cart' %}", { method: 'POST', body: data })
+                .then(res => res.json())
+                .then(json => {
+                    if(json.status === 'success') alert('Товар в корзине!');
+                });
+        };
+    });
+});
+</script>
 {% endblock %}
