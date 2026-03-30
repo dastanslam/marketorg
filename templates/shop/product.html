@@ -44,7 +44,7 @@
             <ul>
               <li> <a href="{% url 'index' %}">Главная </a></li>
               <li> <a href="{% url 'shop' %}">Товары</a></li>
-              <li> <a href="#">Категория </a></li>
+              <li> <a href="#">{{ product.category.name }} </a></li>
               <li> <a href="">{{ product.name }}</a></li>
             </ul>
           </div>
@@ -385,125 +385,145 @@
       </section>
     </main>
 <script>
+  // 1. Данные из Django
   const variants = JSON.parse('{{ variants_json|escapejs }}');
 
   let selectedColorId = {% if current_variant and current_variant.color %}{{ current_variant.color.id }}{% else %}null{% endif %};
   let selectedSize = `{% if current_variant %}{{ current_variant.size|default:'' }}{% endif %}`;
+  let currentVariantId = null;
 
+  // Элементы
   const priceMain = document.getElementById("product-price-main");
   const priceOld = document.getElementById("product-price-old");
   const skuEl = document.getElementById("product-sku");
   const colorLabel = document.getElementById("selected-color-label");
   const sizeLabel = document.getElementById("selected-size-label");
 
+  const favoriteBtn = document.querySelector('.add-favorite');
+  const addCartBtn = document.querySelector('.add-cart');
+
   function formatPrice(value) {
-    if (value === null || value === undefined || value === "") return "";
+    if (!value) return "";
     return Number(value).toLocaleString('ru-RU', {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     });
   }
 
-  function getAvailableSizesByColor(colorId) {
-    return variants
-      .filter(v => String(v.color_id) === String(colorId))
-      .map(v => String(v.size));
-  }
-
-  function findExactVariant(colorId, size) {
-    return variants.find(v =>
-      String(v.color_id) === String(colorId) &&
-      String(v.size) === String(size)
-    );
-  }
-
-  function findFirstVariantByColor(colorId) {
-    return variants.find(v => String(v.color_id) === String(colorId));
-  }
-
+  // Логика выбора вариантов (цвета/размеры)
   function updateSizesState() {
-    const availableSizes = getAvailableSizesByColor(selectedColorId);
+    const availableSizes = variants
+      .filter(v => String(v.color_id) === String(selectedColorId))
+      .map(v => String(v.size));
 
     document.querySelectorAll(".item-size").forEach(el => {
       const size = String(el.dataset.size);
       const isAvailable = availableSizes.includes(size);
-
       el.classList.toggle("out-stock", !isAvailable);
-
-      if (!isAvailable) {
-        el.classList.remove("active");
-      }
+      if (!isAvailable) el.classList.remove("active");
     });
 
     if (!availableSizes.includes(String(selectedSize))) {
       selectedSize = availableSizes.length ? availableSizes[0] : "";
     }
-
-    document.querySelectorAll(".item-size").forEach(el => {
-      el.classList.toggle(
-        "active",
-        String(el.dataset.size) === String(selectedSize) && !el.classList.contains("out-stock")
-      );
-    });
   }
 
   function updateVariantUI() {
     updateSizesState();
-
-    let variant = findExactVariant(selectedColorId, selectedSize);
-
-    if (!variant) {
-      variant = findFirstVariantByColor(selectedColorId);
-    }
-
-    if (!variant && variants.length) {
-      variant = variants[0];
-      selectedColorId = variant.color_id;
-      selectedSize = variant.size;
-      updateSizesState();
-    }
+    let variant = variants.find(v => String(v.color_id) === String(selectedColorId) && String(v.size) === String(selectedSize))
+                  || variants.find(v => String(v.color_id) === String(selectedColorId))
+                  || variants[0];
 
     if (!variant) return;
 
-    if (priceMain) {
-      priceMain.textContent = `${formatPrice(variant.price)} ₸`;
-    }
+    currentVariantId = variant.id;
+    selectedColorId = variant.color_id;
+    selectedSize = variant.size;
+
+    if (priceMain) priceMain.textContent = `${formatPrice(variant.price)} ₸`;
+    if (skuEl) skuEl.textContent = variant.sku || "";
+    if (colorLabel) colorLabel.textContent = variant.color_name || "";
+    if (sizeLabel) sizeLabel.textContent = variant.size || "";
 
     if (priceOld) {
       if (variant.old_price && Number(variant.old_price) !== Number(variant.price)) {
         priceOld.textContent = `${formatPrice(variant.old_price)} ₸`;
         priceOld.style.display = "";
       } else {
-        priceOld.textContent = "";
         priceOld.style.display = "none";
       }
     }
 
-    if (skuEl) {
-      skuEl.textContent = variant.sku || "";
-    }
-
-    if (colorLabel) {
-      colorLabel.textContent = variant.color_name || "";
-    }
-
-    if (sizeLabel) {
-      sizeLabel.textContent = variant.size || "";
-    }
-
-    selectedColorId = variant.color_id;
-    selectedSize = variant.size;
-
     document.querySelectorAll(".item-color").forEach(el => {
       el.classList.toggle("active", String(el.dataset.colorId) === String(selectedColorId));
     });
-
     document.querySelectorAll(".item-size").forEach(el => {
-      const disabled = el.classList.contains("out-stock");
-      el.classList.toggle("active", !disabled && String(el.dataset.size) === String(selectedSize));
+      el.classList.toggle("active", !el.classList.contains("out-stock") && String(el.dataset.size) === String(selectedSize));
     });
   }
 
+  // --- КОРЗИНА (С КОЛИЧЕСТВОМ) ---
+  if (addCartBtn) {
+    addCartBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+
+      if (!currentVariantId) {
+        alert("Выберите вариант товара");
+        return;
+      }
+
+      // 1. Берем число из инпута прямо сейчас
+      const qtyInput = document.querySelector('.qty-val');
+      const quantity = qtyInput ? qtyInput.value : 1;
+
+      // 2. Отправляем и ID варианта, и количество
+      fetch("{% url 'add_to_cart' %}", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: `variant_id=${currentVariantId}&quantity=${quantity}`
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === "success") {
+          const cartCount = document.getElementById("cart-count");
+          if (cartCount) {
+            cartCount.textContent = data.total_items;
+            cartCount.style.display = "inline-block";
+          }
+          alert("Товар добавлен (" + quantity + " шт.)");
+        }
+      });
+    });
+  }
+
+  // --- ИЗБРАННОЕ (ВЕСЬ ТОВАР) ---
+  if (favoriteBtn) {
+    favoriteBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      fetch("{% url 'toggle_favorite' %}", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: `product_id=${this.dataset.id}`
+      })
+      .then(response => response.json())
+      .then(data => {
+        this.classList.toggle("active", data.status === "added");
+        const wishlistCount = document.getElementById("wishlist");
+        if (wishlistCount) {
+          wishlistCount.textContent = data.count;
+          wishlistCount.style.display = data.count > 0 ? "inline-block" : "none";
+        }
+      });
+    });
+  }
+
+  // Клики по плиткам
   document.querySelectorAll(".item-color").forEach(el => {
     el.addEventListener("click", function () {
       selectedColorId = this.dataset.colorId;
@@ -519,6 +539,7 @@
     });
   });
 
+  // Запуск при старте
   updateVariantUI();
 </script>
 <script>

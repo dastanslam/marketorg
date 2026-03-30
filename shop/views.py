@@ -340,3 +340,27 @@ def favorite_count(request):
 
     return JsonResponse({"count": count})
 
+
+@login_required
+def add_to_cart(request):
+    if request.method == "POST":
+        variant_id = request.POST.get("variant_id")
+        # Получаем количество из запроса, по умолчанию 1
+        quantity = int(request.POST.get("quantity", 1))
+
+        variant = get_object_or_404(ProductVariant, id=variant_id)
+        cart, _ = Cart.objects.get_or_create(user=request.user, store=request.store)
+
+        item, created = CartItem.objects.get_or_create(cart=cart, variant=variant)
+
+        if not created:
+            # Прибавляем именно то количество, которое выбрал юзер
+            item.quantity += quantity
+        else:
+            item.quantity = quantity
+
+        item.save()
+
+        total_count = cart.items.count()
+        return JsonResponse({"status": "success", "total_items": total_count})
+

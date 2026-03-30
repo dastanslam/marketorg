@@ -5,165 +5,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Opsoon - | Tailwind CSS Authentications Template</title>
+    <title>Opsoon - Профиль пользователя</title>
     <meta name="author" content="DastanTeams"/>
 
-    <!-- favicon -->
     <link href="{% static 'login/images/favicon.ico' %}" rel="shortcut icon">
 
-    <!-- Main Css -->
     <link href="{% static 'login/css/style.css' %}" rel="stylesheet" type="text/css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3e51d4', // замените на ваш основной цвет
+                        dark: '#1f2937',
+                        light: '#6b7280'
+                    }
+                }
+            }
+        }
+    </script>
 </head>
+<style>
+    /* Перебиваем фиксированную высоту шаблона */
+    html, body {
+        height: auto !important;
+        overflow-y: auto !important; /* Включаем скролл */
+        min-height: 100vh !important;
+    }
 
-<body>
-    <!-- =========== Main Section Start =========== -->
-    <section class="h-screen w-full">
-        <div class="grid xl:grid-cols-2 grid-cols-1 h-full">
+    section {
+        height: auto !important;
+        min-height: 100vh !important;
+    }
 
-            <div class="max-w-lg mx-auto w-full flex flex-col justify-center md:items-start items-center p-6">
-                <div class="md:text-start text-center mb-7">
-                    <a href="../shop/index.html" class="grow block mb-8">
-                        <img class="h-8 md:mx-0 mx-auto" src="assets/images/light-logo.png" alt="images">
-                    </a>
+    /* Исправляем сетку */
+    .grid {
+        height: auto !important;
+        min-height: 100vh !important;
+    }
+</style>
 
-                    <div class="md:text-start text-center">
-                        <h3 class="text-2xl font-semibold text-dark mb-3">Профиль</h3>
-                        <p class="text-base font-medium text-light">Внесите изменения и сохраните их</p>
+<body class="antialiased bg-white">
+    <section class="min-h-screen w-full relative">
+        <div class="grid xl:grid-cols-2 grid-cols-1 min-h-screen">
+
+            <div class="w-full flex flex-col justify-start items-center py-12 px-6 md:px-12">
+                <div class="max-w-lg w-full">
+
+                    <div class="md:text-start text-center mb-8">
+                        <a href="/" class="inline-block mb-8">
+                            <img class="h-8" src="{% static 'login/images/light-logo.png' %}" alt="logo">
+                        </a>
+
+                        <div class="md:text-start text-center">
+                            <h3 class="text-3xl font-bold text-dark mb-2">Профиль</h3>
+                            <p class="text-base font-medium text-light">Внесите изменения и сохраните их</p>
+                        </div>
                     </div>
+
+                    <form method="POST" enctype="multipart/form-data" class="space-y-5">
+                        {% csrf_token %}
+
+                        {% if messages %}
+                        <div class="p-4 mb-4 bg-red-50 rounded-md">
+                            {% for message in messages %}
+                            <p class="text-red-600 text-sm font-medium">{{ message }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <div>
+                            <label class="block text-sm font-semibold text-dark mb-1.5">Фамилия</label>
+                            <input name="last_name" value="{{ form.last_name.value|default:'' }}"
+                                   class="block w-full rounded-lg py-2.5 px-4 border border-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all {% if form.last_name.errors %} border-red-500 {% endif %}"
+                                   type="text">
+                            {% if form.last_name.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.last_name.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-dark mb-1.5">Имя</label>
+                            <input name="first_name" value="{{ form.first_name.value|default:'' }}"
+                                   class="block w-full rounded-lg py-2.5 px-4 border border-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all {% if form.first_name.errors %} border-red-500 {% endif %}"
+                                   type="text">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-dark mb-1.5">Логин</label>
+                            <input name="username" value="{{ form.username.value|default:'' }}"
+                                   class="block w-full rounded-lg py-2.5 px-4 border border-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all {% if form.username.errors %} border-red-500 {% endif %}"
+                                   type="text">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-dark mb-1.5">Email</label>
+                            <input name="email" value="{{ form.email.value|default:'' }}"
+                                   class="block w-full rounded-lg py-2.5 px-4 border border-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all {% if form.email.errors %} border-red-500 {% endif %}"
+                                   type="email">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-dark mb-1.5">Телефон</label>
+                            <input name="phone" value="{{ form.phone.value|default:'' }}"
+                                   class="block w-full rounded-lg py-2.5 px-4 border border-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                                   type="tel">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-dark mb-1.5">Город</label>
+                            <input name="city" value="{{ form.city.value|default:'' }}"
+                                   class="block w-full rounded-lg py-2.5 px-4 border border-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                                   type="text">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-dark mb-1.5">Адрес</label>
+                            <textarea name="address" rows="3"
+                                      class="block w-full rounded-lg py-2.5 px-4 border border-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">{{ form.address.value|default:'' }}</textarea>
+                        </div>
+
+                        <div class="bg-gray-50 p-4 rounded-lg border border-dashed border-gray-300">
+                            <label class="block text-sm font-semibold text-dark mb-2">Аватар профиля</label>
+                            <input type="file" name="avatar" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90 cursor-pointer">
+                            {% if profile.avatar %}
+                            <div class="mt-4 flex items-center space-x-4">
+                                <img src="{{ profile.avatar.url }}" alt="Аватар" class="w-16 h-16 object-cover rounded-full ring-2 ring-white shadow-md">
+                                <span class="text-xs text-light">Текущее фото</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="pt-4">
+                            <button type="submit" class="w-full px-6 py-3 bg-primary hover:bg-opacity-90 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all transform active:scale-[0.98]">
+                                Сохранить изменения
+                            </button>
+                        </div>
+
+                        <div class="text-center pt-6 pb-12">
+                            <p class="text-light">
+                                Хотите завершить сеанс?
+                                <a href="{% url 'logout' %}" class="text-dark font-bold border-b-2 border-primary/30 hover:border-primary transition-all ms-1">Выйти из системы</a>
+                            </p>
+                        </div>
+                    </form>
                 </div>
-
-                <form method="POST" enctype="multipart/form-data" class="text-start w-full">
-                    {% csrf_token %}
-
-                    {% if messages %}
-                    <div class="mb-4">
-                        {% for message in messages %}
-                        <p class="text-red-500 text-sm">{{ message }}</p>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-
-                    <!-- Фамилия -->
-                    <div class="mb-4">
-                        <label class="block text-base font-semibold text-dark mb-2">Фамилия</label>
-                        <input name="last_name" value="{{ form.last_name.value|default:'' }}"
-                               class="block w-full rounded-md py-2.5 px-4 border border-gray-300 {% if form.last_name.errors %} border-red-500 {% endif %}"
-                               type="text">
-                        {% if form.last_name.errors %}
-                        <div class="text-red-500 text-sm mt-1">{{ form.last_name.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Имя -->
-                    <div class="mb-4">
-                        <label class="block text-base font-semibold text-dark mb-2">Имя</label>
-                        <input name="first_name" value="{{ form.first_name.value|default:'' }}"
-                               class="block w-full rounded-md py-2.5 px-4 border border-gray-300 {% if form.first_name.errors %} border-red-500 {% endif %}"
-                               type="text">
-                        {% if form.first_name.errors %}
-                        <div class="text-red-500 text-sm mt-1">{{ form.first_name.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Логин -->
-                    <div class="mb-4">
-                        <label class="block text-base font-semibold text-dark mb-2">Логин</label>
-                        <input name="username" value="{{ form.username.value|default:'' }}"
-                               class="block w-full rounded-md py-2.5 px-4 border border-gray-300 {% if form.username.errors %} border-red-500 {% endif %}"
-                               type="text">
-                        {% if form.username.errors %}
-                        <div class="text-red-500 text-sm mt-1">{{ form.username.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Email -->
-                    <div class="mb-4">
-                        <label class="block text-base font-semibold text-dark mb-2">Email</label>
-                        <input name="email" value="{{ form.email.value|default:'' }}"
-                               class="block w-full rounded-md py-2.5 px-4 border border-gray-300 {% if form.email.errors %} border-red-500 {% endif %}"
-                               type="email">
-                        {% if form.email.errors %}
-                        <div class="text-red-500 text-sm mt-1">{{ form.email.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Телефон -->
-                    <div class="mb-4">
-                        <label class="block text-base font-semibold text-dark mb-2">Телефон</label>
-                        <input name="phone" value="{{ form.phone.value|default:'' }}"
-                               class="block w-full rounded-md py-2.5 px-4 border border-gray-300 {% if form.phone.errors %} border-red-500 {% endif %}"
-                               type="tel">
-                        {% if form.phone.errors %}
-                        <div class="text-red-500 text-sm mt-1">{{ form.phone.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Город -->
-                    <div class="mb-4">
-                        <label class="block text-base font-semibold text-dark mb-2">Город</label>
-                        <input name="city" value="{{ form.city.value|default:'' }}"
-                               class="block w-full rounded-md py-2.5 px-4 border border-gray-300 {% if form.city.errors %} border-red-500 {% endif %}"
-                               type="text">
-                        {% if form.city.errors %}
-                        <div class="text-red-500 text-sm mt-1">{{ form.city.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Адрес -->
-                    <div class="mb-4">
-                        <label class="block text-base font-semibold text-dark mb-2">Адрес</label>
-                        <textarea name="address"
-                                  class="block w-full rounded-md py-2.5 px-4 border border-gray-300 {% if form.address.errors %} border-red-500 {% endif %}">{{ form.address.value|default:'' }}</textarea>
-                        {% if form.address.errors %}
-                        <div class="text-red-500 text-sm mt-1">{{ form.address.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Аватар -->
-                    <div class="mb-4">
-                        <label class="block text-base font-semibold text-dark mb-2">Аватар</label>
-                        <input type="file" name="avatar"
-                               class="block w-full rounded-md py-2.5 px-4 border border-gray-300">
-                        {% if profile.avatar %}
-                        <img src="{{ profile.avatar.url }}" alt="Аватар"
-                             class="mt-2 w-20 h-20 object-cover rounded-full">
-                        {% endif %}
-                    </div>
-
-                    <div class="text-center mb-7">
-                        <button type="submit" class="w-full px-6 py-2.5 bg-primary text-white rounded-md">
-                            Сохранить изменения
-                        </button>
-                    </div>
-
-                    <p class="shrink text-light text-center">
-                        Вы хотите выйти из системы?
-                        <a href="{% url 'logout' %}" class="text-dark font-semibold ms-1"><b>Выйти</b></a>
-                    </p>
-                </form>
-
             </div>
 
-            <div class="hidden xl:block">
-                <div class="relative w-full h-screen bg-[url(../images/img-2.jpg)] bg-center bg-cover">
-                    <!-- <div class="absolute inset-0 bg-black/40"></div>
-                    <img src="assets/images/images.jpg" alt="" class="max-w-full h-full"> -->
+            <div class="hidden xl:block relative">
+                <div class="sticky top-0 h-screen w-full">
+                    <div class="absolute inset-0 bg-black/20"></div> <div class="w-full h-full bg-[url('{% static 'login/images/img-2.jpg' %}')] bg-center bg-cover"></div>
                 </div>
             </div>
 
         </div>
-
     </section>
-    <!-- =========== Main Section End =========== -->
+    <script src="{% static 'login/libs/preline/preline.js' %}"></script>
+    <script src="{% static 'login/libs/lucide/umd/lucide.min.js' %}"></script>
+    <script src="{% static 'login/js/app.js' %}"></script>
 
-    <!-- Preline Js -->
-    <script src="{% static 'login/libs/preline/preline.js' %}" ></script>
-
-    <!-- Lucide Js -->
-    <script src="{% static 'login/libs/lucide/umd/lucide.min.js' %}" ></script>
-
-    <!-- Main App Js -->
-    <script src="{% static 'login/js/app.js' %}" ></script>
-
-    </body>
+</body>
 </html>
