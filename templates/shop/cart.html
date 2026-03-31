@@ -1,5 +1,6 @@
 {% extends "shop/base.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}Главная{% endblock %}
 
@@ -63,7 +64,7 @@
 
                           <div class="item-cart-info-2">
                               <p class="body-p2 price-unit" data-price="{{ item.variant.price_final }}">
-                                  ${{ item.variant.price_final }}
+                                  {{ item.variant.price_final|floatformat:0|intcomma }} ₸
                               </p>
                               <a class="btn-remove-cart" href="#"></a>
                           </div>
