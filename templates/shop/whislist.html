@@ -22,19 +22,20 @@
             <div class="col-lg-7">
               <div class="box-title-cart">
                 <h4>Моё избранное</h4>
-                <h6>{{ favorites_count }} товара</h6>
+                <h6><span id="wishlist-count">{{ favorites_count }}</span> товара</h6>
               </div>
               <div class="box-may-also-like">
-                <div class="list-items-also-like">
+                <div class="list-items-also-like" style="position: relative;">
                   {% for fav in favorites %}
                   {% with product=fav.product %}
-                  <div class="item-also-like product-card"
+                  <div class="item-also-like product-card" style="position: relative;"
                        id="product-{{ product.id }}"
                        data-variants='[
         {% for v in product.variants.all %}
         {"id": "{{ v.id }}", "color_id": "{{ v.color.id }}", "color_name": "{{ v.color.name }}", "size": "{{ v.size }}"}{% if not forloop.last %},{% endif %}
         {% endfor %}
      ]'>
+                    <a class="btn-remove-cart" style="top: 0px;" href="#" data-id="{{ product.id }}"></a>
 
                     <div class="item-also-like-image">
                       <img src="{{ product.images.all.0.image.url }}" alt="{{ product.name }}">
@@ -176,6 +177,73 @@
                 });
         };
     });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Находим все кнопки удаления
+    const removeButtons = document.querySelectorAll('.btn-remove-cart');
+
+    removeButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault(); // Останавливаем переход по ссылке
+
+            const productId = this.getAttribute('data-id');
+            const cardElement = document.getElementById(`product-${productId}`);
+
+            // Отправляем запрос на сервер (твой путь favorite/toggle/)
+            fetch('/favorite/toggle/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': getCookie('csrftoken'), // Обязательно для Django
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `product_id=${productId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'removed') {
+                    // Анимация исчезновения
+                    cardElement.style.transition = '0.4s';
+                    cardElement.style.opacity = '0';
+                    cardElement.style.transform = 'scale(0.9)';
+
+                    // Полное удаление из разметки через 400мс
+                    setTimeout(() => {
+                        cardElement.remove();
+
+                        const countSpan = document.getElementById('wishlist-count');
+            if (countSpan) {
+                countSpan.innerText = data.count; // Берем число из JsonResponse
+            }
+
+                        // Если товаров больше нет, можно вывести текст "Список пуст"
+                        if (document.querySelectorAll('.product-card').length === 0) {
+                            location.reload(); // Или просто вставить текст в контейнер
+                        }
+                    }, 400);
+                }
+            })
+            .catch(error => console.error('Ошибка:', error));
+        });
+    });
+
+    // Функция для получения токена безопасности Django (CSRF)
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
 });
 </script>
 {% endblock %}
