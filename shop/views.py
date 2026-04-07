@@ -181,6 +181,7 @@ def product(request, slug):
         "store": request.store,
     })
 
+@login_required
 def cart(request):
     cart = Cart.objects.filter(user=request.user).first()
 
@@ -266,6 +267,7 @@ def user_out(request):
 def about(request):
     return render(request, "shop/about.html", {"store": request.store})
 
+@login_required
 def order(request):
     return render(request, "shop/order.html", {"store": request.store})
 

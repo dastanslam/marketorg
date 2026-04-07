@@ -8286,6 +8286,7 @@ footer a {
   border-radius: 4px;
   margin-right: 8px;
   cursor: pointer;
+  margin-bottom: 5px;
 }
 .list-sizes .item-size.out-stock {
   color: #999999;

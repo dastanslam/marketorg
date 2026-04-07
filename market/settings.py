@@ -129,10 +129,16 @@ BASE_DOMAIN = "store.localhost"
 SUBDOMAIN_IGNORED = ["www"]
 SUBDOMAIN_BYPASS_PREFIXES = ["api", "admin"]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://chest-flat-three-waiting.trycloudflare.com',
+    'https://*.trycloudflare.com', # Чтобы работало с любой новой ссылкой туннеля
+]
+
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    ".store.localhost",   # 👈 важно
+    ".store.localhost",
+    ".trycloudflare.com",# 👈 важно
 ]
 
 
@@ -141,4 +147,6 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 AUTH_USER_MODEL = "shop.User"
+
+LOGIN_URL = 'signin'
 
